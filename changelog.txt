@@ -1,0 +1,4 @@
+*** Sensei Content Drip Changelog ***
+
+2014.03.26 - version 1.0.0
+* First release
