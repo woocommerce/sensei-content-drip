@@ -33,3 +33,8 @@ http://chrislema.com/content-dripping-sequential-course-delivery-is-easy-with-pr
 http://chrislema.com/teaching-with-wordpress-sensei-wp-courseware-premise/
 
 http://www.learndash.com/drip-feed-schedule-your-lessons/
+
+Features Roadmap
+-------
+- settings page: default dynaic drip applied to all new lessons (afer completion of the previous lessons)
+- Manage lesson content release dates from course page edit scren
