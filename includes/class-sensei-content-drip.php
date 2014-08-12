@@ -245,20 +245,19 @@ class Sensei_Content_Drip {
 			return false;
 		}
 
-		// build the full class file name
-		$full_class_file_name = 'scd_ext_'.trim( $class ).'php' ;
-		
+		// build the full class file name and path
+		$full_class_file_name = 'class-scd-ext-'.trim( $class ).'.php' ;
+		$file_path = $this->dir . '/includes/' . $full_class_file_name;
 
 		// check if the file exists 
-		if( '' == $full_class_name || 
-			empty( $full_class_name ) || 
-			! file_exists( $full_class_file_name ) ){
-
+		if( '' == $full_class_file_name || 
+			empty( $full_class_file_name ) || 
+			! file_exists( $file_path ) ){
 			return false;
 		} 
 
 		// include the class file
-		require_once( $full_class_file_name );
+		require_once( realpath ( $file_path ) );
 
 		// succes indeed 
 		return true;

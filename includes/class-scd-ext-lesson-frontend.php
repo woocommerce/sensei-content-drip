@@ -55,6 +55,8 @@ public function replace_dripped_lessons_content( $posts ){
 
 	var_dump( $posts );
 
+	echo "hello";
+
 // if ! post type lesson -- retrn $posts
 
 // if settings show excerpt
