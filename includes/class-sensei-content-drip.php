@@ -98,6 +98,10 @@ class Sensei_Content_Drip {
 		// Handle localisation
 		$this->load_plugin_textdomain ();
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
+
+		// include classes
+		if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  } 
+		
 	} // End __construct()
 
 	/**
@@ -227,4 +231,36 @@ class Sensei_Content_Drip {
 		update_option( $this->_token . '_version', $this->_version );
 	}
 
-}
+	/**
+	 * Load class and add them to the main class ass child objects sensei_content_drip->child 
+	 *
+	 * @access  protected
+	 * @since   1.0.0
+	 * @param   string $class
+	 * @return  void
+	 */
+	private function _load_class_file( $class ) {
+
+		if( '' == $class || empty( $class ) ){
+			return false;
+		}
+
+		// build the full class file name
+		$full_class_file_name = 'scd_ext_'.trim( $class ).'php' ;
+		
+
+		// check if the file exists 
+		if( '' == $full_class_name || 
+			empty( $full_class_name ) || 
+			! file_exists( $full_class_file_name ) ){
+
+			return false;
+		} 
+
+		// include the class file
+		require_once( $full_class_file_name );
+
+		// succes indeed 
+		return true;
+	}
+}	
