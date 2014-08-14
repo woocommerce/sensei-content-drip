@@ -30,7 +30,7 @@ class Scd_ext_lesson_frontend {
 public function __construct(){
 
 	// hook int all post of type lesson to determin if they are 
-	add_filter('the_posts', array( $this, 'replace_dripped_lessons_content' ) );
+	//add_filter('the_posts', array( $this, 'replace_dripped_lessons_content' ) );
 }// end __construct()
 
 
@@ -46,8 +46,9 @@ public function __construct(){
 
 public function replace_dripped_lessons_content( $posts ){
 
-	// this should only apply to the front end , if admin exit function
-	if( is_admin() ){
+	// this should only apply to the front end on single course and lesson pages
+	if( is_admin() || 
+		! ( is_singular('lesson') || is_singular('course') )  ){
 		return $posts;	
 	}
 	 
@@ -56,6 +57,8 @@ public function replace_dripped_lessons_content( $posts ){
 	var_dump( $posts );
 
 	echo "hello";
+
+	return $posts;
 
 // if ! post type lesson -- retrn $posts
 
