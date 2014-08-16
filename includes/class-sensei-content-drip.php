@@ -101,6 +101,7 @@ class Sensei_Content_Drip {
 
 		// include classes
 		if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  } 
+		if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  } 
 		
 	} // End __construct()
 
@@ -148,8 +149,16 @@ class Sensei_Content_Drip {
 	 * @return void
 	 */
 	public function admin_enqueue_scripts ( $hook = '' ) {
+		//load the lesson idit/new screen 	
+		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && 'lesson'=== $_GET['post_type'] ){
+
+			wp_register_script( $this->_token . '-lesson-admin', esc_url( $this->assets_url ) . $this->script_suffix . 'js/admin-lesson.js', array( 'jquery','underscore','bakcbone' ), $this->_version );
+			wp_enqueue_script( $this->_token . '-lesson-admin' );
+		}
 		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
 		wp_enqueue_script( $this->_token . '-admin' );
+
+
 	} // End admin_enqueue_scripts()
 
 	/**
@@ -229,6 +238,16 @@ class Sensei_Content_Drip {
 	 */
 	private function _log_version_number () {
 		update_option( $this->_token . '_version', $this->_version );
+	}
+
+	/**
+	 * return the plugins asset_url
+	 * @access  public
+	 * @since   1.0.0
+	 * @return  void
+	 */
+	private function get_asset_url() {
+		return $this->asset_url;
 	}
 
 	/**

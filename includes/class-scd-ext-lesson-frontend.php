@@ -3,7 +3,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /*
- * Sensei Content Drip ( scd ) Exctension Class
+ * Sensei Content Drip ( scd ) Exctension lesson frontend class
  *
  * Thie class controls all frontend activitiy relating to sensei lessons.
  *
@@ -23,10 +23,21 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class Scd_ext_lesson_frontend {
 
 /**
-* @access protected
-* @var $drip_message
-*/
+ * The token.
+ * @var     string
+ * @access  private
+ * @since   1.0.0
+ */
+private $_token;
+
+/**
+ * The message shown in place of lesson content
+ * @var     string
+ * @access  protected
+ * @since   1.0.0
+ */
 protected $drip_message;
+
 
 /**
 * constructor function
