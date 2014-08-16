@@ -17,10 +17,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * - __construct()
  * - hide_lesson_content( $lesson_id , $new_content)
+ * - is_lesson_dripped( $lesson )
  */
 
-
 class Scd_ext_lesson_frontend {
+
+/**
+* @access protected
+* @var $drip_message
+*/
+protected $drip_message;
 
 /**
 * constructor function
@@ -28,15 +34,15 @@ class Scd_ext_lesson_frontend {
 * @uses add_filter
 */
 public function __construct(){
-
+	$this->drip_message = 'sorry drip, drip , drip...'; 
 	// hook int all post of type lesson to determin if they are 
-	//add_filter('the_posts', array( $this, 'replace_dripped_lessons_content' ) );
+	add_filter('the_posts', array( $this, 'lessons_drip_filter' ) );
 }// end __construct()
 
 
 /**
-* replace_dripped_lessons_content, alters the content of all lesson with their 
-* respecitve drip content replacement message. 
+* single_course_lessons_content, loops through each post on the single crouse page 
+* to confirm if ths content should be hidden
 * 
 * @since 1.0.0
 * @param array $posts
@@ -44,29 +50,74 @@ public function __construct(){
 * @uses the_posts()
 */
 
-public function replace_dripped_lessons_content( $posts ){
-
+public function lessons_drip_filter( $lessons ){
 	// this should only apply to the front end on single course and lesson pages
-	if( is_admin() || 
-		! ( is_singular('lesson') || is_singular('course') )  ){
-		return $posts;	
+	if( is_admin() ||  empty( $lessons ) ){
+		return $lessons;	
+	}
+	
+	//the first post in the array should be of post type lesson
+	if( 'lesson' !== $lessons[0]->post_type  ){
+		return $lessons;
 	}
 	 
-	$message = 'sorry drip, drip , drip...';
+	// loop through each post and replace the content
+	foreach ($lessons as $lesson) {
+		if ( $this->is_lesson_dripped( $lesson ) ){
+			// change the lesson content accordingly
+			$lesson =  $this->replace_content( $lesson );
+		}
+	}
 
-	var_dump( $posts );
+	return $lessons;
+} // end lessons_drip_filter
 
-	echo "hello";
+/**
+* Replace post content with settings or filtered message
+* 
+* @since 1.0.0
+* @param  WP_Post $lesson
+* @return WP_Post $lesson
+*/
 
-	return $posts;
+public function replace_content( $lesson ){
+	// go through all the keys to replace the content and the excerpt
+	foreach ( $lesson as $key => $value ) {
 
-// if ! post type lesson -- retrn $posts
+		//change both the post content and the excerpt
+		if( $key === 'post_content' || $key === 'post_excerpt' ){	
+		/**
+		 * Filter a customise the message user will see when content is not available.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string        $drip_message the message
+		 */
+		$lesson->$key = apply_filters( 'sensei_content_drip_lesson_message', $this->drip_message );  
 
-// if settings show excerpt
+		}
+	}
+	return $lesson;
 
-// loop through lessons 
-	// if drip is active change content to message
+} // end replace_content
 
-} // end hide_lesson_content
+/**
+* Check if  the lesson can be made available to the the user at this point
+* according to the drip meta data
+* 
+* @since 1.0.0
+* @param  WP_Post $lesson 
+* @return bool $dripped
+*/
+
+public function is_lesson_dripped( $lesson ){
+
+	$dripped = true;
+
+	// check the post data and alter $dripped
+
+	return $dripped;
+
+} // end is_lesson_dripped
 
 } // Scd_ext_lesson_frontend class 
