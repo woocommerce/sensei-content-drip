@@ -138,8 +138,14 @@ class Sensei_Content_Drip {
 	 * @return void
 	 */
 	public function admin_enqueue_styles ( $hook = '' ) {
-		wp_register_style( $this->_token . '-admin', esc_url( $this->assets_url ) . 'css/admin.css', array(), $this->_version );
-		wp_enqueue_style( $this->_token . '-admin' );
+		global $post;
+		//load the lesson idit/new screen css
+		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && ( !empty($post) && 'lesson' === $post->post_type) ){
+			wp_register_style( $this->_token . '-admin-lesson', esc_url( $this->assets_url ) . 'css/admin-lesson.css', array(), $this->_version );
+			wp_enqueue_style( $this->_token . '-admin-lesson' );
+		}
+		
+
 	} // End admin_enqueue_styles()
 
 	/**
@@ -149,14 +155,16 @@ class Sensei_Content_Drip {
 	 * @return void
 	 */
 	public function admin_enqueue_scripts ( $hook = '' ) {
-		//load the lesson idit/new screen 	
-		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && 'lesson'=== $_GET['post_type'] ){
-
-			wp_register_script( $this->_token . '-lesson-admin', esc_url( $this->assets_url ) . $this->script_suffix . 'js/admin-lesson.js', array( 'jquery','underscore','bakcbone' ), $this->_version );
-			wp_enqueue_script( $this->_token . '-lesson-admin' );
+		global $post;
+		//load the lesson idit/new screen script
+		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && ( !empty($post) && 'lesson' === $post->post_type) ){
+	
+			wp_register_script( $this->_token . '-lesson-admin-script', esc_url( $this->assets_url ). 'js/admin-lesson'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'backbone' ), $this->_version , true);
+			wp_enqueue_script( $this->_token . '-lesson-admin-script' );
 		}
-		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
-		wp_enqueue_script( $this->_token . '-admin' );
+
+		//wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version, true );
+		//wp_enqueue_script( $this->_token . '-admin' );
 
 
 	} // End admin_enqueue_scripts()

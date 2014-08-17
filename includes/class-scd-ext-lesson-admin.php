@@ -71,14 +71,29 @@ public function add_leson_content_drip_meta_box( ){
 
 public function content_drip_lesson_meta_content(){
 ?>
-	<p><span class='description'><?php _e('Select when you want his lesson to be dripped', 'sensei-content-drip'); ?></span></p>
-	<p><select name='sdc-lesson-drip-type'>
-		<option  value="none"> <?php _e('Always visisble', 'sensei-content-drip'); ?></option>
-		<option  value="dynamic"> <?php _e('After the previous lesson', 'sensei-content-drip'); ?> </option>
+	<p><?php _e('How would you like this lesson to be dripped ?', 'sensei-content-drip'); ?></p>
+	<p><select name='sdc-lesson-drip-type' class="sdc-lesson-drip-type">
+		<option  value="none"> <?php _e('Do not drip it', 'sensei-content-drip'); ?></option>
 		<option  value="absolute"> <?php _e('On a specifcic date ', 'sensei-content-drip'); ?>  </option>
+		<option  value="dynamic"> <?php _e('After the previous lessons completion', 'sensei-content-drip'); ?> </option>
 	</select></p>
-	<p class="absolute hidden"> Abosulte Timing</p>
-	<p class="dynamic hidden"> Dynamic dripping</p>
+	
+	<p><div class="dripTypeOptions absolute hidden">
+		<p><span class='description'><?php _e('Select the date on which this lesson should become available ?', 'sensei-content-drip'); ?></span></p>
+		<input type="date" id="datepicker" name="absolute[datepicker]" value="" class="absolute-datepicker" />
+	</div></p>
+	<p> <div class="dripTypeOptions dynamic hidden"> 
+		<p><span class='description'><?php _e('How long after the completion of the previous lesson should this lesson become available ?', 'sensei-content-drip'); ?></span></p>
+		<div id="dynamic-dripping-1" class='dynamic-dripping'>
+			<input type='number' name='unit-amount-1' class='unit-amount' ></input>
+			<select name='dynamic-time-unit-1' class="dynamic-time-unit">
+				<option  value="day"> <?php _e('Day(s)', 'sensei-content-drip'); ?></option>
+				<option  value="week"> <?php _e('Week(s)', 'sensei-content-drip'); ?> </option>
+				<option  value="month"> <?php _e('Month(s)', 'sensei-content-drip'); ?>  </option>
+			</select>
+			<p>note: The course start date will be used, if you have not selected a lesson pre-requisite</p>
+		</div>	
+	</div></p>
 <?php 
 }
 
