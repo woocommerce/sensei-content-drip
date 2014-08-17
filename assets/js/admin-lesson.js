@@ -21,13 +21,22 @@
 		* dripTypeChange, this function repsonds to a select box change event. 
 		*/
 		render: function(e){
-			this.$el.find('.dripTypeOptions').hide();
+
+			// on the inital page load run through each of the options 
+			// and hide (add display: none) to the options that hass the class
+			// hideen removing the hidden class as it is no longer needed
+			this.$el.find('.dripTypeOptions').each(function(index , item ){
+				if( $( item ).hasClass('hidden') ){
+						$( item ).hide().removeClass('hidden');
+				}; 
+			});
 
 			// exit if none with all elements hidden
-			if( this.dripType === 'none' ){ 
+			if( this.dripType === 'none' ){ 	
 				return;
-			}  
+			}
 
+			// show the selected drip type's options
 			this.$el.find( '.dripTypeOptions.' + this.dripType).show();
 		},
 		/**
