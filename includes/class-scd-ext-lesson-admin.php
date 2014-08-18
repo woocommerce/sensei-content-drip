@@ -79,6 +79,7 @@ public function add_leson_content_drip_meta_box( ){
 public function content_drip_lesson_meta_content(){
 	global $post;
 
+	// get the post meta data
 	$post_content_drip_data = get_post_meta( $post->ID, '_sensei_drip_content' , true);
 	$selected_drip_type = isset( $post_content_drip_data['drip_type'] ) ? $post_content_drip_data['drip_type'] : 'none';
 
@@ -86,12 +87,12 @@ public function content_drip_lesson_meta_content(){
 	$absolute_hidden_class = ( 'absolute' == $selected_drip_type ) ? ' ' : 'hidden'; 
 	$dymaic_hidden_class   = ( 'dynamic'  == $selected_drip_type ) ? ' ' : 'hidden'; 
 
-
 	//get the absolute date stored field value
 	$absolute_date_value = ( 'absolute' == $selected_drip_type ) ?  $post_content_drip_data['drip_details'] : '';
 	
 	// Nonce field
 	wp_nonce_field( -1, 'woo_' . $this->_token . '_noonce');
+
 ?>
 	<p><?php _e('How would you like this lesson to be dripped ?', 'sensei-content-drip'); ?></p>
 	<p><select name='sdc-lesson-drip-type' class="sdc-lesson-drip-type">
