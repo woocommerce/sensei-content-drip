@@ -48,8 +48,11 @@ public function __construct(){
 	// set a formated string
 	$this->drip_formatted_message = "This lesson will become available on: [date]"; 
 
+	// set a formated string
+	$this->title_append_text = ": Not Available"; 
+
 	// hook int all post of type lesson to determin if they are 
-	add_filter('the_posts', array( $this, 'lessons_drip_filter' ) );
+	add_filter('the_posts', array( $this, 'lessons_drip_filter' ), 1 );
 
 }// end __construct()
 
@@ -204,10 +207,34 @@ public function replace_content( $lesson , $formated_message){
 		}
 	}
 
+	//disable the current lessons video
+	remove_all_actions( 'sensei_lesson_video' );
+
+	//hide the lesson quiz notice and quiz buttons 
+	remove_all_actions( 'sensei_lesson_quiz_meta' );
+
+	// append a title message next for content that's dripped
+	add_filter('the_title', array( $this ,'add_single_title_text'), 10, 1);
+
 	// returh the lesson with changed content 
+
 	return $lesson;
 
 } // end replace_content
+
+
+/**
+* Append information to the single lesson title if the lesson content is dripped
+* 
+* @since 1.0.0
+* @param string $title 
+* @param string $id lesson post id
+* @return string $title
+*/
+
+public function add_single_title_text( $title ){
+	return $title. $this->title_append_text;
+}
 
 
 /**
