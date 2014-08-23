@@ -137,7 +137,7 @@ public function content_drip_lesson_meta_content(){
 				<option <?php selected( 'week', $selected_dynamic_time_unit_type );?>  value="week"> <?php _e('Week(s)', 'sensei-content-drip'); ?> </option>
 				<option <?php selected( 'month', $selected_dynamic_time_unit_type );?>  value="month"> <?php _e('Month(s)', 'sensei-content-drip'); ?>  </option>
 			</select>
-			<p>note: The course start date will be used, if you have not selected a lesson pre-requisite</p>
+			<p>Note: This lesson must have a pre-requisite lesson for this options to work.</p>
 		</div>	
 	</div></p>
 <?php 
@@ -181,12 +181,12 @@ public function save_course_drip_meta_box_data( $post_id ) {
 	$new_data = array();
 
 	// if none is selected and the previous data was also set to none return
-	if ( 'none' === $_POST['sdc-lesson-drip-type'] ){
+	if( 'none' === $_POST['sdc-lesson-drip-type'] ){
 		
 		// new data should be that same as default
 		$new_data = $default;
 		
-	} elseif(  'absolute' === $_POST['sdc-lesson-drip-type'] ){
+	}elseif(  'absolute' === $_POST['sdc-lesson-drip-type'] ){
 
 		// set the new data type
 		$new_data['drip_type'] = 'absolute';
@@ -226,6 +226,14 @@ public function save_course_drip_meta_box_data( $post_id ) {
 
 			// set the current user selection
 			update_post_meta( $post_id ,'_sensei_drip_content', $new_data );
+
+			// exit with no further actions
+			return $post_id;
+
+		}elseif( !is_numeric($date_unit_amount)  ){
+
+			$notices = array( 'error' => __('Please enter a numberic unit number for your chosen option "After previous lesson" ',  'sensei-content-drip' ) );
+			update_option(  '_sensei_content_drip_lesson_notice' , $notices   );
 
 			// exit with no further actions
 			return $post_id;
