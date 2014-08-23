@@ -3,7 +3,7 @@
  * Plugin Name: Sensei Content Drip
  * Version: 1.0.0
  * Plugin URI: http://www.woothemes.com/
- * Description: 
+ * Description:  I will allow you to release sensei lesson content at a determined timee so you can control when students have access to the content.
  * Author: WooThemes
  * Author URI: http://www.woothemes.com/
  * Requires at least: 3.9

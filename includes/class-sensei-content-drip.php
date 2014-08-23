@@ -98,6 +98,11 @@ class Sensei_Content_Drip {
 		// Handle localisation
 		$this->load_plugin_textdomain ();
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
+
+		// include classes
+		if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  } 
+		if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  } 
+		
 	} // End __construct()
 
 	/**
@@ -133,8 +138,14 @@ class Sensei_Content_Drip {
 	 * @return void
 	 */
 	public function admin_enqueue_styles ( $hook = '' ) {
-		wp_register_style( $this->_token . '-admin', esc_url( $this->assets_url ) . 'css/admin.css', array(), $this->_version );
-		wp_enqueue_style( $this->_token . '-admin' );
+		global $post;
+		//load the lesson idit/new screen css
+		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && ( !empty($post) && 'lesson' === $post->post_type) ){
+			wp_register_style( $this->_token . '-admin-lesson', esc_url( $this->assets_url ) . 'css/admin-lesson.css', array(), $this->_version );
+			wp_enqueue_style( $this->_token . '-admin-lesson' );
+		}
+		
+
 	} // End admin_enqueue_styles()
 
 	/**
@@ -144,8 +155,18 @@ class Sensei_Content_Drip {
 	 * @return void
 	 */
 	public function admin_enqueue_scripts ( $hook = '' ) {
-		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
-		wp_enqueue_script( $this->_token . '-admin' );
+		global $post;
+		//load the lesson idit/new screen script
+		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && ( !empty($post) && 'lesson' === $post->post_type) ){
+	
+			wp_register_script( $this->_token . '-lesson-admin-script', esc_url( $this->assets_url ). 'js/admin-lesson'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'backbone' ), $this->_version , true);
+			wp_enqueue_script( $this->_token . '-lesson-admin-script' );
+		}
+
+		//wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version, true );
+		//wp_enqueue_script( $this->_token . '-admin' );
+
+
 	} // End admin_enqueue_scripts()
 
 	/**
@@ -227,4 +248,45 @@ class Sensei_Content_Drip {
 		update_option( $this->_token . '_version', $this->_version );
 	}
 
-}
+	/**
+	 * return the plugins asset_url
+	 * @access  public
+	 * @since   1.0.0
+	 * @return  void
+	 */
+	private function get_asset_url() {
+		return $this->asset_url;
+	}
+
+	/**
+	 * Load class and add them to the main class ass child objects sensei_content_drip->child 
+	 *
+	 * @access  protected
+	 * @since   1.0.0
+	 * @param   string $class
+	 * @return  void
+	 */
+	private function _load_class_file( $class ) {
+
+		if( '' == $class || empty( $class ) ){
+			return false;
+		}
+
+		// build the full class file name and path
+		$full_class_file_name = 'class-scd-ext-'.trim( $class ).'.php' ;
+		$file_path = $this->dir . '/includes/' . $full_class_file_name;
+
+		// check if the file exists 
+		if( '' == $full_class_file_name || 
+			empty( $full_class_file_name ) || 
+			! file_exists( $file_path ) ){
+			return false;
+		} 
+
+		// include the class file
+		require_once( realpath ( $file_path ) );
+
+		// succes indeed 
+		return true;
+	}
+}	
