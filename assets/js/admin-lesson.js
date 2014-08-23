@@ -13,8 +13,40 @@
 		* with a new operator
 		*/
 		initialize: function(){
-			this.dripType = 'none';
+			this.setInitialDripType();
+			this.takeControl();
 			this.render();
+		},
+
+		/**
+		* look at the select box and determine the intial dripType
+		*/
+		setInitialDripType: function(){
+			//check the select box
+			var currentSelection = this.$('select.sdc-lesson-drip-type').val();
+
+			// set the drip type
+			if( _.isEmpty( currentSelection ) ){
+				this.dripType = 'none';
+			} else {
+				this.dripType = currentSelection;
+			}
+
+			return this;
+		},
+		
+
+		/**
+		* Initialize the metabox for so that visiblitly is complete controlled by this view
+		* This function ads display: none to .hidden elements and remove the hidden class
+		*/
+		takeControl: function(){
+			// removing the hidden class as it is no longer needed
+			this.$el.find('.dripTypeOptions').each(function(index , item ){
+				if(  $( item ).hasClass('hidden') ){
+						$( item ).hide().removeClass('hidden');
+				}; 
+			});
 		},	
 
 		/**
@@ -22,15 +54,10 @@
 		*/
 		render: function(e){
 
-			// on the inital page load run through each of the options 
-			// and hide (add display: none) to the options that hass the class
-			// hideen removing the hidden class as it is no longer needed
-			this.$el.find('.dripTypeOptions').each(function(index , item ){
-				if(  $( item ).hasClass('hidden') ){
-						$( item ).hide().removeClass('hidden');
-				}; 
-			});
 
+			//hide everything
+			this.$el.find( '.dripTypeOptions').hide();
+			
 			// exit if none with all elements hidden
 			if( this.dripType === 'none' ){ 	
 				return;
@@ -38,6 +65,7 @@
 
 			// show the selected drip type's options
 			this.$el.find( '.dripTypeOptions.' + this.dripType).show();
+			console.log('render');
 		},
 
 		/**

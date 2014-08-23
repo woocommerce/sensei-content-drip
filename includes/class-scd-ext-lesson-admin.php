@@ -79,16 +79,38 @@ public function add_leson_content_drip_meta_box( ){
 public function content_drip_lesson_meta_content(){
 	global $post;
 
+	// setup the forms value variable to be empty , this is to avoid php notices
+	$selected_drip_type = '';
+	$absolute_date_value = '';
+	$selected_dynamic_time_unit_type = '';
+	$dynamic_unit_amount = '';
+
 	// get the post meta data
 	$post_content_drip_data = get_post_meta( $post->ID, '_sensei_drip_content' , true);
+
+	//set the selected drip type according to the meta data for this post
 	$selected_drip_type = isset( $post_content_drip_data['drip_type'] ) ? $post_content_drip_data['drip_type'] : 'none';
 
-	// show or hide the options for each content_drip_type
-	$absolute_hidden_class = ( 'absolute' == $selected_drip_type ) ? '' : 'hidden'; 
-	$dymaic_hidden_class   = ( 'dynamic'  == $selected_drip_type ) ? '' : 'hidden'; 
+	// setup the hidden classes and assisgn the needed data
+	if( 'absolute' === $selected_drip_type ){
+		$absolute_hidden_class = ''; 
+		$dymaic_hidden_class   = 'hidden'; 
+		
+		//get the absolute date stored field value
+		$absolute_date_value =  $post_content_drip_data['drip_details'];
 
-	//get the absolute date stored field value
-	$absolute_date_value = ( 'absolute' == $selected_drip_type ) ?  $post_content_drip_data['drip_details'] : '';
+	}elseif( 'dynamic' === $selected_drip_type  ){
+		$absolute_hidden_class = 'hidden'; 
+		$dymaic_hidden_class   = ''; 
+
+		// get the data array
+		$selected_dynamic_time_unit_type = $post_content_drip_data['drip_details']['unit-type'];
+		$dynamic_unit_amount = $post_content_drip_data['drip_details']['unit-amount'];; 
+
+	}else{
+		$absolute_hidden_class = 'hidden'; 
+		$dymaic_hidden_class   = 'hidden'; 
+	}
 	
 	// Nonce field
 	wp_nonce_field( -1, 'woo_' . $this->_token . '_noonce');
@@ -108,12 +130,12 @@ public function content_drip_lesson_meta_content(){
 	<p> <div class="dripTypeOptions dynamic <?php echo $dymaic_hidden_class;?> "> 
 		<p><span class='description'><?php _e('How long after the completion of the previous lesson should this lesson become available ?', 'sensei-content-drip'); ?></span></p>
 		<div id="dynamic-dripping-1" class='dynamic-dripping'>
-			<input type='number' name='unit-amount-1' class='unit-amount' ></input>
+			<input type='number' name='dynamic-unit-amount[1]' class='unit-amount' value="<?php echo $dynamic_unit_amount; ?>" ></input>
 	
-			<select name='dynamic-time-unit-1' class="dynamic-time-unit">
-				<option  value="day"> <?php _e('Day(s)', 'sensei-content-drip'); ?></option>
-				<option  value="week"> <?php _e('Week(s)', 'sensei-content-drip'); ?> </option>
-				<option  value="month"> <?php _e('Month(s)', 'sensei-content-drip'); ?>  </option>
+			<select name='dynamic-time-unit-type[1]' class="dynamic-time-unit">
+				<option <?php selected( 'day', $selected_dynamic_time_unit_type );?> value="day"> <?php _e('Day(s)', 'sensei-content-drip'); ?></option>
+				<option <?php selected( 'week', $selected_dynamic_time_unit_type );?>  value="week"> <?php _e('Week(s)', 'sensei-content-drip'); ?> </option>
+				<option <?php selected( 'month', $selected_dynamic_time_unit_type );?>  value="month"> <?php _e('Month(s)', 'sensei-content-drip'); ?>  </option>
 			</select>
 			<p>note: The course start date will be used, if you have not selected a lesson pre-requisite</p>
 		</div>	
@@ -165,31 +187,55 @@ public function save_course_drip_meta_box_data( $post_id ) {
 		$new_data = $default;
 		
 	} elseif(  'absolute' === $_POST['sdc-lesson-drip-type'] ){
-		// login to deal with and exact date
+
+		// set the new data type
+		$new_data['drip_type'] = 'absolute';
 
 		// convert selected date to a unix time stamp
 		// incoming Format:  yyyy/mm/dd
-
 		$date_string = $_POST['absolute']['datepicker'];
 
 		if( empty( $date_string )  ){
 
-			$notices = array( 'error' => __('Please select a date for your chosen option "On a specifcic date" ',  'sensei-content-drip' ) );
+			$notices = array( 'error' => __('Please select a date for your chosen option "Specifcic date" ',  'sensei-content-drip' ) );
 			update_option(  '_sensei_content_drip_lesson_notice' , $notices   );
+			
+			// set the current user selection
+			update_post_meta( $post_id ,'_sensei_drip_content', $new_data );
 			
 			return $post_id;
 		}
-		
-		$new_data['drip_type'] = 'absolute';
+
+		// set the meta data to be saves later
 		$new_data['drip_details'] = $date_string;
 
 	}elseif( 'dynamic' === $_POST['sdc-lesson-drip-type']   ){
-		// logic to deal with a dynamic date
 
-		// convert user selection to the number of days and save it
-
-		// set the met data to save
+		// set up the new data type 
 		$new_data['drip_type'] = 'dynamic';
+
+		// get the posted data valudes
+		$date_unit_amount = $_POST['dynamic-unit-amount']['1'] ;	// number of units
+		$date_time_unit = $_POST['dynamic-time-unit-type']['1'];	// unit type eg: months, weeks, days		
+		
+		// input validation
+		if( empty( $date_unit_amount ) || empty( $date_time_unit  ) ){
+
+			$notices = array( 'error' => __('Please select the correct units for your chosen option "After previous lesson" ',  'sensei-content-drip' ) );
+			update_option(  '_sensei_content_drip_lesson_notice' , $notices   );
+
+			// set the current user selection
+			update_post_meta( $post_id ,'_sensei_drip_content', $new_data );
+
+			// exit with no further actions
+			return $post_id;
+		}
+
+		// create the drip details array
+		$details = array('unit-amount' => $date_unit_amount , 'unit-type' => $date_time_unit );
+
+		// set the mets data to save
+		$new_data['drip_details'] = $details;
 	}
 
 	// update the meta data
