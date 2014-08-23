@@ -96,9 +96,9 @@ public function content_drip_lesson_meta_content(){
 ?>
 	<p><?php _e('How would you like this lesson to be dripped ?', 'sensei-content-drip'); ?></p>
 	<p><select name='sdc-lesson-drip-type' class="sdc-lesson-drip-type">
-		<option <?php selected( 'none', $selected_drip_type  ) ?> value="none"> <?php _e('Do not drip it', 'sensei-content-drip'); ?></option>
-		<option <?php selected( 'absolute', $selected_drip_type  ) ?> value="absolute"> <?php _e('On a specifcic date ', 'sensei-content-drip'); ?>  </option>
-		<option <?php selected( 'dynamic', $selected_drip_type  ) ?> value="dynamic"> <?php _e('After the previous lessons completion', 'sensei-content-drip'); ?> </option>
+		<option <?php selected( 'none', $selected_drip_type  ) ?> value="none"> <?php _e('None', 'sensei-content-drip'); ?></option>
+		<option <?php selected( 'absolute', $selected_drip_type  ) ?> value="absolute"> <?php _e('Specific date ', 'sensei-content-drip'); ?>  </option>
+		<option <?php selected( 'dynamic', $selected_drip_type  ) ?> value="dynamic"> <?php _e('After previous lessons', 'sensei-content-drip'); ?> </option>
 	</select></p>
 	
 	<p><div class="dripTypeOptions absolute <?php echo $absolute_hidden_class;?> ">
