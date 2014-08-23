@@ -83,7 +83,7 @@ public function lessons_drip_filter( $lessons ){
 	foreach ($lessons as $lesson) {
 		if ( $this->is_lesson_drip_active( $lesson ) ){
 			// change the lesson content accordingly
-			$lesson =  $this->replace_content( $lesson, $this->drip_formatted_message  );
+			$lesson =  $this->make_lesson_unavailable( $lesson, $this->drip_formatted_message  );
 		}
 	}
 
@@ -167,7 +167,7 @@ public function is_absolute_drip_active( $dripped_data ){
 
 /**
 * Replace post content with settings or filtered message
-* this function has to be after if
+* This function actson the title , content , ebmbeded video and quiz
 * 
 * @since 1.0.0
 * @param  WP_Post $lesson
@@ -175,7 +175,7 @@ public function is_absolute_drip_active( $dripped_data ){
 * @return WP_Post $lesson
 */
 
-public function replace_content( $lesson , $formated_message){
+public function make_lesson_unavailable( $lesson , $formated_message){
 	// ensure all things are in place before proceeding
 	if( empty($lesson) || 'lesson' !== $lesson->post_type || empty( $lesson->ID ) ){
 		return false;
@@ -217,10 +217,9 @@ public function replace_content( $lesson , $formated_message){
 	add_filter('the_title', array( $this ,'add_single_title_text'), 10, 1);
 
 	// returh the lesson with changed content 
-
 	return $lesson;
 
-} // end replace_content
+} // end make_lesson_unavailable
 
 
 /**
@@ -231,7 +230,6 @@ public function replace_content( $lesson , $formated_message){
 * @param string $id lesson post id
 * @return string $title
 */
-
 public function add_single_title_text( $title ){
 	return $title. $this->title_append_text;
 }
