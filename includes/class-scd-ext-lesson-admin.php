@@ -84,8 +84,8 @@ public function content_drip_lesson_meta_content(){
 	$selected_drip_type = isset( $post_content_drip_data['drip_type'] ) ? $post_content_drip_data['drip_type'] : 'none';
 
 	// show or hide the options for each content_drip_type
-	$absolute_hidden_class = ( 'absolute' == $selected_drip_type ) ? ' ' : 'hidden'; 
-	$dymaic_hidden_class   = ( 'dynamic'  == $selected_drip_type ) ? ' ' : 'hidden'; 
+	$absolute_hidden_class = ( 'absolute' == $selected_drip_type ) ? '' : 'hidden'; 
+	$dymaic_hidden_class   = ( 'dynamic'  == $selected_drip_type ) ? '' : 'hidden'; 
 
 	//get the absolute date stored field value
 	$absolute_date_value = ( 'absolute' == $selected_drip_type ) ?  $post_content_drip_data['drip_details'] : '';

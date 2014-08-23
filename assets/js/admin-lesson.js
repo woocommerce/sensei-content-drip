@@ -1,13 +1,13 @@
 ( function( $, _ , Backbone  ){
 	
-	// the Drip meta box view reponsible for all things inside
-	console.log($('#content-drip-lesson'));
+	// the Drip meta box view reponsible for all things dripped 
 	var DripMetaBox = Backbone.View.extend({
 
 		el:  '#content-drip-lesson .inside',
 		events: {
 			'change .sdc-lesson-drip-type': 'dripTypeChange' 
 		},
+
 		/**
 		* Initlize function, which runs after the object is returned 
 		* with a new operator
@@ -26,7 +26,7 @@
 			// and hide (add display: none) to the options that hass the class
 			// hideen removing the hidden class as it is no longer needed
 			this.$el.find('.dripTypeOptions').each(function(index , item ){
-				if( $( item ).hasClass('hidden') ){
+				if(  $( item ).hasClass('hidden') ){
 						$( item ).hide().removeClass('hidden');
 				}; 
 			});
@@ -39,6 +39,7 @@
 			// show the selected drip type's options
 			this.$el.find( '.dripTypeOptions.' + this.dripType).show();
 		},
+
 		/**
 		* dripTypeChange, this function repsonds to a select box change event. 
 		*/
