@@ -47,7 +47,8 @@ protected $drip_message;
 public function __construct(){
 	// set a formated string
 	$this->absolute_formatted_message = "This lesson will become available on: [date]"; 
-	$this->dynamic_formatted_message = 'This lesson content will only become available [unit-amount] [unit-type] after you complete the previous lesson';
+	$this->dynamic_formatted_message = 'This lesson content will only become available [unit-amount] [unit-type] '
+										.'after you complete the previous lesson';
 
 	// set a formated string
 	$this->title_append_text = ": Not Available"; 
@@ -223,22 +224,25 @@ public function is_dynamic_drip_active( $dripped_data , $lesson_id ){
 		return $drip_status;
 	}
 
-	//get the previous lessons completion date
-	$activitiy_query = array( 'post_id' => $prerequisite_lesson_id, 'user_id' => $user_id, 'type' => 'sensei_lesson_end', 'field' => 'comment_content' );
-	$user_lesson_end =  WooThemes_Sensei_Utils::sensei_get_activity_value( $activitiy_query  );
+	// get the previous lessons completion date
+	$activitiy_query = array( 'post_id' => $prerequisite_lesson_id, 'user_id' => $user_id, 'type' => 'sensei_lesson_end', 'field' => 'comment_date_gmt' );
+	$user_lesson_end_date_gmt =  WooThemes_Sensei_Utils::sensei_get_activity_value( $activitiy_query  );
 
-	echo '<h1>Checkout the comments data</h1>';
-	echo '<h2>Find the lesson end data for the lesson: '.$prerequisite_lesson_id. ' for user: '.$user_id .'</h2>';
-	echo 'Printed from: '. __FILE__ . '<br><br>';
-	$comments = get_comments( array( 'post_id' => $prerequisite_lesson_id, 'user_id' => $user_id )  );
-	var_dump( $comments ); die;
-
-	// get todays dateTime object
+	// get the dateTime objects
 	$today = new DateTime();
+	$lesson_end = new DateTime($user_lesson_end_date_gmt);
 
+	// create a date interval object to determine when the lesson should become available
+	$unit_type_first_letter_uppercase = strtoupper( substr($unit_type, 0, 1) ) ; 
+	$interval_to_lesson_availablilty = new DateInterval('P'.$unit_amount.$unit_type_first_letter_uppercase );
+
+	// create an object which the interval will be added to and add the interval
+	$lesson_becomes_available_date = new DateTime($user_lesson_end_date_gmt);
+	$lesson_becomes_available_date->add( $interval_to_lesson_availablilty );
+	
 	// compare dates
-	// if lesson drip date is greater than the today the drip date ist still active and lesson content should be hidden
-	if( $lesson_drip_date  > $today  ){
+	// if lesson_becomes_available_date is greater than the today the drip date ist still active and lesson content should be hidden
+	if( $lesson_becomes_available_date > $today  ){
 		$drip_status  = true;
 	}
 
@@ -246,8 +250,6 @@ public function is_dynamic_drip_active( $dripped_data , $lesson_id ){
 	return $drip_status;
 
 } //  end is_dynamic_drip_active
-
-
 
 /**
 * Replace post content with settings or filtered message
@@ -329,7 +331,6 @@ public function add_single_title_text( $title ){
 * @param string $formatted_message possibly contains shortcodes
 * @return bool $dripped
 */
-
 public function get_drip_type_message( $lesson , $lesson_drip_data ,  $formatted_message ){
 	
 	// setup the default message in case no data was paassed in
@@ -347,7 +348,7 @@ public function get_drip_type_message( $lesson , $lesson_drip_data ,  $formatted
 		$message = $this->get_absolute_drip_type_message(  $formatted_message , $lesson_drip_data['drip_details']  );
 	}elseif( 'dynamic' === $lesson_drip_data['drip_type']){
 		// call the dynamic drip type message creator function which creates a message dependant on the date
-		$message = $this->get_dynamic_drip_type_message( $formatted_message , $lesson_drip_data['drip_details']  );
+		$message = $this->get_dynamic_drip_type_message( $lesson_drip_data['drip_details']  );
 	}
 
 	// return the changed message
@@ -383,7 +384,7 @@ public function get_absolute_drip_type_message( $formatted_message , $lesson_dri
 * @return bool $dripped
 */
 
-public function get_dynamic_drip_type_message(  $formatted_message , $drip_details ){
+public function get_dynamic_drip_type_message( $drip_details ){
 
 	$dynamic_drip_type_message = '';
 
@@ -395,13 +396,12 @@ public function get_dynamic_drip_type_message(  $formatted_message , $drip_detai
 	$unit_plural  =   $unit_amount > 1 ? 's': '';
 	$unit_type = $unit_type.$unit_plural ;
 
-	
 	// setup find and replace arrays
 	$replace = array( $unit_amount, $unit_type  );
 	$find = array( '[unit-amount]', '[unit-type]' );
 
 	// replace string content
-	$dynamic_drip_type_message =  str_replace($find , $replace , $formatted_message );
+	$dynamic_drip_type_message =  str_replace($find , $replace , $this->dynamic_formatted_message );
 
 	return $dynamic_drip_type_message;
 }
