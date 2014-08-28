@@ -3,11 +3,10 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // todo 
-//  - [x] (create a new save and retrieve methos) save and retrieve should not work with serialized arrays , rather user indiual keys for each piece of data
-//  - [x] upon updating the data delete the any related sensei data and then add the new data ( delete possible data and then update with new data  )
-//  - [ ] check if previous lesson was set and gray out the selection
-//  - [ ] the lesson should not be allowed the dynamic drip type if the pre-requisite was just remove disable the drip type and notify th user
-//  - [ ] chante speciic date to absoute date .. more inline with code for other developers
+//  - [x] check if previous lesson was set and gray out the selection
+//  - [x] the lesson should not be allowed the dynamic drip type if the pre-requisite was just removed disable the drip type and notify th user
+//  - [x] chante speciic date to absoute date .. more inline with code for other developers
+
 /*
  * Sensei Content Drip ( scd ) Exctension lesson admin class
  *
@@ -94,6 +93,9 @@ public function content_drip_lesson_meta_content(){
 	// get the lesson drip meta data
 	$lesson_drip_data = $this->get_lesson_drip_data( $post->ID );
 
+	// get the lesson pre requisite id
+	$lesson_pre_requisite = get_post_meta( $post->ID , '_lesson_prerequisite', true );
+
 	//set the selected drip type according to the meta data for this post
 	$selected_drip_type = isset( $lesson_drip_data['_sensei_content_drip_type'] ) ? $lesson_drip_data['_sensei_content_drip_type'] :  'none' ;
 
@@ -124,9 +126,13 @@ public function content_drip_lesson_meta_content(){
 ?>
 	<p><?php _e('How would you like this lesson to be dripped ?', 'sensei-content-drip'); ?></p>
 	<p><select name='sdc-lesson-drip-type' class="sdc-lesson-drip-type">
-		<option <?php selected( 'none', $selected_drip_type  ) ?> value="none"> <?php _e('None', 'sensei-content-drip'); ?></option>
-		<option <?php selected( 'absolute', $selected_drip_type  ) ?> value="absolute"> <?php _e('Specific Date ', 'sensei-content-drip'); ?>  </option>
-		<option <?php selected( 'dynamic', $selected_drip_type  ) ?> value="dynamic"> <?php _e('After previous lessons', 'sensei-content-drip'); ?> </option>
+		<option <?php selected( 'none', $selected_drip_type  ) ?> value="none" class="none"> <?php _e('None', 'sensei-content-drip'); ?></option>
+		<option <?php selected( 'absolute', $selected_drip_type  ) ?> value="absolute" class="absolute"> <?php _e('Absolute', 'sensei-content-drip'); ?>  </option>
+		<?php 
+			//does this lesson have a  pre-requiste lesson ? 
+			$has_pre_requisite = empty( $lesson_pre_requisite ) ? 'false'  : 'true' ; 
+		?>
+		<option data-has-pre="<?php echo $has_pre_requisite ?> " <?php selected( 'dynamic', $selected_drip_type  ) ?> value="dynamic"  class="dynamic"> <?php _e('Dynamic', 'sensei-content-drip'); ?> </option>
 	</select></p>
 	
 	<p><div class="dripTypeOptions absolute <?php echo $absolute_hidden_class;?> ">
@@ -134,7 +140,6 @@ public function content_drip_lesson_meta_content(){
 		<input type="date" id="datepicker" name="absolute[datepicker]" value="<?php echo $absolute_date_value  ;?>" class="absolute-datepicker" />
 	</div></p>
 	<p> <div class="dripTypeOptions dynamic <?php echo $dymaic_hidden_class;?> "> 
-		<p><span class='description'><?php _e('How long after the completion of the previous lesson should this lesson become available ?', 'sensei-content-drip'); ?></span></p>
 		<div id="dynamic-dripping-1" class='dynamic-dripping'>
 			<input type='number' name='dynamic-unit-amount[1]' class='unit-amount' value="<?php echo $dynamic_unit_amount; ?>" ></input>
 	
@@ -143,7 +148,9 @@ public function content_drip_lesson_meta_content(){
 				<option <?php selected( 'week', $selected_dynamic_time_unit_type );?>  value="week"> <?php _e('Week(s)', 'sensei-content-drip'); ?> </option>
 				<option <?php selected( 'month', $selected_dynamic_time_unit_type );?>  value="month"> <?php _e('Month(s)', 'sensei-content-drip'); ?>  </option>
 			</select>
-			<p>Note: This lesson must have a pre-requisite lesson for this options to work.</p>
+			<br />
+			<span class='description'><?php _e('After previous lesson completion.', 'sensei-content-drip'); ?></span>
+			<p class="pre-requisite-notice hidden">Please ensure that you have slected and saved a pre-requisite lesson. This option will not be save without doing that first.</p>
 		</div>	
 	</div></p>
 <?php 
@@ -192,7 +199,7 @@ public function save_course_drip_meta_box_data( $post_id ) {
 
 		if( empty( $date_string )  ){
 			// create the error message and add it to the database 
-			$message = __('Please choose a date under the  "Specific Date" select box.', 'sensei-content-drip' );
+			$message = __('Please choose a date under the  "Absolute" select box.', 'sensei-content-drip' );
 			update_option(  '_sensei_content_drip_lesson_notice' , array( 'error' => $message ) );
 			
 			// set the current user selection
@@ -210,6 +217,9 @@ public function save_course_drip_meta_box_data( $post_id ) {
 
 	}elseif( 'dynamic' === $_POST['sdc-lesson-drip-type']   ){
 
+		// get the lesson pre requisite id
+		$lesson_pre_requisite = get_post_meta( $post->ID , '_lesson_prerequisite', true );
+
 		// get the posted data valudes
 		$date_unit_amount = $_POST['dynamic-unit-amount']['1'] ;	// number of units
 		$date_unit_type = $_POST['dynamic-time-unit-type']['1'];	// unit type eg: months, weeks, days		
@@ -217,20 +227,26 @@ public function save_course_drip_meta_box_data( $post_id ) {
 		// input validation
 		if( empty( $date_unit_amount ) || empty( $date_unit_type  ) ){
 
-			$notices = array( 'error' => __('Please select the correct units for your chosen option "After previous lesson" .',  'sensei-content-drip' ) );
-			update_option(  '_sensei_content_drip_lesson_notice' , $notices   );
+			$save_error_notices = array( 'error' => __('Please select the correct units for your chosen option "After previous lesson" .',  'sensei-content-drip' ) );
+			$dynamic_save_error = true;
+		
+		}elseif( !is_numeric($date_unit_amount)  ){
+			
+			$save_error_notices = array( 'error' => __('Please enter a numberic unit number for your chosen option "After previous lesson" .',  'sensei-content-drip' ) );
+			$dynamic_save_error = true;
 
+		}elseif( empty( $lesson_pre_requisite  ) ){
+
+			$save_error_notices = array( 'error' => __('You have not selected a pre-requisite lesson for the dynamic content drip type.',  'sensei-content-drip' ) );
+			$dynamic_save_error = true;
+
+		}
+
+		// input error handling
+		if( $dynamic_save_error ){
+			update_option(  '_sensei_content_drip_lesson_notice' , $save_error_notices   );
 			// set the current user selection
 			update_post_meta( $post_id ,'_sensei_content_drip_type', 'none' );
-
-			// exit with no further actions
-			return $post_id;
-
-		}elseif( !is_numeric($date_unit_amount)  ){
-
-			$notices = array( 'error' => __('Please enter a numberic unit number for your chosen option "After previous lesson" .',  'sensei-content-drip' ) );
-			update_option(  '_sensei_content_drip_lesson_notice' , $notices   );
-
 			// exit with no further actions
 			return $post_id;
 		}

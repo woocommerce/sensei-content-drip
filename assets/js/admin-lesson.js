@@ -63,9 +63,19 @@
 				return;
 			}
 
+			//check for a lesson pre-requisite 
+			if( this.dripType === 'dynamic' ){ 
+				// get the data set on the element
+				hasPre = this.$('select.sdc-lesson-drip-type option.dynamic').data('has-pre');
+
+				// show the error notice if this doesn't have a pre-requisite
+				if( 'false' === hasPre.trim() ){
+					this.$('.pre-requisite-notice').show();
+				}
+			}
+		
 			// show the selected drip type's options
 			this.$el.find( '.dripTypeOptions.' + this.dripType).show();
-			console.log('render');
 		},
 
 		/**
