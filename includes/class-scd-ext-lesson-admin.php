@@ -1,12 +1,6 @@
 <?php  
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
-
-// todo 
-//  - [x] check if previous lesson was set and gray out the selection
-//  - [x] the lesson should not be allowed the dynamic drip type if the pre-requisite was just removed disable the drip type and notify th user
-//  - [x] chante speciic date to absoute date .. more inline with code for other developers
-
 /*
  * Sensei Content Drip ( scd ) Exctension lesson admin class
  *
@@ -68,7 +62,7 @@ public function __construct(){
 */
 
 public function add_leson_content_drip_meta_box( ){
-	add_meta_box( 'content-drip-lesson', __('Drip Content','sensei-content-drip') , array( $this, 'content_drip_lesson_meta_content'  ), 'lesson' , 'side', 'default' , null  );
+	add_meta_box( 'content-drip-lesson', __('Sensei Content Drip','sensei-content-drip') , array( $this, 'content_drip_lesson_meta_content'  ), 'lesson' , 'side', 'default' , null  );
 
 } // end add_leson_content_drip_meta_box
 
@@ -124,15 +118,15 @@ public function content_drip_lesson_meta_content(){
 	wp_nonce_field( -1, 'woo_' . $this->_token . '_noonce');
 
 ?>
-	<p><?php _e('How would you like this lesson to be dripped ?', 'sensei-content-drip'); ?></p>
+	<p><?php _e('How should this lesson be dripped?', 'sensei-content-drip'); ?></p>
 	<p><select name='sdc-lesson-drip-type' class="sdc-lesson-drip-type">
 		<option <?php selected( 'none', $selected_drip_type  ) ?> value="none" class="none"> <?php _e('None', 'sensei-content-drip'); ?></option>
-		<option <?php selected( 'absolute', $selected_drip_type  ) ?> value="absolute" class="absolute"> <?php _e('Absolute', 'sensei-content-drip'); ?>  </option>
+		<option <?php selected( 'absolute', $selected_drip_type  ) ?> value="absolute" class="absolute"> <?php _e('Specific Date (absolute)', 'sensei-content-drip'); ?>  </option>
 		<?php 
 			//does this lesson have a  pre-requiste lesson ? 
 			$has_pre_requisite = empty( $lesson_pre_requisite ) ? 'false'  : 'true' ; 
 		?>
-		<option data-has-pre="<?php echo $has_pre_requisite ?> " <?php selected( 'dynamic', $selected_drip_type  ) ?> value="dynamic"  class="dynamic"> <?php _e('Dynamic', 'sensei-content-drip'); ?> </option>
+		<option data-has-pre="<?php echo $has_pre_requisite ?> " <?php selected( 'dynamic', $selected_drip_type  ) ?> value="dynamic"  class="dynamic"> <?php _e('After another lesson (dynamic)', 'sensei-content-drip'); ?> </option>
 	</select></p>
 	
 	<p><div class="dripTypeOptions absolute <?php echo $absolute_hidden_class;?> ">
