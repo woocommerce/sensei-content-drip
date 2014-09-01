@@ -11,3 +11,9 @@
 #content-drip-lesson.postbox div.dynamic-dripping {
   clear: both;
   width: 100%; }
+#content-drip-lesson.postbox select#dynamic-drip-related-lessons {
+  display: inline;
+  width: 60%; }
+#content-drip-lesson.postbox #dynamic-dripping-1 {
+  display: inline;
+  clear: left; }
