@@ -46,7 +46,7 @@ protected $drip_message;
 */
 public function __construct(){
 	// set a formated string
-	$this->message_format = "This lesson will become available on: [date]"; 
+	$this->message_format = "This lesson will become available on [date]"; 
 
 	// set a formated string
 	$this->title_append_text = ": Not Available"; 
@@ -90,6 +90,52 @@ public function lessons_drip_filter( $lessons ){
 
 	return $lessons;
 } // end lessons_drip_filter
+
+/**
+* Replace post content with settings or filtered message
+* This function actson the title , content , ebmbeded video and quiz
+* 
+* @since 1.0.0
+* @param  WP_Post $lesson
+* @param  string $formatted_message a varialbe containing shortcodes options: [date] 
+* @return WP_Post $lesson
+*/
+
+public function replace_lesson_content( $lesson ){
+	$new_content = '';
+
+	// ensure all things are in place before proceeding
+	if( empty($lesson) || 'lesson' !== $lesson->post_type || empty( $lesson->ID ) ){
+		return false;
+	}
+
+	//get the compiled message text
+	$new_content = $this->get_drip_type_message( $lesson->ID );
+	
+	/**
+	 * Filter a customise the message user will see when content is not available.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string        $drip_message the message
+	 */
+	$new_content= apply_filters( 'sensei_content_drip_lesson_message', $new_content );  
+	$lesson->post_content = $new_content;
+	$lesson->post_excerpt = $new_content;
+
+	//disable the current lessons video
+	remove_all_actions( 'sensei_lesson_video' );
+
+	//hide the lesson quiz notice and quiz buttons 
+	remove_all_actions( 'sensei_lesson_quiz_meta' );
+
+	// append a title message next for content that's dripped
+	add_filter('the_title', array( $this ,'add_single_title_text'), 10, 1);
+
+	// returh the lesson with changed content 
+	return $lesson;
+
+} // end replace_lesson_content
 
 
 /**
@@ -191,7 +237,7 @@ public function is_dynamic_drip_active( $lesson_id ){
 		// deafult set to false
 		return $drip_status;
 	}
-
+	
 	// if the user is not logged in ignore this type and show the blocked 
 	// lesson content  as sensei normally would
 	if( !is_user_logged_in() ){
@@ -213,28 +259,17 @@ public function is_dynamic_drip_active( $lesson_id ){
 		// trigger an error for the user to understand what just went wrong so they can tell support what happend
 		return $drip_status;
 	}
-
+	
 	// if the user has not complted the previous exit
 	if( !WooThemes_Sensei_Utils::user_completed_lesson( $drip_pre_lesson_id , $user_id ) ){
 		// exit as sensei will tell the user to complete the previous lesson
 		return $drip_status;
 	}
 
-	// get the previous lessons completion date
-	$activitiy_query = array( 'post_id' => $drip_pre_lesson_id, 'user_id' => $user_id, 'type' => 'sensei_lesson_end', 'field' => 'comment_date_gmt' );
-	$user_lesson_end_date_gmt =  WooThemes_Sensei_Utils::sensei_get_activity_value( $activitiy_query  );
-
-	// get the dateTime objects
-	$today = new DateTime();
-	$lesson_end = new DateTime($user_lesson_end_date_gmt);
-
-	// create a date interval object to determine when the lesson should become available
-	$unit_type_first_letter_uppercase = strtoupper( substr($unit_type, 0, 1) ) ; 
-	$interval_to_lesson_availablilty = new DateInterval('P'.$unit_amount.$unit_type_first_letter_uppercase );
-
-	// create an object which the interval will be added to and add the interval
-	$lesson_becomes_available_date = new DateTime($user_lesson_end_date_gmt);
-	$lesson_becomes_available_date->add( $interval_to_lesson_availablilty );
+	$lesson_becomes_available_date = $this->get_dynamic_lesson_available_date( $lesson_id );
+	
+	// get todays date	
+	$today = new DateTime();	
 	
 	// compare dates
 	// if lesson_becomes_available_date is greater than the today the drip date ist still active and lesson content should be hidden
@@ -247,51 +282,46 @@ public function is_dynamic_drip_active( $lesson_id ){
 
 } //  end is_dynamic_drip_active
 
+
 /**
-* Replace post content with settings or filtered message
-* This function actson the title , content , ebmbeded video and quiz
+* Determine when the lesson becomes available
 * 
 * @since 1.0.0
-* @param  WP_Post $lesson
-* @param  string $formatted_message a varialbe containing shortcodes options: [date] 
-* @return WP_Post $lesson
+* @param  string $lesson_id
+* @return DateTime $lesson_becomes_available_date
 */
+public function get_dynamic_lesson_available_date( $lesson_id ){
 
-public function replace_lesson_content( $lesson ){
-	$new_content = '';
-
-	// ensure all things are in place before proceeding
-	if( empty($lesson) || 'lesson' !== $lesson->post_type || empty( $lesson->ID ) ){
-		return false;
-	}
-
-	//get the compiled message text
-	$new_content = $this->get_drip_type_message( $lesson->ID );
+	// get the lessons data
+	$dripped_data =  Sensei_Content_Drip()->lesson_admin->get_lesson_drip_data( $lesson_id );
 	
-	/**
-	 * Filter a customise the message user will see when content is not available.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string        $drip_message the message
-	 */
-	$new_content= apply_filters( 'sensei_content_drip_lesson_message', $new_content );  
-	$lesson->post_content = $new_content;
-	$lesson->post_excerpt = $new_content;
+	// get the user details
+	$current_user = wp_get_current_user();
+	$user_id = $current_user->ID;
 
-	//disable the current lessons video
-	remove_all_actions( 'sensei_lesson_video' );
+	// get the drip details array data
+	$unit_type  =  $dripped_data['_sensei_content_drip_details_date_unit_type'];
+	$unit_amount = $dripped_data['_sensei_content_drip_details_date_unit_amount'];
+	$drip_pre_lesson_id = $dripped_data['_sensei_content_drip_dynamic_pre_lesson_id'];
+	
+	// get the previous lessons completion date
+	$activitiy_query = array( 'post_id' => $drip_pre_lesson_id, 'user_id' => $user_id, 'type' => 'sensei_lesson_end', 'field' => 'comment_date_gmt' );
+	$user_lesson_end_date_gmt =  WooThemes_Sensei_Utils::sensei_get_activity_value( $activitiy_query  );
 
-	//hide the lesson quiz notice and quiz buttons 
-	remove_all_actions( 'sensei_lesson_quiz_meta' );
+	// create a date interval object to determine when the lesson should become available
+	$unit_type_first_letter_uppercase = strtoupper( substr($unit_type, 0, 1) ) ; 
+	$interval_to_lesson_availablilty = new DateInterval('P'.$unit_amount.$unit_type_first_letter_uppercase );
 
-	// append a title message next for content that's dripped
-	add_filter('the_title', array( $this ,'add_single_title_text'), 10, 1);
+	// get the dateTime objects
+	$lesson_end = new DateTime($user_lesson_end_date_gmt);
 
-	// returh the lesson with changed content 
-	return $lesson;
+	// create an object which the interval will be added to and add the interval
+	$lesson_becomes_available_date = new DateTime($user_lesson_end_date_gmt);
 
-} // end replace_lesson_content
+	return $lesson_becomes_available_date->add( $interval_to_lesson_availablilty );
+
+}// end get_dynamic_lesson_available_date
+
 
 
 /**
@@ -334,7 +364,6 @@ public function get_drip_type_message( $lesson_id ){
 		$message = $this->generate_absolute_drip_type_message( $lesson_id );
 	
 	}elseif( 'dynamic' === $drip_type ){
-	
 		// call the dynamic drip type message creator function which creates a message dependant on the date
 		$message = $this->generate_dynamic_drip_type_message( $lesson_id );
 	}
@@ -377,24 +406,15 @@ public function generate_absolute_drip_type_message( $lesson_id ){
 public function generate_dynamic_drip_type_message( $lesson_id ){
 
 	$dynamic_drip_type_message = '';
- 
-	// get the lesson dript data
-	$unit_amount = 	get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_amount' , true );
-	$unit_type = 	get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_type' , true );
-	$drip_pre_lesson_id = get_post_meta( $lesson_id , '_sensei_content_drip_dynamic_pre_lesson_id' , true );
-	// plural or singular unit typ ?
-	$unit_plural  =   $unit_amount > 1 ? 's': '';
-	$unit_type = $unit_type.$unit_plural ;
 
-	// setup find and replace arrays
-	$replace = array( $unit_amount, $unit_type  );
-	$find = array( '[unit-amount]', '[unit-type]' );
+	$lesson_available_date = $this->get_dynamic_lesson_available_date( $lesson_id );
+ 	
+	$formatted_date =  $lesson_available_date->format('l jS F Y');
 
 	// replace string content
-	$dynamic_drip_type_message =  str_replace($find , $replace , $this->message_format );
+	$dynamic_drip_type_message =  str_replace('[date]' , $formatted_date , $this->message_format );
 
 	return $dynamic_drip_type_message;
 }// end generate_dynamic_drip_type_message
-
 
 } // Scd_ext_lesson_frontend class 
