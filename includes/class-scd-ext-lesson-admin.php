@@ -124,15 +124,16 @@ public function content_drip_lesson_meta_content(){
 	wp_nonce_field( -1, 'woo_' . $this->_token . '_noonce');
 
 ?>
-	<p><?php _e('How should this lesson be dripped?', 'sensei-content-drip'); ?></p>
+
+	<p><?php _e( 'When should this lesson become available?', 'sensei-content-drip' ); ?></p>
 	<p><select name='sdc-lesson-drip-type' class="sdc-lesson-drip-type">
-		<option <?php selected( 'none', $selected_drip_type  ) ?> value="none" class="none"> <?php _e('None', 'sensei-content-drip'); ?></option>
-		<option <?php selected( 'absolute', $selected_drip_type  ) ?> value="absolute" class="absolute"> <?php _e('Specific Date (absolute)', 'sensei-content-drip'); ?>  </option>
+		<option <?php selected( 'none', $selected_drip_type  ) ?> value="none" class="none"> <?php _e( 'As soon as the course is started', 'sensei-content-drip' ); ?></option>
+		<option <?php selected( 'absolute', $selected_drip_type  ) ?> value="absolute" class="absolute"> <?php _e( 'On a specific date', 'sensei-content-drip' ); ?>  </option>
 		<?php 
 			//does this lesson have a  pre-requiste lesson ? 
 			$has_pre_requisite = empty( $lesson_pre_requisite ) ? 'false'  : 'true' ; 
 		?>
-		<option data-has-pre="<?php echo $has_pre_requisite ?> " <?php selected( 'dynamic', $selected_drip_type  ) ?> value="dynamic"  class="dynamic"> <?php _e('After another lesson (dynamic)', 'sensei-content-drip'); ?> </option>
+		<option data-has-pre="<?php echo $has_pre_requisite ?> " <?php selected( 'dynamic', $selected_drip_type  ) ?> value="dynamic"  class="dynamic"> <?php _e( 'A specific interval after another lesson', 'sensei-content-drip' ); ?> </option>
 	</select></p>
 	
 	<p><div class="dripTypeOptions absolute <?php echo $absolute_hidden_class;?> ">
