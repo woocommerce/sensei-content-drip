@@ -128,6 +128,44 @@ class Sensei_Scd_Extension_Utils {
 	}// end get_lesson_drip_date()
 
 	/**
+	*   The function returns an array of lesson_ids . All those with drip type set to dynamic or absolute
+	*	
+	*	@return array $lessons array containing lesson ids 
+	*/
+	public static function get_all_dripping_lessons(){
+		$lessons =  array();
+
+		// determine the lesson query args
+		$lesson_query_args = array( 
+							'post_type' => 'lesson' ,
+							'numberposts' => -1, 
+							'meta_query'=> array( 
+												'relation' => 'OR',
+												array(
+													'key' => '_sensei_content_drip_type',
+													'value' => 'absolute' , 
+												),
+												array(
+													'key' => '_sensei_content_drip_type',
+													'value' => 'dynamic' , 
+												),
+											),
+							);	 	
+
+		// get the lesson matching the query args
+		$wp_lesson_objects = get_posts( $lesson_query_args );
+
+		// create the lessons id array
+		if( !empty( $wp_lesson_objects ) ){
+			foreach ($wp_lesson_objects as $lesson_object) {
+				$lessons[] = $lesson_object->ID; 
+			}	
+		}
+
+		return $lessons;
+	} // get_all_dripping_lessons
+
+	/**
 	*   This function checks the lesson drip type
 	*
 	*
