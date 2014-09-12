@@ -127,4 +127,27 @@ class Sensei_Scd_Extension_Utils {
 
 	}// end get_lesson_drip_date()
 
+	/**
+	*   This function checks the lesson drip type
+	*
+	*
+	*	@param  string | int $lesson_id
+	*	@return string $drip_type ( 'none' || 'absolute' || 'dynamic' )
+	*/
+	public function get_lesson_drip_type( $lesson_id ){
+
+		// basics, checking out the passed in lesson object
+		if( empty( $lesson_id) || 'lesson' != get_post_type( $lesson_id ) ){
+			return 'none';
+		}
+
+		// retrive the drip type from the lesson
+		$drip_type = get_post_meta( $lesson_id , '_sensei_content_drip_type', true ) ;
+
+		// send back the type string
+		return  empty( $drip_type ) ? 'none' : $drip_type; 
+
+	} // end get_drip_type
+
+
 } // end class Sensei_Scd_Extension_Utils
