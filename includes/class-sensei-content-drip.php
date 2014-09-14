@@ -75,6 +75,11 @@ class Sensei_Content_Drip {
 	 * @return  void
 	 */
 	public function __construct ( $file, $version = '1.0.0' ) {
+		global $woo_sensei_content_drip;
+
+		// create a global instace for further reference to this main class
+		$woo_sensei_content_drip =  $this;
+
 		$this->_version = $version;
 		$this->_token = 'sensei_content_drip';
 
@@ -104,6 +109,8 @@ class Sensei_Content_Drip {
 		if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  } 
 		if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  } 
 		if( $this->_load_class_file('drip-email') ) { $this->drip_email = new Scd_Ext_drip_email();  } 
+
+
 		
 	} // End __construct()
 

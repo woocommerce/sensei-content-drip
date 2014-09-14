@@ -44,6 +44,7 @@ if ( ! function_exists( 'is_sensei_active' ) ) {
   }
 }
 
+
 if( is_sensei_active() ) {
 
 	require_once( 'includes/class-sensei-content-drip.php' );
@@ -59,4 +60,39 @@ if( is_sensei_active() ) {
 	}
 
 	Sensei_Content_Drip();
-}
+	
+	/**
+	* Plugin Activation
+	*/
+	register_activation_hook( __FILE__, 'sensei_content_drip_activation' );
+
+	function sensei_content_drip_activation(){
+		wp_schedule_event( time(), 'daily', 'woo_scd_daily_cron_hook' );
+	}// end sensei_content_drip_activation
+
+
+	/**
+	 * Plugin Deactivation
+	 */
+	register_deactivation_hook( __FILE__, 'sensei_content_drip_deactivation' );
+
+	function sensei_content_drip_deactivation() {
+		
+		$hook = 'woo_scd_daily_cron_hook';
+		// get all system crons
+	    $crons = _get_cron_array();
+	    if ( empty( $crons ) ) {
+	        return;
+	    }
+
+	    // loop through all of theme and remove this plugin's cron 
+	    foreach( $crons as $timestamp => $cron ) {
+	        if ( ! empty( $cron[$hook] ) )  {
+	            unset( $crons[$timestamp][$hook] );
+	        }
+	    }
+	    _set_cron_array( $crons );
+	    
+	} // end sensei_content_drip_deactivation
+
+} // end if is_sensei_active()
