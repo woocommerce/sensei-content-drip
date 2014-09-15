@@ -58,8 +58,8 @@ if( is_sensei_active() ) {
 	function Sensei_Content_Drip() {
 		return Sensei_Content_Drip::instance( __FILE__, '1.0.0' );
 	}
-
-	Sensei_Content_Drip();
+	// load this plugin only after sensei becomes available globaly
+	add_action('plugins_loaded', 'Sensei_Content_Drip') ;
 	
 	/**
 	* Plugin Activation
