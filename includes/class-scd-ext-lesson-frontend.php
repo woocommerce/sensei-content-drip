@@ -45,8 +45,9 @@ protected $drip_message;
 * @uses add_filter
 */
 public function __construct(){
+	global $woo_sensei_content_drip;
 	// set a formated string
-	$this->message_format = "This lesson will become available on [date]"; 
+	$this->message_format =  $woo_sensei_content_drip->settings->get_setting( 'scd_drip_message' ) ; 
 
 	// set a formated string
 	$this->title_append_text = ": Not Available"; 
@@ -387,6 +388,7 @@ public function generate_absolute_drip_type_message( $lesson_id ){
 	// get this lessons drip data
 	$lesson_drip_date =  get_post_meta( $lesson_id , '_sensei_content_drip_details_date' , true );
 	
+	// replace the shortcode in the class message_format property set in the constructor
 	if( strpos( $this->message_format , '[date]') ){
 		$absolute_drip_type_message =  str_replace( '[date]', $lesson_drip_date , $this->message_format ) ;
 	}else{
@@ -411,7 +413,7 @@ public function generate_dynamic_drip_type_message( $lesson_id ){
  	
 	$formatted_date =  $lesson_available_date->format('l jS F Y');
 
-	// replace string content
+	// replace string content in the class message_format property set in the constructor
 	$dynamic_drip_type_message =  str_replace('[date]' , $formatted_date , $this->message_format );
 
 	return $dynamic_drip_type_message;
