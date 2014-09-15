@@ -15,11 +15,55 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * TABLE OF CONTENTS
  *
  * - __construct()
+ * - register_settings_tab
  */
 class Scd_Ext_settings {
 
 public function __construct(){
-
+	if( is_admin() ){
+		add_filter( 'sensei_settings_tabs', array( $this, 'register_settings_tab' ) );
+		add_filter( 'sensei_settings_fields', array( $this, 'register_settings_fields' ) );
+	}
 }// end __construct
+
+/**
+* Attaches the the contend drip settings to the sensei admin settings tabs
+* 
+* @param array $sensei_settings_tabs;
+* @return array  $sensei_settings_tabs
+*/
+public function register_settings_tab( $sensei_settings_tabs ){
+
+	$scd_tab  = array(
+						'name' 			=> __( 'Content Drip', 'sensei-content-drip' ),
+						'description'	=> __( 'Optional settings for the Contentd Drip extension', 'sensei-content-drip' )
+				);
+
+	$sensei_settings_tabs['sensei-content-drip-settings'] = $scd_tab;
+
+	return $sensei_settings_tabs;
+
+}// end register_settings_tab
+
+
+/**
+* Includes the content drip settings fields 
+* 
+* @param array $sensei_settings_fields;
+* @return array  $sensei_settings_fields
+*/
+public function register_settings_fields( $sensei_settings_fields ){
+
+	$sensei_settings_fields['scd_drip_message'] = array(
+									'name' => __( 'Drip Message', 'sensei-content-drip' ),
+									'description' => __( 'The user will see this when the content is not yet available. The [date] shortcode will be replaced by the actual date' ),
+									'type' => 'textarea',
+									'default' => 'This lesson will become available on [date]',
+									'section' => 'sensei-content-drip-settings'
+									);
+
+	return $sensei_settings_fields;
+
+}// end register_settings_tab
 
 }// end Scd_Ext_settings

@@ -77,6 +77,7 @@ class Sensei_Content_Drip {
 	public function __construct ( $file, $version = '1.0.0' ) {
 		global $woo_sensei_content_drip;
 
+
 		// create a global instace for further reference to this main class
 		$woo_sensei_content_drip =  $this;
 
