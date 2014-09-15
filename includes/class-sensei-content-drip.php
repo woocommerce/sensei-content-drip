@@ -105,14 +105,11 @@ class Sensei_Content_Drip {
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
 
 		// include classes
-		if( $this->_load_class_file('settings') ) { $this->utils = new Scd_Ext_settings();  } 
+		if( $this->_load_class_file('settings') ) { $this->settings = new Scd_Ext_settings();  } 
 		if( $this->_load_class_file('utilities') ) { $this->utils = new Sensei_Scd_Extension_Utils();  } 
 		if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  } 
 		if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  } 
 		if( $this->_load_class_file('drip-email') ) { $this->drip_email = new Scd_Ext_drip_email();  } 
-
-
-		
 	} // End __construct()
 
 	/**
