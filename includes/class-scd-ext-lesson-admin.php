@@ -92,11 +92,19 @@ public function content_drip_lesson_meta_content(){
 	$lesson_pre_requisite = get_post_meta( $post->ID , '_lesson_prerequisite', true );
 	$current_lesson_course = get_post_meta( $post->ID , '_lesson_course', true );
 
+	//show nothing  if no course is selected
+	if( empty( $current_lesson_course ) ){
+		echo '<p>'. __( 'In oreder to use the content drip settings, please select a course for this lesson.' ) . '</p>';
+		// esit without displaying the rest of the settings
+		return;
+	}
+
 	// get all the lesson for the current lessons course , if no course selected it will return all lessons
 	$related_lessons_array =  $this->get_course_lessons( $current_lesson_course  );
 
 	//set the selected drip type according to the meta data for this post
 	$selected_drip_type = isset( $lesson_drip_data['_sensei_content_drip_type'] ) ? $lesson_drip_data['_sensei_content_drip_type'] :  'none' ;
+
 
 	// setup the hidden classes and assisgn the needed data
 	if( 'absolute' === $selected_drip_type ){
@@ -122,6 +130,7 @@ public function content_drip_lesson_meta_content(){
 	
 	// Nonce field
 	wp_nonce_field( -1, 'woo_' . $this->_token . '_noonce');
+
 
 ?>
 
