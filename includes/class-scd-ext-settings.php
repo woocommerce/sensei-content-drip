@@ -27,6 +27,24 @@ public function __construct(){
 }// end __construct
 
 /**
+* sensei get_setting value wrapper
+* 
+* @return string $settings value
+*/
+public function get_setting( $setting_token ){
+	global $woothemes_sensei;
+
+	// get all settings from sensei
+	$settings = $woothemes_sensei->settings->get_settings();
+
+	if( empty( $settings )  || ! isset(  $settings[ $setting_token ]  ) ){
+		return '';
+	}
+
+	return $settings[ $setting_token ];
+}
+
+/**
 * Attaches the the contend drip settings to the sensei admin settings tabs
 * 
 * @param array $sensei_settings_tabs;
