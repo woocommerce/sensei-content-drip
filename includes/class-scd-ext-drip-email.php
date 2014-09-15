@@ -68,7 +68,7 @@ class Scd_Ext_drip_email {
 		// from each list get the lesson users and attache the lesson to the users
 		$dynamic_users_lessons = $this->attach_users( $all_dynamic_lessons );
 		$absolute_users_lessons = $this->attach_users( $all_absolute_lessons );
-		
+
 		// merge two users_lessons lists 
 		$all_users_lessons  = $this->combine_users_lessons( $dynamic_users_lessons , $absolute_users_lessons );
 
@@ -118,7 +118,7 @@ class Scd_Ext_drip_email {
 	* @return array $users_lessons
 	*/
 	public function attach_users( $lessons ){
-		
+
 		$users_lessons = array();
 		$courses_users = array();
 
@@ -127,29 +127,27 @@ class Scd_Ext_drip_email {
 			return array();
 		}
 
-		foreach ($lessons as $lesson_id) {
-				
+		foreach( $lessons as $lesson_id ) {			
 				// get the lessons course
 				$course_id = get_post_meta( $lesson_id, '_lesson_course', true );
-
+	
+				// a luesson must have a course for the rest to work
 				if( empty( $course_id ) ){
 					continue;
 				}
 
-				// if the key exist we already have the users for this course, hence no need to fetch theme again
-				if ( ! array_key_exists( $course_id, $courses_users ) ) {
-					// build up the query parameters
-					$activitiy_query = array( 
-											'post_id' => $course_id, 
-											'type' => 'sensei_course_start', 
-											'field' => 'user_id' 
-										);
-					$course_users[ $course_id ] =  WooThemes_Sensei_Utils::sensei_activity_ids( $activitiy_query );
-				}
+				// build up the query parameters to
+				// get all users in this course id
+				$activitiy_query = array( 
+										'post_id' => $course_id, 
+										'type' => 'sensei_course_start', 
+										'field' => 'user_id' 
+									);
+				$course_users =  WooThemes_Sensei_Utils::sensei_activity_ids( $activitiy_query );
 
-				if( ! empty( $course_users[ $course_id ] )  ){
+				if( ! empty( $course_users )  ){
 					// loop through each of the users for this course and append the lesson id to the user
-					foreach( $course_users[ $course_id ] as $user_id ) {
+					foreach( $course_users as $user_id ) {
 						$users_lessons[$user_id][] = $lesson_id; 
 					}
 				}
@@ -276,7 +274,7 @@ class Scd_Ext_drip_email {
 	* @return void
 	*/
 	public function send_single_email_drip_notifications( $user_id, $lessons, $email_wrappers ){
-		global $woothemes_sensei , $sensei_email_data;
+		global $woothemes_sensei , $sensei_email_data, $woo_sensei_content_drip;
 
 		if( empty( $user_id ) || empty( $lessons ) || ! is_array( $lessons ) ){
 			return ;
@@ -299,12 +297,27 @@ class Scd_Ext_drip_email {
 		// $wrap_footer
 		extract( $email_wrappers );	
 
-		
+
+		// get the settings values 
+
+		$settings['email_body_notice'] = $woo_sensei_content_drip->settings->get_setting('scd_email_body_notice_html') ; 
+		$settings['email_footer'] = $woo_sensei_content_drip->settings->get_setting( 'scd_email_footer_html' );
+
+		// check for empty settings and setup the defaults
+		if( empty( $settings['email_body_notice'] ) ){
+			$settings['email_body_notice'] = 'The following lessons will become available today:';
+		}
+
+		if( empty( $settings['email_footer'] ) ){
+			$settings['email_footer'] = 'Visit the online course today to srart taking the lessons: [home_url]';
+		}
+
 		// setup the  the message content
 		$email_heading = '<p>' . __('Good Day', 'sensei-content-drip' ) . ' ' . $first_name . '</p>';
-		$email_body_notice = '<p>'.'The following lessons will become abailable today: '.'</p>';
+		$email_body_notice = '<p>'. $settings['email_body_notice'] . '</p>';
 		$email_body_lessons = '';
-		$meail_footer = ' Visit the online course today to srart taking the lessons: '. home_url() ; //get this for the settings
+		// get the footer from the settings and replace the shortcode [home_url] with the actual site url
+		$email_footer = '<p>'. str_ireplace('[home_url]'  , '<a href="'.home_url() .'" >'.home_url().'</a>' , $settings['email_footer'] ) . '</p>';
 
 		// loop through each lesson to get its title and relative url
 		$email_body_lessons .= '<p><ul>';
@@ -325,9 +338,8 @@ class Scd_Ext_drip_email {
 		}// end for each $lessons
 		$email_body_lessons .= '</ul></p>';
 
-
 		// assemble the message content
-		$formated_email_html = $wrap_header . $email_heading . $email_body_notice . $email_body_lessons . $meail_footer .  $wrap_footer ;
+		$formated_email_html = $wrap_header . $email_heading . $email_body_notice . $email_body_lessons . $email_footer .  $wrap_footer ;
 
 		// send
 		$woothemes_sensei->emails->send( $user_email, $email_subject, $formated_email_html );

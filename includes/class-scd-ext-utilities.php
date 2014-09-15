@@ -38,7 +38,6 @@ class Sensei_Scd_Extension_Utils {
 		}else{
 			$meta_query = array( array(
 									'key' => '_sensei_content_drip_type',
-									'limit' => 200,
 									'value' => $type, 
 									),);
 		}
@@ -46,6 +45,7 @@ class Sensei_Scd_Extension_Utils {
 		// create the lesson query args
 		$lesson_query_args = array( 
 							'post_type' => 'lesson' , 
+							'limit' => 200,
 							'meta_query'=>  $meta_query,
 							);	 
 

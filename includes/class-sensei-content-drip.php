@@ -193,7 +193,7 @@ class Sensei_Content_Drip {
 	 * @return void
 	 */
 	public function load_plugin_textdomain () {
-	    $domain = 'sensei-content-drip';
+	    $domain = 'sensei-content-drip';	
 
 	    $locale = apply_filters( 'plugin_locale' , get_locale() , $domain );
 
