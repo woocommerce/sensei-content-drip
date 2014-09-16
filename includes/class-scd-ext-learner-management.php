@@ -27,7 +27,7 @@ class Scd_Ext_Learner_Management{
 *
 */
 public function __construct(){
-	add_filter('scd_is_drip_active', array( $this, 'manipulte_drip_type' ), 1 , 2 );
+	add_filter('scd_is_drip_active', array( $this, 'manipulte_drip_type' ), 1 ,2);
 
 	if(is_admin() ){
 		// add the interface
@@ -51,7 +51,7 @@ public function manual_drip_interface(){
 	// get al the users taking this course
 	$course_users = $woo_sensei_content_drip->utils->get_course_users( $course_id );
 	$course_lessons = $woo_sensei_content_drip->lesson_admin->get_course_lessons( $course_id );
-	
+
 ?>
 	<div class="postbox">
 			<h3><span><?php _e( 'Manual Learner Lesson Drip', 'sensei-content-drip' ); ?></span></h3>
@@ -200,8 +200,6 @@ public function log_manual_drip_activity(){
 * @return void
 */
 public function manipulte_drip_type( $drip_status ,  $lesson_id ){
- 	
-
  	//	get the current user id
  	$current_user = wp_get_current_user();
  	if( 'WP_User' != get_class( $current_user ) ){
@@ -210,10 +208,14 @@ public function manipulte_drip_type( $drip_status ,  $lesson_id ){
 	$user_id = $current_user->ID;
 
 	// get the lesson/course sensei activity for drip manual drip
+	$args =  array( 'post_id' => intval( $lesson_id ) , 'user_id' => $user_id , 'type' => 'scd_manual_drip' ) ;
+
+	// get the sensei activity, false asks to only return the comment count
+	$activity = WooThemes_Sensei_Utils::sensei_check_for_activity( $args ,  false );
 
 	// the acticity is not empty change the drip type
- 	if( false ){
-
+ 	if( ! empty( $activity ) && $activity > 0 ){
+ 		$drip_status = false;
  	}
 
 	return $drip_status;
