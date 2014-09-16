@@ -191,8 +191,23 @@ public function log_manual_drip_activity(){
     // log the users activity on the lesson drip
     $activity_logged = WooThemes_Sensei_Utils::sensei_log_activity( $args );
 
+	add_action( 'admin_notices', array( $this, 'scd_manual_drip_admin_notice' ) );
+
     return;
 }// end log_manual_drip_activity
+
+/**
+* show the success on update
+*
+* @return void
+*/
+public function scd_manual_drip_admin_notice() {
+    ?>
+    <div class="updated">
+        <p><?php _e( 'Manual Drip Saved', 'sensei-content-drip' ); ?></p>
+    </div>
+    <?php
+}// end scd_manual_drip_admin_notice
 
 /**
 * manipulte_drip_type() posibly change the drip active status
