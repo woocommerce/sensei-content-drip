@@ -51,6 +51,7 @@ public function manual_drip_interface(){
 	// get al the users taking this course
 	$course_users = $woo_sensei_content_drip->utils->get_course_users( $course_id );
 	$course_lessons = $woo_sensei_content_drip->lesson_admin->get_course_lessons( $course_id );
+	
 ?>
 	<div class="postbox">
 			<h3><span><?php _e( 'Manual Learner Lesson Drip', 'sensei-content-drip' ); ?></span></h3>
@@ -93,7 +94,7 @@ public function manual_drip_interface(){
 						</select>
 					</p>
 					<p><?php submit_button( __( 'Add Manual Drip', 'sensei-content-drip' ), 'primary', 'scd_log_learner_lesson_manual_drip_submit', false, array() ); ?></p>
-					<?php echo wp_nonce_field( 'scd_learner_lesson_manual_drip', 'scd_log_learner_lesson_manual_drip' ); ?>
+					<?php echo wp_nonce_field( 'scd_log_learner_lesson_manual_drip', 'scd_learner_lesson_manual_drip' ); ?>
 				</form>
 			</div>
 
@@ -133,13 +134,64 @@ public function manual_drip_interface(){
 }// end manual_drip_interface
 
 /**
-* hook into the admin init and get the post form data
+* get the $_POST form data
 *
 * @return void
 */
 public function log_manual_drip_activity(){
+	global $woothemes_sensei;
 
+	// verify nonce field exist
+	if( ! isset( $_POST['scd_learner_lesson_manual_drip'] ) ) {
+		return ;
+	}
 
+	// verify the nonce
+	if( ! wp_verify_nonce( $_POST['scd_learner_lesson_manual_drip'], 'scd_log_learner_lesson_manual_drip' ) ) {
+		// exit
+		return;
+	}
+
+	// verify incomming fields
+	if(  ! isset( $_POST[ 'scd_select_learner' ] )  
+		|| empty( $_POST[ 'scd_select_learner' ] )
+		|| !isset( $_POST[ 'scd_select_course_lesson' ] ) 
+		|| empty( $_POST[ 'scd_select_course_lesson' ] )
+		|| !isset( $_POST[ 'scd_log_learner_lesson_manual_drip_submit' ] ) ){
+		// exit
+		return;
+	}
+
+	// get the $_POST values
+	$user_id =  $_POST[ 'scd_select_learner' ] ;
+	$lesson_id = $_POST[ 'scd_select_course_lesson' ] ;
+
+	// get the users details
+	$user = get_user_by('id', $user_id  );
+
+	if( 'WP_User' != get_class( $user ) ){
+		// exit as this is not a valid user
+		return;
+	}
+	
+
+    // Create the log argument
+    $args = array(
+                        'post_id' => $lesson_id,
+                        'username' => $user->user_login,
+                        'user_email' => $user->user_email,
+                        'user_url' => $user->user_url,
+                        'data' => 'true',
+                        'type' => 'scd_manual_drip', /* FIELD SIZE 20 */
+                        'parent' => 0,
+                        'user_id' => $user->ID,
+                        'action' => 'update'
+                        );
+
+    // log the users activity on the lesson drip
+    $activity_logged = WooThemes_Sensei_Utils::sensei_log_activity( $args );
+
+    return;
 }// end log_manual_drip_activity
 
 /**
@@ -149,6 +201,7 @@ public function log_manual_drip_activity(){
 */
 public function manipulte_drip_type( $drip_status ,  $lesson_id ){
  	
+
  	//	get the current user id
  	$current_user = wp_get_current_user();
  	if( 'WP_User' != get_class( $current_user ) ){
