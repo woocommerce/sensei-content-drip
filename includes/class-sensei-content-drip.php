@@ -110,6 +110,8 @@ class Sensei_Content_Drip {
 		if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  } 
 		if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  } 
 		if( $this->_load_class_file('drip-email') ) { $this->drip_email = new Scd_Ext_drip_email();  } 
+		if( $this->_load_class_file('learner-management') ) { $this->learner_managment = new Scd_Ext_Learner_Management();  } 
+
 	} // End __construct()
 
 	/**

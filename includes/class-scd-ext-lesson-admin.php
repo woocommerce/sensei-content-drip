@@ -92,7 +92,7 @@ public function content_drip_lesson_meta_content(){
 	$lesson_pre_requisite = get_post_meta( $post->ID , '_lesson_prerequisite', true );
 	$current_lesson_course = get_post_meta( $post->ID , '_lesson_course', true );
 
-	//show nothing  if no course is selected
+	//show nothing  if no course is selecteda
 	if( empty( $current_lesson_course ) ){
 		echo '<p>'. __( 'In oreder to use the content drip settings, please select a course for this lesson.' ) . '</p>';
 		// esit without displaying the rest of the settings
@@ -100,7 +100,7 @@ public function content_drip_lesson_meta_content(){
 	}
 
 	// get all the lesson for the current lessons course , if no course selected it will return all lessons
-	$related_lessons_array =  $this->get_course_lessons( $current_lesson_course  );
+	$related_lessons_array =  $this->get_course_lessons( $current_lesson_course , $post->ID );
 
 	//set the selected drip type according to the meta data for this post
 	$selected_drip_type = isset( $lesson_drip_data['_sensei_content_drip_type'] ) ? $lesson_drip_data['_sensei_content_drip_type'] :  'none' ;
@@ -205,7 +205,7 @@ public function content_drip_lesson_meta_content(){
  * @param int $course_id (default: 0)
  * @return array WP_Post 
  */
-public function get_course_lessons( $course_id = 0 ) {
+public function get_course_lessons( $course_id = 0, $exclude = '' ) {
 
 	$lessons = array();
 
@@ -214,6 +214,7 @@ public function get_course_lessons( $course_id = 0 ) {
 						'meta_key'        	=> '_order_' . $course_id,
 						'orderby'         	=> 'meta_value_num date',
 						'order'           	=> 'ASC',
+						'exclude'			=> $exclude,
 						'meta_query'		=> array(
 							array(
 								'key' => '_lesson_course',

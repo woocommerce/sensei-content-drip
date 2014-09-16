@@ -49,9 +49,6 @@ public function __construct(){
 	// set a formated string
 	$this->message_format =  $woo_sensei_content_drip->settings->get_setting( 'scd_drip_message' ) ; 
 
-	// set a formated string
-	$this->title_append_text = ": Not Available"; 
-
 	// hook int all post of type lesson to determin if they are 
 	add_filter('the_posts', array( $this, 'lessons_drip_filter' ), 1 );
 
@@ -130,9 +127,6 @@ public function replace_lesson_content( $lesson ){
 	//hide the lesson quiz notice and quiz buttons 
 	remove_all_actions( 'sensei_lesson_quiz_meta' );
 
-	// append a title message next for content that's dripped
-	add_filter('the_title', array( $this ,'add_single_title_text'), 10, 1);
-
 	// returh the lesson with changed content 
 	return $lesson;
 
@@ -169,8 +163,14 @@ public function is_lesson_drip_active( $lesson_id ){
 		$dripped = $this->is_dynamic_drip_active( $lesson_id  );
 	}
 
-	// check the post data and alter $dripped
-	return $dripped;
+	/**
+	*	filter scd_is_drip_active
+	*
+	*	@param boolean $dripped
+	*   filter the bolean value returned. The value tells us if a drip is active on the given lesson
+	*/
+	return  apply_filters('scd_is_drip_active' , $dripped , $lesson_id );
+
 } // end is_lesson_dripped
 
 
@@ -322,21 +322,6 @@ public function get_dynamic_lesson_available_date( $lesson_id ){
 	return $lesson_becomes_available_date->add( $interval_to_lesson_availablilty );
 
 }// end get_dynamic_lesson_available_date
-
-
-
-/**
-* Append information to the single lesson title if the lesson content is dripped
-* 
-* @since 1.0.0
-* @param string $title 
-* @param string $id lesson post id
-* @return string $title
-*/
-public function add_single_title_text( $title ){
-	return $title. $this->title_append_text;
-}
-
 
 /**
 * Check if  the lesson can be made available to the the user at this point
