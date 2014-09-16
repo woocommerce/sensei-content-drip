@@ -118,6 +118,7 @@ class Scd_Ext_drip_email {
 	* @return array $users_lessons
 	*/
 	public function attach_users( $lessons ){
+		global $woo_sensei_content_drip;
 
 		$users_lessons = array();
 		$courses_users = array();
@@ -136,14 +137,8 @@ class Scd_Ext_drip_email {
 					continue;
 				}
 
-				// build up the query parameters to
 				// get all users in this course id
-				$activitiy_query = array( 
-										'post_id' => $course_id, 
-										'type' => 'sensei_course_start', 
-										'field' => 'user_id' 
-									);
-				$course_users =  WooThemes_Sensei_Utils::sensei_activity_ids( $activitiy_query );
+				$course_users = $woo_sensei_content_drip->utils->get_course_users( $course_id );
 
 				if( ! empty( $course_users )  ){
 					// loop through each of the users for this course and append the lesson id to the user

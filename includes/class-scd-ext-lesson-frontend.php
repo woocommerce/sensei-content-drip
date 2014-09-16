@@ -163,8 +163,14 @@ public function is_lesson_drip_active( $lesson_id ){
 		$dripped = $this->is_dynamic_drip_active( $lesson_id  );
 	}
 
-	// check the post data and alter $dripped
-	return $dripped;
+	/**
+	*	filter scd_is_drip_active
+	*
+	*	@param boolean $dripped
+	*   filter the bolean value returned. The value tells us if a drip is active on the given lesson
+	*/
+	return  apply_filters('scd_is_drip_active' , $dripped , $lesson_id );
+
 } // end is_lesson_dripped
 
 
