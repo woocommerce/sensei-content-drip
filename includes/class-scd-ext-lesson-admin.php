@@ -40,6 +40,10 @@ public function __construct(){
 	// set the plugin token for this class
 	$this->_token = 'sensei_content_drip';
 
+	//add view all lessons columns
+	add_filter( 'manage_edit-lesson_columns', array( $this, 'add_column_heading' ), 20, 1 );
+	add_action( 'manage_posts_custom_column', array( $this, 'add_column_data' ), 20, 2 );
+
 	// hook int all post of type lesson to determin if they are 
 	add_action('add_meta_boxes', array( $this, 'add_leson_content_drip_meta_box' ) );
 
@@ -65,6 +69,62 @@ public function add_leson_content_drip_meta_box( ){
 	add_meta_box( 'content-drip-lesson', __('Sensei Content Drip','sensei-content-drip') , array( $this, 'content_drip_lesson_meta_content'  ), 'lesson' , 'normal', 'default' , null  );
 
 } // end add_leson_content_drip_meta_box
+
+/**
+* Add a new column to the vew all lessons admin screen
+* 
+* @since 1.0.0
+* @param array $columns
+* @return array $columns
+*/
+public function add_column_heading( $columns ){
+	$columns['scd_drip_schedule'] = _x( 'Drip Schedule', 'column name', 'sensei-content-drip' );
+	return $columns;
+} // end add_leson_content_drip_meta_box
+
+
+/**
+ * Add data for our drip schedule custom column
+ *
+ * @since  1.0.0
+ * @param  string $column_name
+ * @param  int $id
+ * @return void
+ */
+public function add_column_data ( $column_key, $lesson_id ) {
+	global $woo_sensei_content_drip;
+
+	// exit early if this is not the column we want
+	if( 'scd_drip_schedule' != $column_key ){
+		return;	
+	}
+
+	// get the lesson drip type
+	$drip_type = $woo_sensei_content_drip->utils->get_lesson_drip_type( $lesson_id );
+
+	//generate the messages
+	if('none'==$drip_type ){
+		echo 'Immediately';
+	}elseif('absolute' == $drip_type ){
+		$lesson_set_date = get_post_meta( $lesson_id ,'_sensei_content_drip_details_date', true  );
+		echo 'On '. $lesson_set_date;
+	}elseif ( 'dynamic' == $drip_type ) {
+		$unit_type  =  get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_type', true );  
+		$unit_amount = get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_amount', true );
+
+		//setup the time perioud strings
+		$time_period =  $unit_amount.' '.$unit_type;
+
+		// append an s to the unit if it is more than 1
+		if( $unit_amount > 1 ){
+			$time_period .= 's';
+		}
+
+		// assemble and output
+		echo 'After '. $time_period;
+	}
+}// end add_column_data
+
 
 /**
 * content_drip_lesson_meta_content , display the content inside the meta box
