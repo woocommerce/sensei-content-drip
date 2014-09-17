@@ -70,8 +70,9 @@ class Sensei_Scd_Extension_Utils {
 	* @param string $user_id
 	* @return DateTime  drip_date format yyyy-mm-dd
 	*/
-	public function get_lesson_drip_date( $lesson_id , $user_id ){
+	public function get_lesson_drip_date( $lesson_id , $user_id = '' ){
 		global $woo_sensei_content_drip;
+		
 		//setup the basics, drip date default return will be false on error
 		$drip_date = false;
 
@@ -84,7 +85,7 @@ class Sensei_Scd_Extension_Utils {
 
 		// we need a user id if the drip type is dynamice
 		if( 'dynamic' === $drip_type  && empty( $user_id )  ){
-			return $drip_date; // exit early
+			return false; // exit early
 		}
 
 		if( 'absolute' === $drip_type ){
@@ -100,14 +101,20 @@ class Sensei_Scd_Extension_Utils {
 			// get the drip details array data
 			$unit_type  =  get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_type', true );  
 			$unit_amount = get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_amount', true );
-			$drip_pre_lesson_id = get_post_meta( $lesson_id , '_sensei_content_drip_dynamic_pre_lesson_id', true ); 
 			
+			// get the lesson course
+			$course_id = get_post_meta( $lesson_id, '_lesson_course', true );
+
+			if( empty( $course_id ) ){
+				return false;
+			}
+
 			// get the previous lessons completion date
-			$activitiy_query = array( 'post_id' => $drip_pre_lesson_id, 'user_id' => $user_id, 'type' => 'sensei_lesson_end', 'field' => 'comment_date_gmt' );
-			$user_lesson_end_date_gmt =  WooThemes_Sensei_Utils::sensei_get_activity_value( $activitiy_query  );
-			
+			$activitiy_query = array( 'post_id' => $course_id, 'user_id' => $user_id, 'type' => 'sensei_course_start', 'field' => 'comment_date_gmt' );
+			$user_course_start_date_string =  WooThemes_Sensei_Utils::sensei_get_activity_value( $activitiy_query  );
+
 			// check if the user has finished the previous course
-			if( !$user_lesson_end_date_gmt  ){
+			if( !$user_course_start_date_string  ){
 				return false;
 			}
 
@@ -116,10 +123,9 @@ class Sensei_Scd_Extension_Utils {
 			$interval_to_lesson_availablilty = new DateInterval( 'P'.$unit_amount.$unit_type_first_letter_uppercase );
 
 			// create an object which the interval will be added to and add the interval
-			$lesson_becomes_available_date = new DateTime( $user_lesson_end_date_gmt );
+			$course_start_date = new DateTime( $user_course_start_date_string );
 
-			$drip_date = $lesson_becomes_available_date->add( $interval_to_lesson_availablilty );
-
+			$drip_date = $course_start_date->add( $interval_to_lesson_availablilty );
 		}// end if
 
 		//strip out the hours minutes and seccond before returning the yyyy-mm-dd format
@@ -212,7 +218,7 @@ class Sensei_Scd_Extension_Utils {
 		$course_users =  WooThemes_Sensei_Utils::sensei_activity_ids( $activitiy_query );
 	
 		return $course_users;
-		
+
 	}// end get_course_users
 
 } // end class Sensei_Scd_Extension_Utils

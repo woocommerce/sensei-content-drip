@@ -188,21 +188,17 @@ public function is_lesson_drip_active( $lesson_id ){
 * @return bool $active
 */
 public function is_absolute_drip_active( $lesson_id ){
+	global $woo_sensei_content_drip;
+
 	// setup the default drip status 
 	$drip_status = false;
-	
 
-	// get the lessons data
-	$dripped_data =  Sensei_Content_Drip()->lesson_admin->get_lesson_drip_data( $lesson_id );
-
-	// confirm that all needed data is in place otherwise return false
-	if( empty( $dripped_data ) || !isset( $dripped_data['_sensei_content_drip_type'] ) 
-		|| !isset( $dripped_data['_sensei_content_drip_details_date'] ) || 'absolute' !== $dripped_data['_sensei_content_drip_type'] ) {
-		return $drip_status;
-	}
+	// get the user details
+	$current_user = wp_get_current_user();
+	$user_id = $current_user->ID;
 
 	// convert string dates to date ojbect
-	$lesson_drip_date = new DateTime( $dripped_data['_sensei_content_drip_details_date'] );
+	$lesson_drip_date = $woo_sensei_content_drip->utils->get_lesson_drip_date( $lesson_id , $user_id );
 	$today = new DateTime();
 
 	// compare dates
@@ -225,20 +221,17 @@ public function is_absolute_drip_active( $lesson_id ){
 * @return bool $active
 */
 public function is_dynamic_drip_active( $lesson_id ){
-	global $woothemes_sensei ;
-
+	global $woothemes_sensei , $woo_sensei_content_drip;
 	// setup the default drip status 
 	$drip_status = false;
 
 	// get the lessons data
-	$dripped_data =  Sensei_Content_Drip()->lesson_admin->get_lesson_drip_data( $lesson_id );
+	$dripped_data = Sensei_Content_Drip()->lesson_admin->get_lesson_drip_data( $lesson_id );
 
 	// confirm that all needed data is in place otherwise this content will be available 
 	if( empty( $dripped_data ) 
 		|| empty( $dripped_data['_sensei_content_drip_details_date_unit_type'] )   
-		|| empty( $dripped_data['_sensei_content_drip_details_date_unit_amount'] ) 
-		|| empty( $dripped_data['_sensei_content_drip_dynamic_pre_lesson_id'] ) ){  
-		
+		|| empty( $dripped_data['_sensei_content_drip_details_date_unit_amount'] ) ){  
 		// deafult set to false
 		return $drip_status;
 	}
@@ -256,23 +249,14 @@ public function is_dynamic_drip_active( $lesson_id ){
 	// get the drip details array data
 	$unit_type  =  $dripped_data['_sensei_content_drip_details_date_unit_type'];
 	$unit_amount = $dripped_data['_sensei_content_drip_details_date_unit_amount'];
-	$drip_pre_lesson_id = $dripped_data['_sensei_content_drip_dynamic_pre_lesson_id'];
 
 	// if the data is not correct then the drip lesson should be shown
-	if( !in_array($unit_type, array( 'day','week' ,'month' ) ) || ! is_numeric( $unit_amount ) 
-		|| empty( $drip_pre_lesson_id )   ){
-		// trigger an error for the user to understand what just went wrong so they can tell support what happend
+	if( !in_array($unit_type, array( 'day','week' ,'month' ) ) || ! is_numeric( $unit_amount ) ){
 		return $drip_status;
 	}
 	
-	// if the user has not complted the previous exit
-	if( !WooThemes_Sensei_Utils::user_completed_lesson( $drip_pre_lesson_id , $user_id ) ){
-		// exit as sensei will tell the user to complete the previous lesson
-		return $drip_status;
-	}
-
-	$lesson_becomes_available_date = $this->get_dynamic_lesson_available_date( $lesson_id );
-	
+	$lesson_becomes_available_date =  $woo_sensei_content_drip->utils->get_lesson_drip_date( $lesson_id , $user_id );
+		
 	// get todays date	
 	$today = new DateTime();	
 	
@@ -287,45 +271,6 @@ public function is_dynamic_drip_active( $lesson_id ){
 
 } //  end is_dynamic_drip_active
 
-
-/**
-* Determine when the lesson becomes available
-* 
-* @since 1.0.0
-* @param  string $lesson_id
-* @return DateTime $lesson_becomes_available_date
-*/
-public function get_dynamic_lesson_available_date( $lesson_id ){
-
-	// get the lessons data
-	$dripped_data =  Sensei_Content_Drip()->lesson_admin->get_lesson_drip_data( $lesson_id );
-	
-	// get the user details
-	$current_user = wp_get_current_user();
-	$user_id = $current_user->ID;
-
-	// get the drip details array data
-	$unit_type  =  $dripped_data['_sensei_content_drip_details_date_unit_type'];
-	$unit_amount = $dripped_data['_sensei_content_drip_details_date_unit_amount'];
-	$drip_pre_lesson_id = $dripped_data['_sensei_content_drip_dynamic_pre_lesson_id'];
-	
-	// get the previous lessons completion date
-	$activitiy_query = array( 'post_id' => $drip_pre_lesson_id, 'user_id' => $user_id, 'type' => 'sensei_lesson_end', 'field' => 'comment_date_gmt' );
-	$user_lesson_end_date_gmt =  WooThemes_Sensei_Utils::sensei_get_activity_value( $activitiy_query  );
-
-	// create a date interval object to determine when the lesson should become available
-	$unit_type_first_letter_uppercase = strtoupper( substr($unit_type, 0, 1) ) ; 
-	$interval_to_lesson_availablilty = new DateInterval('P'.$unit_amount.$unit_type_first_letter_uppercase );
-
-	// get the dateTime objects
-	$lesson_end = new DateTime($user_lesson_end_date_gmt);
-
-	// create an object which the interval will be added to and add the interval
-	$lesson_becomes_available_date = new DateTime($user_lesson_end_date_gmt);
-
-	return $lesson_becomes_available_date->add( $interval_to_lesson_availablilty );
-
-}// end get_dynamic_lesson_available_date
 
 /**
 * Check if  the lesson can be made available to the the user at this point
@@ -375,13 +320,13 @@ public function generate_absolute_drip_type_message( $lesson_id ){
 	$absolute_drip_type_message = '';
 
 	// get this lessons drip data
-	$lesson_drip_date =  get_post_meta( $lesson_id , '_sensei_content_drip_details_date' , true );
-	
+	$lesson_drip_date =  new DateTime( get_post_meta( $lesson_id , '_sensei_content_drip_details_date' , true ) );
+	$formatted_date =  $lesson_drip_date->format( $this->get_date_format_string() );
 	// replace the shortcode in the class message_format property set in the constructor
 	if( strpos( $this->message_format , '[date]') ){
-		$absolute_drip_type_message =  str_replace( '[date]', $lesson_drip_date , $this->message_format ) ;
+		$absolute_drip_type_message =  str_replace( '[date]', $formatted_date , $this->message_format ) ;
 	}else{
-		$absolute_drip_type_message = $this->message_format . ' ' . $lesson_drip_date; 
+		$absolute_drip_type_message = $this->message_format . ' ' . $formatted_date; 
 	}
 
 	return $absolute_drip_type_message;
@@ -395,17 +340,38 @@ public function generate_absolute_drip_type_message( $lesson_id ){
 * @return bool $dripped
 */
 public function generate_dynamic_drip_type_message( $lesson_id ){
+	global $woo_sensei_content_drip;
+
+	// get the user details
+	$current_user = wp_get_current_user();
+	$user_id = $current_user->ID;
 
 	$dynamic_drip_type_message = '';
 
-	$lesson_available_date = $this->get_dynamic_lesson_available_date( $lesson_id );
+	$lesson_available_date = $woo_sensei_content_drip->utils->get_lesson_drip_date( $lesson_id , $user_id );
  	
-	$formatted_date =  $lesson_available_date->format('l jS F Y');
+	$formatted_date =  $lesson_available_date->format( $this->get_date_format_string() );
 
 	// replace string content in the class message_format property set in the constructor
 	$dynamic_drip_type_message =  str_replace('[date]' , $formatted_date , $this->message_format );
 
 	return $dynamic_drip_type_message;
 }// end generate_dynamic_drip_type_message
+
+/**
+* get the date format and allow the user to filter it
+* 
+* @since 1.0.0
+* @return string $date_format
+*/
+public function get_date_format_string(){
+	$date_format = 'l jS F Y';
+	/**
+	* filter scd_drip_message_date_format
+	* @param string 
+	*/
+	return apply_filters( 'scd_drip_message_date_format' , $date_format );
+
+}//end get_date_format
 
 } // Scd_ext_lesson_frontend class 
