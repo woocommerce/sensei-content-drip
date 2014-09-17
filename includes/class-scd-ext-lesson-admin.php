@@ -83,7 +83,6 @@ public function content_drip_lesson_meta_content(){
 	$absolute_date_value = '';
 	$selected_dynamic_time_unit_type = '';
 	$dynamic_unit_amount = '';
-	$dynamic_drip_pre_lesson = '';
 
 	// get the lesson drip meta data
 	$lesson_drip_data = $this->get_lesson_drip_data( $post->ID );
@@ -99,12 +98,8 @@ public function content_drip_lesson_meta_content(){
 		return;
 	}
 
-	// get all the lesson for the current lessons course , if no course selected it will return all lessons
-	$related_lessons_array =  $this->get_course_lessons( $current_lesson_course , $post->ID );
-
 	//set the selected drip type according to the meta data for this post
 	$selected_drip_type = isset( $lesson_drip_data['_sensei_content_drip_type'] ) ? $lesson_drip_data['_sensei_content_drip_type'] :  'none' ;
-
 
 	// setup the hidden classes and assisgn the needed data
 	if( 'absolute' === $selected_drip_type ){
@@ -121,8 +116,6 @@ public function content_drip_lesson_meta_content(){
 		// get the data array
 		$selected_dynamic_time_unit_type = $lesson_drip_data['_sensei_content_drip_details_date_unit_type'];
 		$dynamic_unit_amount = $lesson_drip_data['_sensei_content_drip_details_date_unit_amount'];
-		$dynamic_drip_pre_lesson = absint( $lesson_drip_data['_sensei_content_drip_dynamic_pre_lesson_id'] ) ;
-
 	}else{
 		$absolute_hidden_class = 'hidden'; 
 		$dymaic_hidden_class   = 'hidden'; 
@@ -142,7 +135,7 @@ public function content_drip_lesson_meta_content(){
 			//does this lesson have a  pre-requiste lesson ? 
 			$has_pre_requisite = empty( $lesson_pre_requisite ) ? 'false'  : 'true' ; 
 		?>
-		<option data-has-pre="<?php echo $has_pre_requisite ?> " <?php selected( 'dynamic', $selected_drip_type  ) ?> value="dynamic"  class="dynamic"> <?php _e( 'A specific interval after another lesson', 'sensei-content-drip' ); ?> </option>
+		<option data-has-pre="<?php echo $has_pre_requisite ?> " <?php selected( 'dynamic', $selected_drip_type  ) ?> value="dynamic"  class="dynamic"> <?php _e( 'A specific interval after the course start date', 'sensei-content-drip' ); ?> </option>
 	</select></p>
 	
 	<p><div class="dripTypeOptions absolute <?php echo $absolute_hidden_class;?> ">
@@ -158,12 +151,6 @@ public function content_drip_lesson_meta_content(){
 				<?php _e( 'Please select a course for this lesson in order to use this drip type.', 'sensei-content-drip'  ); ?>
 			</p>
 
-		<?php }elseif( count( $related_lessons_array )  < 1 ){ ?>
-
-			<p>
-				<?php _e( 'The course does not contain any other lessons. Please add another lesson for this drip type to become available', 'sensei-content-drip'  ); ?>
-			</p>
-
 		<?php }else{  ?>
 
 			<div id="dynamic-dripping-1" class='dynamic-dripping'>
@@ -175,21 +162,6 @@ public function content_drip_lesson_meta_content(){
 					<option <?php selected( 'month', $selected_dynamic_time_unit_type );?>  value="month"> <?php _e('Month(s)', 'sensei-content-drip'); ?>  </option>
 				</select>
 			</div>	
-
-			<span> &nbsp; &nbsp;<?php _e('After','sensei-content-drip'); ?>&nbsp; &nbsp;</span>
-
-			<select id="dynamic-drip-related-lessons" name="dynamic_drip_pre_lesson" class="chosen_select widefat">
-				<option value=""> <?php _e( 'None', 'sensei-content-drip' );?> </option>
-				
-			<?php foreach( $related_lessons_array as $lesson ) { ?>
-				<option value="<?php echo esc_attr( $lesson->ID ); ?>"  
-					<?php selected( $lesson->ID, $dynamic_drip_pre_lesson, true ); ?> > 
-						<?php echo esc_html( $lesson->post_title );?>
-				</option>
-			<?php } // End For Loop ?>
-
-			</select>
-
 		<?php }// end if  count( $related_lessons_array ) >0    ?> 
 	</div> <!-- end dripTypeOptions -->
 	</p>
@@ -297,7 +269,6 @@ public function save_course_drip_meta_box_data( $post_id ) {
 		// get the posted data valudes
 		$date_unit_amount = $_POST['dynamic-unit-amount']['1'] ;	// number of units
 		$date_unit_type = $_POST['dynamic-time-unit-type']['1'];	// unit type eg: months, weeks, days		
-		$pre_lesson_id	= $_POST['dynamic_drip_pre_lesson'];
 
 		// input validation
 		if( empty( $date_unit_amount ) || empty( $date_unit_type  ) ){
@@ -326,7 +297,6 @@ public function save_course_drip_meta_box_data( $post_id ) {
 					'_sensei_content_drip_type' => 'dynamic',
 					'_sensei_content_drip_details_date_unit_type' =>  $date_unit_type,
 					'_sensei_content_drip_details_date_unit_amount' => $date_unit_amount,
-					'_sensei_content_drip_dynamic_pre_lesson_id' => $pre_lesson_id ,
 				);
 	}
 
@@ -378,7 +348,6 @@ public function get_meta_field_keys(){
 					'_sensei_content_drip_details_date',
 					'_sensei_content_drip_details_date_unit_type',
 					'_sensei_content_drip_details_date_unit_amount',
-					'_sensei_content_drip_dynamic_pre_lesson_id',
 					);
 
 	return $meta_fields_keys;
@@ -448,7 +417,7 @@ public function get_lesson_drip_data( $post_id ){
  
 
 /**
-* cleans out the lessons sensei content drip meta data to prepare for saving
+* cleans out the lessons existing drip meta data to prepare for saving
 * 
 * @since 1.0.0
 * @return void 
