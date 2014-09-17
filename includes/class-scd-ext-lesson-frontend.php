@@ -109,6 +109,9 @@ public function replace_lesson_content( $lesson ){
 
 	//get the compiled message text
 	$new_content = $this->get_drip_type_message( $lesson->ID );
+
+	// wrap the message in sensei notice
+	$new_content = '<div class="sensei-message info">' . $new_content . '</div>' ;
 	
 	/**
 	 * Filter a customise the message user will see when content is not available.
@@ -118,6 +121,7 @@ public function replace_lesson_content( $lesson ){
 	 * @param string        $drip_message the message
 	 */
 	$new_content= apply_filters( 'sensei_content_drip_lesson_message', $new_content );  
+
 	$lesson->post_content = $new_content;
 	$lesson->post_excerpt = $new_content;
 
