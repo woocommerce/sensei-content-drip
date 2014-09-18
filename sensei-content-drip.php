@@ -3,7 +3,7 @@
  * Plugin Name: Sensei Content Drip
  * Version: 1.0.0
  * Plugin URI: http://www.woothemes.com/
- * Description: 
+ * Description:  I will allow you to release sensei lesson content at a determined timee so you can control when students have access to the content.
  * Author: WooThemes
  * Author URI: http://www.woothemes.com/
  * Requires at least: 3.9
@@ -44,6 +44,7 @@ if ( ! function_exists( 'is_sensei_active' ) ) {
   }
 }
 
+
 if( is_sensei_active() ) {
 
 	require_once( 'includes/class-sensei-content-drip.php' );
@@ -57,6 +58,41 @@ if( is_sensei_active() ) {
 	function Sensei_Content_Drip() {
 		return Sensei_Content_Drip::instance( __FILE__, '1.0.0' );
 	}
+	// load this plugin only after sensei becomes available globaly
+	add_action('plugins_loaded', 'Sensei_Content_Drip') ;
+	
+	/**
+	* Plugin Activation
+	*/
+	register_activation_hook( __FILE__, 'sensei_content_drip_activation' );
 
-	Sensei_Content_Drip();
-}
+	function sensei_content_drip_activation(){
+		wp_schedule_event( time(), 'daily', 'woo_scd_daily_cron_hook' );
+	}// end sensei_content_drip_activation
+
+
+	/**
+	 * Plugin Deactivation
+	 */
+	register_deactivation_hook( __FILE__, 'sensei_content_drip_deactivation' );
+
+	function sensei_content_drip_deactivation() {
+		
+		$hook = 'woo_scd_daily_cron_hook';
+		// get all system crons
+	    $crons = _get_cron_array();
+	    if ( empty( $crons ) ) {
+	        return;
+	    }
+
+	    // loop through all of theme and remove this plugin's cron 
+	    foreach( $crons as $timestamp => $cron ) {
+	        if ( ! empty( $cron[$hook] ) )  {
+	            unset( $crons[$timestamp][$hook] );
+	        }
+	    }
+	    _set_cron_array( $crons );
+	    
+	} // end sensei_content_drip_deactivation
+
+} // end if is_sensei_active()
