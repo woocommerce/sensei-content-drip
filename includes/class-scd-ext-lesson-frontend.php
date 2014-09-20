@@ -46,8 +46,11 @@ protected $drip_message;
 */
 public function __construct(){
 	global $woo_sensei_content_drip;
-	// set a formated string
-	$this->message_format =  $woo_sensei_content_drip->settings->get_setting( 'scd_drip_message' ) ; 
+	
+	// set a formated  message shown to user when the content has not yet dripped
+	$defaultMessage = 'This lesson will only become available on [date].' ;
+	$settingsMessage =  $woo_sensei_content_drip->settings->get_setting( 'scd_drip_message' ) ; 
+	$this->message_format = empty( $settingsMessage ) ? $defaultMessage : $settingsMessage ; 
 
 	// hook int all post of type lesson to determin if they are 
 	add_filter('the_posts', array( $this, 'lessons_drip_filter' ), 1 );
@@ -281,9 +284,6 @@ public function is_dynamic_drip_active( $lesson_id ){
 * @return bool $dripped
 */
 public function get_drip_type_message( $lesson_id ){
-	
-	// setup the default message in case no data was paassed in
-	$message = 'Content hidden by the author of this lesson' ;
 
 	//check that the correct data has been passed
 	if( empty( $lesson_id) ){
