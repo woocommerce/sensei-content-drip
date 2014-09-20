@@ -153,7 +153,7 @@ public function content_drip_lesson_meta_content(){
 
 	//show nothing  if no course is selecteda
 	if( empty( $current_lesson_course ) ){
-		echo '<p>'. __( 'In oreder to use the content drip settings, please select a course for this lesson.' ) . '</p>';
+		echo '<p>'. __( 'In order to use the content drip settings, please select a course for this lesson.' ) . '</p>';
 		// esit without displaying the rest of the settings
 		return;
 	}
