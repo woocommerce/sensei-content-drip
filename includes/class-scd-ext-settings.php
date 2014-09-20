@@ -76,7 +76,7 @@ public function register_settings_fields( $sensei_settings_fields ){
 									'name' => __( 'Drip Message', 'sensei-content-drip' ),
 									'description' => __( 'The user will see this when the content is not yet available. The [date] shortcode will be replaced by the actual date' ),
 									'type' => 'textarea',
-									'default' => 'This lesson will become available on [date]',
+									'default' => 'This lesson will only become available on [date].',
 									'section' => 'sensei-content-drip-settings'
 									);
 
