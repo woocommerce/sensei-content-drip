@@ -54,9 +54,12 @@ public function manual_drip_interface(){
 
 ?>
 	<div class="postbox">
-			<h3><span><?php _e( 'Manual Learner Lesson Drip', 'sensei-content-drip' ); ?></span></h3>
+			<h3><span><?php _e( 'Manual Content Drip', 'sensei-content-drip' ); ?></span></h3>
 			<div class="inside">
 				<form name="scd_manual_drip_learners_lesson" action="" method="post">
+					<p>
+						<?php _e( 'Use this to give a learner access to any lesson, overriding the content drip schedule.', 'sensei-content-drip' ); ?>
+					</p>	
 					<p>
 						<select name="scd_select_learner" id="scd_select_learner">
 							<option value=""><?php _e( 'Select learner', 'sensei-content-drip' ); ?></option>
@@ -93,7 +96,7 @@ public function manual_drip_interface(){
 							?>
 						</select>
 					</p>
-					<p><?php submit_button( __( 'Add Manual Drip', 'sensei-content-drip' ), 'primary', 'scd_log_learner_lesson_manual_drip_submit', false, array() ); ?></p>
+					<p><?php submit_button( __( 'Give Access', 'sensei-content-drip' ), 'primary', 'scd_log_learner_lesson_manual_drip_submit', false, array() ); ?></p>
 					<?php echo wp_nonce_field( 'scd_log_learner_lesson_manual_drip', 'scd_learner_lesson_manual_drip' ); ?>
 				</form>
 			</div>
