@@ -54,13 +54,12 @@ class Scd_Ext_settings {
 
         $scd_tab  = array(
                             'name' 			=> __( 'Content Drip', 'sensei-content-drip' ),
-                            'description'	=> __( 'Optional settings for the Contentd Drip extension', 'sensei-content-drip' )
+                            'description'	=> __( 'Optional settings for the Content Drip extension', 'sensei-content-drip' )
                     );
 
         $sensei_settings_tabs['sensei-content-drip-settings'] = $scd_tab;
 
         return $sensei_settings_tabs;
-
     }// end register_settings_tab
 
 
@@ -93,7 +92,7 @@ class Scd_Ext_settings {
                                     'name' => __( 'Email Footer', 'sensei-content-drip' ),
                                     'description' => __( 'The text below the list of lessons dripping today' ),
                                     'type' => 'textarea',
-                                    'default' => 'Visit the online course today to srart taking the lessons: [home_url]',
+                                    'default' => 'Visit the online course today to start taking the lessons: [home_url]',
                                     'section' => 'sensei-content-drip-settings'
                                     );
 
