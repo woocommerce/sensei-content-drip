@@ -90,7 +90,7 @@ public function lessons_drip_filter( $lessons ){
 	foreach ($lessons as $lesson) {
 		if ( $this->is_lesson_drip_active( $lesson->ID ) ){
 			// change the lesson content accordingly
-			// todo : pass in the content instad of the whole lesson so tha function simply does one thing
+			// todo : pass in the content instead of the whole lesson so tha function simply does one thing
 			$lesson =  $this->replace_lesson_content( $lesson );
 		}
 	}
@@ -100,11 +100,11 @@ public function lessons_drip_filter( $lessons ){
 
 /**
 * Replace post content with settings or filtered message
-* This function actson the title , content , ebmbeded video and quiz
+* This function acts on the title , content , embedded video and quiz
 * 
 * @since 1.0.0
 * @param  WP_Post $lesson
-* @param  string $formatted_message a varialbe containing shortcodes options: [date] 
+* @param  string $formatted_message a variable containing shortcodes options: [date]
 * @return WP_Post $lesson
 */
 

@@ -80,22 +80,22 @@ class Scd_Ext_settings {
                                         'section' => 'sensei-content-drip-settings'
                                         );
 
-            // Email related settings
-            $sensei_settings_fields['scd_email_body_notice_html'] = array(
-                                        'name' => __( 'Email Before Lessons', 'sensei-content-drip' ),
-                                        'description' => __( 'The text before the list of lessons dripping today.' ),
-                                        'type' => 'textarea',
-                                        'default' => 'The following lessons will become available today:',
-                                        'section' => 'sensei-content-drip-settings'
-                                        );
+        // Email related settings
+        $sensei_settings_fields['scd_email_body_notice_html'] = array(
+                                    'name' => __( 'Email Before Lessons', 'sensei-content-drip' ),
+                                    'description' => __( 'The text before the list of lessons dripping today.' ),
+                                    'type' => 'textarea',
+                                    'default' => 'The following lessons will become available today:',
+                                    'section' => 'sensei-content-drip-settings'
+                                    );
 
-            $sensei_settings_fields['scd_email_footer_html'] = array(
-                                        'name' => __( 'Email Footer', 'sensei-content-drip' ),
-                                        'description' => __( 'The text below the list of lessons dripping today' ),
-                                        'type' => 'textarea',
-                                        'default' => 'Visit the online course today to srart taking the lessons: [home_url]',
-                                        'section' => 'sensei-content-drip-settings'
-                                        );
+        $sensei_settings_fields['scd_email_footer_html'] = array(
+                                    'name' => __( 'Email Footer', 'sensei-content-drip' ),
+                                    'description' => __( 'The text below the list of lessons dripping today' ),
+                                    'type' => 'textarea',
+                                    'default' => 'Visit the online course today to srart taking the lessons: [home_url]',
+                                    'section' => 'sensei-content-drip-settings'
+                                    );
 
         return $sensei_settings_fields;
 

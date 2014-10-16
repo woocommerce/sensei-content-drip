@@ -1,4 +1,6 @@
 <?php
+//security first
+if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Functions used by plugins
  */
