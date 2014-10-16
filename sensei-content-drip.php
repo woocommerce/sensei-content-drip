@@ -94,5 +94,4 @@ if( is_sensei_active() ) {
 	    _set_cron_array( $crons );
 	    
 	} // end sensei_content_drip_deactivation
-
 } // end if is_sensei_active()

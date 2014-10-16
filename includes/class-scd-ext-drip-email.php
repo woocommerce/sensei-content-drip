@@ -14,14 +14,15 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * TABLE OF CONTENTS
  *
- * - __construct()
- * - daily_drip_lesson_email_run()
- * - get_users_lessons_dripping_today()
- * - combine_users_lessons()
- * - attach_users()
- * - filter_lessons_dripping_today()
- * - send_single_email_drip_notifications
- * - send_bulk_drip_notifications
+ * __construct
+ * daily_drip_lesson_email_run
+ * get_users_lessons_dripping_today
+ * combine_users_lessons
+ * attach_users
+ * filter_lessons_dripping_today
+ * is_dripping_today
+ * send_bulk_drip_notifications
+ * send_single_email_drip_notifications
  */
 class Scd_Ext_drip_email {
 

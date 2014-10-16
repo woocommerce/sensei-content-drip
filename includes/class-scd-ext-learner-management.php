@@ -13,11 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 1.0.0
  *
  * TABLE OF CONTENTS
- *
- * - __construct()
- * - manipulte_drip_type
- * - is_manual_drip_active
- * - manual_drip_interface
+ * 
+ * __construct
+ * manual_drip_interface
+ * log_manual_drip_activity
+ * scd_manual_drip_admin_notice
+ * manipulate_drip_type
  */
 
 class Scd_Ext_Learner_Management{
@@ -27,7 +28,7 @@ class Scd_Ext_Learner_Management{
 *
 */
 public function __construct(){
-	add_filter('scd_is_drip_active', array( $this, 'manipulte_drip_type' ), 1 ,2);
+	add_filter('scd_is_drip_active', array( $this, 'manipulate_drip_type' ), 1 ,2);
 
 	if(is_admin() ){
 		// add the interface
@@ -213,11 +214,11 @@ public function scd_manual_drip_admin_notice() {
 }// end scd_manual_drip_admin_notice
 
 /**
-* manipulte_drip_type() posibly change the drip active status
+* manipulate_drip_type() possibly change the drip active status
 *
 * @return void
 */
-public function manipulte_drip_type( $drip_status ,  $lesson_id ){
+public function manipulate_drip_type( $drip_status ,  $lesson_id ){
  	//	get the current user id
  	$current_user = wp_get_current_user();
  	if( 'WP_User' != get_class( $current_user ) ){
@@ -231,13 +232,13 @@ public function manipulte_drip_type( $drip_status ,  $lesson_id ){
 	// get the sensei activity, false asks to only return the comment count
 	$activity = WooThemes_Sensei_Utils::sensei_check_for_activity( $args ,  false );
 
-	// the acticity is not empty change the drip type
+	// the activity is not empty change the drip type
  	if( ! empty( $activity ) && $activity > 0 ){
  		$drip_status = false;
  	}
 
 	return $drip_status;
-}// end manipulte_drip_type
+}// end manipulate_drip_type
 
 
 

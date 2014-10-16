@@ -14,10 +14,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 1.0.0
  *
  * TABLE OF CONTENTS
- *
- * - __construct()
- * - hide_lesson_content( $lesson_id , $new_content)
- * - is_lesson_dripped( $lesson )
+ * __construct
+ * lessons_drip_filter
+ * replace_lesson_content
+ * is_lesson_drip_active
+ * is_absolute_drip_active
+ * is_dynamic_drip_active
+ * get_drip_type_message
+ * generate_absolute_drip_type_message
+ * generate_dynamic_drip_type_message
+ * get_date_format_string
  */
 
 class Scd_ext_lesson_frontend {

@@ -13,7 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * @since 1.0.0
  *
  * TABLE OF CONTENTS
- *
+ * get_dripping_lessons_by_type
+ * get_all_dripping_lessons
+ * get_lesson_drip_date
+ * get_lesson_drip_type
+ * get_course_users
  *
  */
 class Sensei_Scd_Extension_Utils {
