@@ -116,7 +116,7 @@ class Sensei_Content_Drip {
 		if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  } 
 		if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  } 
 		if( $this->_load_class_file('drip-email') ) { $this->drip_email = new Scd_Ext_drip_email();  } 
-		if( $this->_load_class_file('learner-management') ) { $this->learner_managment = new Scd_Ext_Learner_Management();  } 
+		if( $this->_load_class_file('manual-drip') ) { $this->manual_drip = new Scd_Ext_Manual_Drip();  }
 
 	} // End __construct()
 
@@ -175,6 +175,14 @@ class Sensei_Content_Drip {
 			wp_register_script( $this->_token . '-lesson-admin-script', esc_url( $this->assets_url ). 'js/admin-lesson'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'backbone' ), $this->_version , true);
 			wp_enqueue_script( $this->_token . '-lesson-admin-script' );
 		}
+
+        //load the learner management functionality script
+        if( 'sensei_page_sensei_learners' === $hook &&  isset( $_GET['course_id'] ) && isset( $_GET['view'] ) && 'learners'=== $_GET['view']  ){
+// TODO minimies this script
+            wp_register_script( $this->_token . '-admin-manual-drip-script', esc_url( $this->assets_url ). 'js/admin-manual-drip'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'backbone' ), $this->_version , true);
+            wp_enqueue_script( $this->_token . '-admin-manual-drip-script' );
+        }
+
 	} // End admin_enqueue_scripts()
 
 	/**
