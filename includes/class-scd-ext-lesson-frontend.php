@@ -291,6 +291,8 @@ public function is_dynamic_drip_active( $lesson_id ){
 */
 public function get_drip_type_message( $lesson_id ){
 
+    $message = '';
+
 	//check that the correct data has been passed
 	if( empty( $lesson_id) ){
 		// just rerturn the simple message as the exact message can not be dtermined without the ID
