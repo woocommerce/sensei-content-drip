@@ -120,35 +120,6 @@ public function manual_drip_interface(){
 					<?php echo wp_nonce_field( 'scd_log_learner_lesson_manual_drip', 'scd_learner_lesson_manual_drip' ); ?>
 				</form>
 			</div>
-
-	<script>
-	<!--
-    // TODO: move this to the js file and make sure to check for select2 and use it
-	( function( $ ){
-		    $('select#scd_select_learner').chosen();
-		    $('select#scd_select_course_lesson').chosen();
-
-		    $('#scd_log_learner_lesson_manual_drip_submit').hide();
-		    $('#scd_select_course_lesson_chosen').hide();
-
-		    $('select#scd_select_learner').on( 'change', function(e){
-		    	 
-			    slectedValue = 	$(this).val();
-
-			    if( $.isNumeric( slectedValue ) ){
-			    	// show the list of course lesson and enable the button
-			    	$('#scd_log_learner_lesson_manual_drip_submit').show();
-		    		$('#scd_select_course_lesson_chosen').show();
-			    }else{
-			    	// hide the list of course lesson and disable the button
-			    	$('#scd_log_learner_lesson_manual_drip_submit').hide();
-		    		$('#scd_select_course_lesson_chosen').hide();
-			    }
-		    });
-
-	}( jQuery ) );
-	-->
-	</script>		
 	</div>
 <?php
 

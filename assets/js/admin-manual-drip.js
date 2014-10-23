@@ -23,6 +23,12 @@
         this.lessonSelect = this.$('#scd_select_course_lesson');
         this.button = this.$('#scd_log_learner_lesson_manual_drip_submit');
 
+        // initialize select 2
+        if( ! _.isUndefined( $.fn.select2 ) ){
+            this.learnerSelect.select2();
+            this.lessonSelect.select2().hide();
+        }
+
         // add event listener
         this.listenTo( this, 'lessonSelected' , this.getManualDripStatus);
 
