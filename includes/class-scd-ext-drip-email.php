@@ -342,7 +342,4 @@ class Scd_Ext_drip_email {
 
 		return ;
 	}// end bulk_email_drip_notifications
-
-	
-
 }// end Scd_Ext_drip_email
