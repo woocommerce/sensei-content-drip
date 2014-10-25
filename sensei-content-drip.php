@@ -1,4 +1,6 @@
 <?php
+//security first
+if ( ! defined( 'ABSPATH' ) ) exit;
 /*
  * Plugin Name: Sensei Content Drip
  * Version: 1.0.0
@@ -94,5 +96,4 @@ if( is_sensei_active() ) {
 	    _set_cron_array( $crons );
 	    
 	} // end sensei_content_drip_deactivation
-
 } // end if is_sensei_active()

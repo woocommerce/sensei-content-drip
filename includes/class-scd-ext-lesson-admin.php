@@ -13,15 +13,21 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 1.0.0
  *
  * TABLE OF CONTENTS
- *
- * - __construct()
- * - add_leson_content_drip_meta_box
- * - content_drip_lesson_meta_content( $lesson )
- * - save_course_drip_meta_box_data
+ * __construct
+ * add_leson_content_drip_meta_box
+ * add_column_heading
+ * add_column_data
+ * content_drip_lesson_meta_content
+ * get_course_lessons
+ * save_course_drip_meta_box_data
+ * lesson_admin_notices
+ * get_meta_field_keys
+ * save_lesson_drip_data
+ * get_lesson_drip_data
+ * delete_lesson_drip_data
  */
 
 class Scd_Ext_Lesson_Admin {
-
 /**
  * The token.
  * @var     string
