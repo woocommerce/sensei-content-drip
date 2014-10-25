@@ -84,7 +84,7 @@ class Scd_Ext_drip_email {
 	* 
 	* @return array $users_lessons  
 	*/
-	public function combine_users_lessons( $users_lessons_1 = [] ,  $users_lessons_2 = [] ){
+	public function combine_users_lessons( $users_lessons_1 ,  $users_lessons_2 ){
 		$combined = array();
 
 		// when both are emty exit, if only one is empty continue
