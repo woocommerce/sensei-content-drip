@@ -28,7 +28,7 @@ if ( ! function_exists( 'woothemes_queue_update' ) ) {
 /**
  * Plugin updates
  */
-woothemes_queue_update( plugin_basename( __FILE__ ), 'product_key', 'product_id' );
+woothemes_queue_update( plugin_basename( __FILE__ ), '8ee2cdf89f55727f57733133ccbbfbb0', '543363' );
 
 /**
  * Functions used by plugins
