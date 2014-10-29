@@ -1,4 +1,4 @@
-<?php  
+<?php
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
 /*
@@ -46,31 +46,30 @@ class Scd_Ext_drip_email {
 
 		if( !array( $users_lessons_dripping_today ) || empty( $users_lessons_dripping_today ) ){
 			// do nothing today
-			return; 
+			return;
 		}
 
 		// generate the email markup and send the notifications
 		$this->send_bulk_drip_notifications( $users_lessons_dripping_today );
-		
+
 	} // end daily_drip_lesson_email_run
 
 	/**
 	* Return the list of users with their dripping lesson:251s
-	* 
+	*
 	* @return array $users a list of users with a sub array of lessons
 	*/
 	public function get_users_lessons_dripping_today(){
-		global $woo_sensei_content_drip;
 
 		// get the lesson by the type of drip content
-		$all_dynamic_lessons = $woo_sensei_content_drip->utils->get_dripping_lessons_by_type('dynamic');
-		$all_absolute_lessons = $woo_sensei_content_drip->utils->get_dripping_lessons_by_type('absolute');
+		$all_dynamic_lessons = Sensei_Content_Drip()->utils->get_dripping_lessons_by_type('dynamic');
+		$all_absolute_lessons = Sensei_Content_Drip()->utils->get_dripping_lessons_by_type('absolute');
 
 		// from each list get the lesson users and attache the lesson to the users
 		$dynamic_users_lessons = $this->attach_users( $all_dynamic_lessons );
 		$absolute_users_lessons = $this->attach_users( $all_absolute_lessons );
 
-		// merge two users_lessons lists 
+		// merge two users_lessons lists
 		$all_users_lessons  = $this->combine_users_lessons( $dynamic_users_lessons , $absolute_users_lessons );
 
 		// remove all lessons not dripping today
@@ -81,8 +80,8 @@ class Scd_Ext_drip_email {
 
 	/**
 	* combine the users lessons arrays per user
-	* 
-	* @return array $users_lessons  
+	*
+	* @return array $users_lessons
 	*/
 	public function combine_users_lessons( $users_lessons_1 ,  $users_lessons_2 ){
 		$combined = array();
@@ -110,16 +109,15 @@ class Scd_Ext_drip_email {
 
 		return $combined;
 	}// end combine_users_lessons
-	
+
 	/**
-	* Find all the users for the givven lessons. Note lessons without courses will be 
-	* exluded. The only way to find users per course is via 
+	* Find all the users for the givven lessons. Note lessons without courses will be
+	* exluded. The only way to find users per course is via
 	*
-	* @param array $lessons 
+	* @param array $lessons
 	* @return array $users_lessons
 	*/
 	public function attach_users( $lessons ){
-		global $woo_sensei_content_drip;
 
 		$users_lessons = array();
 		$courses_users = array();
@@ -129,70 +127,69 @@ class Scd_Ext_drip_email {
 			return array();
 		}
 
-		foreach( $lessons as $lesson_id ) {			
+		foreach( $lessons as $lesson_id ) {
 				// get the lessons course
 				$course_id = get_post_meta( $lesson_id, '_lesson_course', true );
-	
+
 				// a luesson must have a course for the rest to work
 				if( empty( $course_id ) ){
 					continue;
 				}
 
 				// get all users in this course id
-				$course_users = $woo_sensei_content_drip->utils->get_course_users( $course_id );
+				$course_users = Sensei_Content_Drip()->utils->get_course_users( $course_id );
 
 				if( ! empty( $course_users )  ){
 					// loop through each of the users for this course and append the lesson id to the user
 					foreach( $course_users as $user_id ) {
-						$users_lessons[$user_id][] = $lesson_id; 
+						$users_lessons[$user_id][] = $lesson_id;
 					}
 				}
 
 		} // for each
 		return $users_lessons;
 
-	}// end get_users_lessons. 
+	}// end get_users_lessons.
 
 
 	/**
 	* loop through each users lessons and determine if they're dripping today.
 	*
 	* @param array $users_lessons
-	* @return array $new_users_courses_lessons 
+	* @return array $new_users_courses_lessons
 	*/
 	function filter_lessons_dripping_today( $users_lessons ){
 
 		// setup return array
 		$users_dripping_lessons = array();
 
-		foreach( $users_lessons as $user_id => $lessons  ) {			
+		foreach( $users_lessons as $user_id => $lessons  ) {
 			foreach( $lessons as $lesson_id ) {
-					// if the lesson is dripping today add the details to 
+					// if the lesson is dripping today add the details to
 					if( $this->is_dripping_today( $lesson_id , $user_id) ){
 						$users_dripping_lessons[ $user_id ][] =  $lesson_id;
 					}// end if
 				}// end for each Lesson
 		} // end for $users_lessons
-	    
+
 		return $users_dripping_lessons;
 	}// end filter_lessons_dripping_today
 
 	/**
 	* is_dripping_tody. determine if the lesson is dripping today
 	*
-	* @param string $lesson_id 
+	* @param string $lesson_id
 	* @return bool  dripping_today
 	*/
 	function is_dripping_today( $lesson_id , $user_id ='' ){
-		global $woo_sensei_content_drip;
 
-		// setup variables needed 
+		// setup variables needed
 		$dripping_today = false;
 		$today = new DateTime( date('Y-m-d') ); // get the date ignoring H:M:S
-		
+
 		// get the lesson drip date
-		$lesson_drip_date = $woo_sensei_content_drip->utils->get_lesson_drip_date( $lesson_id , $user_id);
-		
+		$lesson_drip_date = Sensei_Content_Drip()->utils->get_lesson_drip_date( $lesson_id , $user_id);
+
 		// if no lesson drip date could be found exit
 		if( !$lesson_drip_date ){
 			return false;
@@ -200,7 +197,7 @@ class Scd_Ext_drip_email {
 
 		// compare the lesson date with today
 		$offset = $today->diff( $lesson_drip_date );
-		
+
 		// check if today == $lesson_drip_date
 		// the moment we pickup its not dripping avoid checking the rest
 		// of the values
@@ -209,8 +206,8 @@ class Scd_Ext_drip_email {
 		foreach ($offset as $key => $value) {
 
 			if( !$dripping_today_flag ){
-				// do not exutuing anything else as this lesson 
-				// has already been defined as not dripping based on 
+				// do not exutuing anything else as this lesson
+				// has already been defined as not dripping based on
 				// a previous time interfa unit ( y, m , d )
 				continue;
 			}
@@ -222,11 +219,11 @@ class Scd_Ext_drip_email {
 			}
 		} // end for each
 
-		// if the flag was not triggered to be false 
+		// if the flag was not triggered to be false
 		if( $dripping_today_flag ){
 			$dripping_today = true;
 		}
-		
+
 		return $dripping_today;
 	}// end is_dripping_tody
 
@@ -266,18 +263,18 @@ class Scd_Ext_drip_email {
 	*
 	* @param string $user_id
 	* @param string $lessons
-	* @param array $email_wrappers 
+	* @param array $email_wrappers
 	* @return void
 	*/
 	public function send_single_email_drip_notifications( $user_id, $lessons, $email_wrappers ){
-		global $woothemes_sensei , $sensei_email_data, $woo_sensei_content_drip;
+		global $woothemes_sensei , $sensei_email_data;
 
 		if( empty( $user_id ) || empty( $lessons ) || ! is_array( $lessons ) ){
 			return ;
 		}
 
 		//collect all information needed for sensing
-		$email_subject = 'Lessons dripping today '; // should be ins ettings 
+		$email_subject = 'Lessons dripping today '; // should be ins ettings
 
 		// get the users details
 		$user = get_user_by('id', $user_id );
@@ -291,13 +288,13 @@ class Scd_Ext_drip_email {
 		// loadd all the array keys from email pieces into variables:
 		// $wrap_header
 		// $wrap_footer
-		extract( $email_wrappers );	
+		extract( $email_wrappers );
 
 
-		// get the settings values 
+		// get the settings values
 
-		$settings['email_body_notice'] = $woo_sensei_content_drip->settings->get_setting('scd_email_body_notice_html') ; 
-		$settings['email_footer'] = $woo_sensei_content_drip->settings->get_setting( 'scd_email_footer_html' );
+		$settings['email_body_notice'] = Sensei_Content_Drip()->settings->get_setting('scd_email_body_notice_html') ;
+		$settings['email_footer'] = Sensei_Content_Drip()->settings->get_setting( 'scd_email_footer_html' );
 
 		// check for empty settings and setup the defaults
 		if( empty( $settings['email_body_notice'] ) ){
@@ -322,10 +319,10 @@ class Scd_Ext_drip_email {
 			// get the post type object for this post id
 			$lesson = get_post( $lesson_id );
 
-			// setup the lesson line item 
+			// setup the lesson line item
 			$lesson_title = $lesson->post_title;
 			$lesson_url = get_permalink( $lesson_id );
-			
+
 			$lesson_link = '<a href="' . $lesson_url . '">' . $lesson_title . '</a>';
 			$lesson_line_item = '<li>'. $lesson_link .'</li>';
 
