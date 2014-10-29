@@ -5,10 +5,10 @@ if ( !$_tests_dir ) $_tests_dir = '/tmp/wordpress-tests-lib';
 
 require_once $_tests_dir . '/includes/functions.php';
 
-function _manually_load_plugin() {
+function _manually_load_plugins() {
+	require dirname( __FILE__ ) . '/../../sensei/woothemes-sensei.php';
 	require dirname( __FILE__ ) . '/../sensei-content-drip.php';
 }
-tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
+tests_add_filter( 'muplugins_loaded', '_manually_load_plugins' );
 
 require $_tests_dir . '/includes/bootstrap.php';
-
