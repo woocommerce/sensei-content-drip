@@ -98,7 +98,6 @@ public function add_column_heading( $columns ){
  * @return void
  */
 public function add_column_data ( $column_key, $lesson_id ) {
-	global $woo_sensei_content_drip;
 
 	// exit early if this is not the column we want
 	if( 'scd_drip_schedule' != $column_key ){
@@ -106,7 +105,7 @@ public function add_column_data ( $column_key, $lesson_id ) {
 	}
 
 	// get the lesson drip type
-	$drip_type = $woo_sensei_content_drip->utils->get_lesson_drip_type( $lesson_id );
+	$drip_type = Sensei_Content_Drip()->utils->get_lesson_drip_type( $lesson_id );
 
 	//generate the messages
 	if('none'==$drip_type ){

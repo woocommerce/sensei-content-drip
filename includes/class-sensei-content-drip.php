@@ -117,7 +117,7 @@ class Sensei_Content_Drip {
 		if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  } 
 		if( $this->_load_class_file('drip-email') ) { $this->drip_email = new Scd_Ext_drip_email();  } 
 		if( $this->_load_class_file('manual-drip') ) { $this->manual_drip = new Scd_Ext_Manual_Drip();  }
-
+		 fwrite(STDERR, print_r('ALL CLASSES LOADED ', TRUE));
 	} // End __construct()
 
 	/**
