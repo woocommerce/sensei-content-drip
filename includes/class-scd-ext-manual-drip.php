@@ -63,13 +63,12 @@ public function __construct( $scd_token = 'sensei_content_drip' ){
 * @return void
 */
 public function manual_drip_interface(){
-	global $woo_sensei_content_drip;
 
 	$course_id = $_GET['course_id'];
 	
 	// get al the users taking this course
-	$course_users = $woo_sensei_content_drip->utils->get_course_users( $course_id );
-	$course_lessons = $woo_sensei_content_drip->lesson_admin->get_course_lessons( $course_id );
+	$course_users = Sensei_Content_Drip()->utils->get_course_users( $course_id );
+	$course_lessons = Sensei_Content_Drip()->lesson_admin->get_course_lessons( $course_id );
 
 ?>
 	<div class="postbox scd-learner-managment manual-content-drip">

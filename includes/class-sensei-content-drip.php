@@ -81,10 +81,6 @@ class Sensei_Content_Drip {
 	 * @return  void
 	 */
 	public function __construct ( $file, $version = '1.0.0' ) {
-		global $woo_sensei_content_drip;
-
-		// create a global instace for further reference to this main class
-		$woo_sensei_content_drip =  $this;
 
 		$this->_version = $version;
 		$this->_token = 'sensei_content_drip';
@@ -111,13 +107,12 @@ class Sensei_Content_Drip {
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
 
 		// include classes
-		if( $this->_load_class_file('settings') ) { $this->settings = new Scd_Ext_settings();  } 
-		if( $this->_load_class_file('utilities') ) { $this->utils = new Sensei_Scd_Extension_Utils();  } 
-		if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  } 
-		if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  } 
-		if( $this->_load_class_file('drip-email') ) { $this->drip_email = new Scd_Ext_drip_email();  } 
+		if( $this->_load_class_file('settings') ) { $this->settings = new Scd_Ext_settings();  }
+		if( $this->_load_class_file('utilities') ) { $this->utils = new Sensei_Scd_Extension_Utils();  }
+		if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  }
+		if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  }
+		if( $this->_load_class_file('drip-email') ) { $this->drip_email = new Scd_Ext_drip_email();  }
 		if( $this->_load_class_file('manual-drip') ) { $this->manual_drip = new Scd_Ext_Manual_Drip();  }
-		 fwrite(STDERR, print_r('ALL CLASSES LOADED ', TRUE));
 	} // End __construct()
 
 	/**
@@ -128,7 +123,6 @@ class Sensei_Content_Drip {
 	 */
 	public function enqueue_styles () {
 		global $woothemes_sensei;
-
 		wp_register_style( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'css/frontend.css', array( $woothemes_sensei->token . '-frontend' ), $this->_version );
 		wp_enqueue_style( $this->_token . '-frontend' );
 	} // End enqueue_styles()
@@ -171,7 +165,6 @@ class Sensei_Content_Drip {
 		global $post;
 		//load the lesson idit/new screen script
 		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && ( !empty($post) && 'lesson' === $post->post_type) ){
-	
 			wp_register_script( $this->_token . '-lesson-admin-script', esc_url( $this->assets_url ). 'js/admin-lesson'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'backbone' ), $this->_version , true);
 			wp_enqueue_script( $this->_token . '-lesson-admin-script' );
 		}
@@ -280,7 +273,7 @@ class Sensei_Content_Drip {
 	}// end get_asset_url
 
 	/**
-	 * Load class and add them to the main class ass child objects sensei_content_drip->child 
+	 * Load class and add them to the main class ass child objects sensei_content_drip->child
 	 *
 	 * @access  protected
 	 * @since   1.0.0
@@ -297,17 +290,17 @@ class Sensei_Content_Drip {
 		$full_class_file_name = 'class-scd-ext-'.trim( $class ).'.php' ;
 		$file_path = $this->dir . '/includes/' . $full_class_file_name;
 
-		// check if the file exists 
-		if( '' == $full_class_file_name || 
-			empty( $full_class_file_name ) || 
+		// check if the file exists
+		if( '' == $full_class_file_name ||
+			empty( $full_class_file_name ) ||
 			! file_exists( $file_path ) ){
 			return false;
-		} 
+		}
 
 		// include the class file
 		require_once( realpath ( $file_path ) );
 
-		// succes indeed 
+		// succes indeed
 		return true;
 	}// end _load_class_file
 }// end class Sensei_Content_Drip
