@@ -285,14 +285,12 @@ class Scd_Ext_drip_email {
 			return ;
 		}
 
-		// loadd all the array keys from email pieces into variables:
+		// load all the array keys from email pieces into variables:
 		// $wrap_header
 		// $wrap_footer
 		extract( $email_wrappers );
 
-
 		// get the settings values
-
 		$settings['email_body_notice'] = Sensei_Content_Drip()->settings->get_setting('scd_email_body_notice_html') ;
 		$settings['email_footer'] = Sensei_Content_Drip()->settings->get_setting( 'scd_email_footer_html' );
 
@@ -302,7 +300,7 @@ class Scd_Ext_drip_email {
 		}
 
 		if( empty( $settings['email_footer'] ) ){
-			$settings['email_footer'] = 'Visit the online course today to srart taking the lessons: [home_url]';
+			$settings['email_footer'] = 'Visit the online course today to start taking the lessons: [home_url]';
 		}
 
 		// setup the  the message content
@@ -310,7 +308,7 @@ class Scd_Ext_drip_email {
 		$email_body_notice = '<p>'. $settings['email_body_notice'] . '</p>';
 		$email_body_lessons = '';
 		// get the footer from the settings and replace the shortcode [home_url] with the actual site url
-		$email_footer = '<p>'. str_ireplace('[home_url]'  , '<a href="'.home_url() .'" >'.home_url().'</a>' , $settings['email_footer'] ) . '</p>';
+		$email_footer = '<p>'. str_ireplace('[home_url]'  , '<a href="'.esc_attr( home_url() ) .'" >'.esc_html( home_url() ).'</a>' , $settings['email_footer'] ) . '</p>';
 
 		// loop through each lesson to get its title and relative url
 		$email_body_lessons .= '<p><ul>';
@@ -322,12 +320,11 @@ class Scd_Ext_drip_email {
 			// setup the lesson line item
 			$lesson_title = $lesson->post_title;
 			$lesson_url = get_permalink( $lesson_id );
-
-			$lesson_link = '<a href="' . $lesson_url . '">' . $lesson_title . '</a>';
+			$lesson_link = '<a href="' .esc_attr( $lesson_url ) . '">' . ecsc_html( $lesson_title ) . '</a>';
 			$lesson_line_item = '<li>'. $lesson_link .'</li>';
 
 			// append the li line item to the email body lessons
-			$email_body_lessons .= $lesson_line_item ;
+			$email_body_lessons .= $lesson_line_item;
 		}// end for each $lessons
 		$email_body_lessons .= '</ul></p>';
 

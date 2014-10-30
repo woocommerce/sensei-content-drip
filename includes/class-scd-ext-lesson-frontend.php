@@ -107,8 +107,7 @@ public function lessons_drip_filter( $lessons ){
 * @return WP_Post $lesson
 */
 
-public function replace_lesson_content( $lesson ){
-	$new_content = '';
+public function replace_lesson_content( $lesson ) {
 
 	// ensure all things are in place before proceeding
 	if( empty($lesson) || 'lesson' !== $lesson->post_type || empty( $lesson->ID ) ){
@@ -119,7 +118,7 @@ public function replace_lesson_content( $lesson ){
 	$new_content = $this->get_drip_type_message( $lesson->ID );
 
 	// wrap the message in sensei notice
-	$new_content = '<div class="sensei-message info">' . $new_content . '</div>' ;
+	$new_content = '<div class="sensei-message info">' . esc_html( $new_content ) . '</div>' ;
 	
 	/**
 	 * Filter a customise the message user will see when content is not available.
@@ -128,7 +127,7 @@ public function replace_lesson_content( $lesson ){
 	 *
 	 * @param string        $drip_message the message
 	 */
-	$new_content= apply_filters( 'sensei_content_drip_lesson_message', $new_content );  
+	$new_content= esc_html( apply_filters( 'sensei_content_drip_lesson_message', $new_content ) );
 
 	$lesson->post_content = $new_content;
 	$lesson->post_excerpt = $new_content;
@@ -144,7 +143,6 @@ public function replace_lesson_content( $lesson ){
 
 } // end replace_lesson_content
 
-
 /**
 * Check if  the lesson can be made available to the the user at this point
 * according to the drip meta data
@@ -153,7 +151,6 @@ public function replace_lesson_content( $lesson ){
 * @param  WP_Post $lesson 
 * @return bool $dripped
 */
-
 public function is_lesson_drip_active( $lesson_id ){
 
 	$dripped = false;
@@ -378,5 +375,4 @@ public function get_date_format_string(){
 	return apply_filters( 'scd_drip_message_date_format' , $date_format );
 
 }//end get_date_format
-
 } // Scd_ext_lesson_frontend class 

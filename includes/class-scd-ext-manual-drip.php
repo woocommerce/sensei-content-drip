@@ -84,7 +84,7 @@ public function manual_drip_interface(){
 							<?php 
 								// add the users as option
 								foreach( $course_users as $user_id ){
-									echo '<option value="' . $user_id . '" >';
+									echo '<option value="' . esc_attr( $user_id ) . '" >';
 
 									// get the users details
 									$user = get_user_by('id', $user_id );
@@ -92,7 +92,7 @@ public function manual_drip_interface(){
 									$last_name = $user->last_name;
 									$display_name = $user->display_name;
 
-									echo $first_name . ' ' . $last_name . ' ( ' . $display_name . ' ) ';
+									esc_html_e( $first_name . ' ' . $last_name . ' ( ' . $display_name . ' ) ' );
 									echo '</option>';	
 								} // end for each
 							?>
@@ -105,15 +105,15 @@ public function manual_drip_interface(){
 							<?php 
 								// add the users as option
 								foreach( $course_lessons as $lesson ){
-									echo '<option value="' . $lesson->ID . '" >';
+									echo '<option value="' . esc_attr( $lesson->ID ) . '" >';
 
 									// get the lesson title
-									echo $lesson->post_title;
+									echo esc_html( $lesson->post_title );
 									echo '</option>';	
 								} // end for each
 							?>
 						</select>
-                        <img src="<?php echo admin_url().'images/wpspin_light.gif';?>" class="loading hidden" style="margin-left: 0.5em;"/>
+                        <img src="<?php esc_attr_e( admin_url().'images/wpspin_light.gif' );?>" class="loading hidden" style="margin-left: 0.5em;"/>
 					</p>
 					<p><?php submit_button( __( 'Give Access', 'sensei-content-drip' ), 'primary', 'scd_log_learner_lesson_manual_drip_submit', false, array() ); ?></p>
 					<?php echo wp_nonce_field( 'scd_log_learner_lesson_manual_drip', 'scd_learner_lesson_manual_drip' ); ?>
@@ -121,10 +121,6 @@ public function manual_drip_interface(){
 			</div>
 	</div>
 <?php
-
-
-
-
 }// end manual_drip_interface
 
 /**
@@ -342,5 +338,3 @@ public function send_learner_lesson_manual_drip_status(){
     return;
 } // end send_learner_lesson_manual_drip_status
 }// end class  Scd_Ext_Manual_Drip
-
-	

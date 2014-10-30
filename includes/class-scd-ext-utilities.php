@@ -224,5 +224,4 @@ class Sensei_Scd_Extension_Utils {
 		return $course_users;
 
 	}// end get_course_users
-
 } // end class Sensei_Scd_Extension_Utils
