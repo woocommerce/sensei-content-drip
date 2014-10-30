@@ -63,13 +63,12 @@ public function __construct( $scd_token = 'sensei_content_drip' ){
 * @return void
 */
 public function manual_drip_interface(){
-	global $woo_sensei_content_drip;
 
 	$course_id = $_GET['course_id'];
 	
 	// get al the users taking this course
-	$course_users = $woo_sensei_content_drip->utils->get_course_users( $course_id );
-	$course_lessons = $woo_sensei_content_drip->lesson_admin->get_course_lessons( $course_id );
+	$course_users = Sensei_Content_Drip()->utils->get_course_users( $course_id );
+	$course_lessons = Sensei_Content_Drip()->lesson_admin->get_course_lessons( $course_id );
 
 ?>
 	<div class="postbox scd-learner-managment manual-content-drip">
@@ -85,7 +84,7 @@ public function manual_drip_interface(){
 							<?php 
 								// add the users as option
 								foreach( $course_users as $user_id ){
-									echo '<option value="' . $user_id . '" >';
+									echo '<option value="' . esc_attr( $user_id ) . '" >';
 
 									// get the users details
 									$user = get_user_by('id', $user_id );
@@ -93,7 +92,7 @@ public function manual_drip_interface(){
 									$last_name = $user->last_name;
 									$display_name = $user->display_name;
 
-									echo $first_name . ' ' . $last_name . ' ( ' . $display_name . ' ) ';
+									esc_html_e( $first_name . ' ' . $last_name . ' ( ' . $display_name . ' ) ' );
 									echo '</option>';	
 								} // end for each
 							?>
@@ -106,15 +105,15 @@ public function manual_drip_interface(){
 							<?php 
 								// add the users as option
 								foreach( $course_lessons as $lesson ){
-									echo '<option value="' . $lesson->ID . '" >';
+									echo '<option value="' . esc_attr( $lesson->ID ) . '" >';
 
 									// get the lesson title
-									echo $lesson->post_title;
+									echo esc_html( $lesson->post_title );
 									echo '</option>';	
 								} // end for each
 							?>
 						</select>
-                        <img src="<?php echo admin_url().'images/wpspin_light.gif';?>" class="loading hidden" style="margin-left: 0.5em;"/>
+                        <img src="<?php esc_attr_e( admin_url().'images/wpspin_light.gif' );?>" class="loading hidden" style="margin-left: 0.5em;"/>
 					</p>
 					<p><?php submit_button( __( 'Give Access', 'sensei-content-drip' ), 'primary', 'scd_log_learner_lesson_manual_drip_submit', false, array() ); ?></p>
 					<?php echo wp_nonce_field( 'scd_log_learner_lesson_manual_drip', 'scd_learner_lesson_manual_drip' ); ?>
@@ -122,10 +121,6 @@ public function manual_drip_interface(){
 			</div>
 	</div>
 <?php
-
-
-
-
 }// end manual_drip_interface
 
 /**
@@ -232,7 +227,9 @@ public function scd_manual_drip_admin_notice() {
 public function manipulate_drip_status( $hide_lesson_content ,  $lesson_id ){
  	//	get the current user id
  	$current_user = wp_get_current_user();
- 	if( 'WP_User' != get_class( $current_user ) ){
+    // return the default value if this is not a valid users
+    // or if the lesson has no drip set for this user
+ 	if( 'WP_User' != get_class( $current_user ) || !$hide_lesson_content ){
  		return $hide_lesson_content;
  	}
 	$user_id = $current_user->ID;
@@ -343,5 +340,3 @@ public function send_learner_lesson_manual_drip_status(){
     return;
 } // end send_learner_lesson_manual_drip_status
 }// end class  Scd_Ext_Manual_Drip
-
-	

@@ -76,7 +76,6 @@ class Sensei_Scd_Extension_Utils {
 	* @return DateTime  drip_date format yyyy-mm-dd
 	*/
 	public function get_lesson_drip_date( $lesson_id , $user_id = '' ){
-		global $woo_sensei_content_drip;
 		
 		//setup the basics, drip date default return will be false on error
 		$drip_date = false;
@@ -225,5 +224,4 @@ class Sensei_Scd_Extension_Utils {
 		return $course_users;
 
 	}// end get_course_users
-
 } // end class Sensei_Scd_Extension_Utils

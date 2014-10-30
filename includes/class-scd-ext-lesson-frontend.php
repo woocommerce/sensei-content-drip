@@ -51,11 +51,10 @@ protected $drip_message;
 * @uses add_filter
 */
 public function __construct(){
-	global $woo_sensei_content_drip;
 	
-	// set a formated  message shown to user when the content has not yet dripped
-	$defaultMessage = 'This lesson will only become available on [date].' ;
-	$settingsMessage =  $woo_sensei_content_drip->settings->get_setting( 'scd_drip_message' ) ; 
+	// set a formatted  message shown to user when the content has not yet dripped
+	$defaultMessage = __( 'This lesson will only become available on [date].', 'sensei-content-drip' ) ;
+	$settingsMessage =  Sensei_Content_Drip()->settings->get_setting( 'scd_drip_message' ) ; 
 	$this->message_format = empty( $settingsMessage ) ? $defaultMessage : $settingsMessage ; 
 
 	// hook int all post of type lesson to determin if they are 
@@ -107,9 +106,7 @@ public function lessons_drip_filter( $lessons ){
 * @param  string $formatted_message a variable containing shortcodes options: [date]
 * @return WP_Post $lesson
 */
-
-public function replace_lesson_content( $lesson ){
-	$new_content = '';
+public function replace_lesson_content( $lesson ) {
 
 	// ensure all things are in place before proceeding
 	if( empty($lesson) || 'lesson' !== $lesson->post_type || empty( $lesson->ID ) ){
@@ -120,7 +117,7 @@ public function replace_lesson_content( $lesson ){
 	$new_content = $this->get_drip_type_message( $lesson->ID );
 
 	// wrap the message in sensei notice
-	$new_content = '<div class="sensei-message info">' . $new_content . '</div>' ;
+	$new_content = '<div class="sensei-message info">' . esc_html( $new_content ) . '</div>' ;
 	
 	/**
 	 * Filter a customise the message user will see when content is not available.
@@ -129,7 +126,7 @@ public function replace_lesson_content( $lesson ){
 	 *
 	 * @param string        $drip_message the message
 	 */
-	$new_content= apply_filters( 'sensei_content_drip_lesson_message', $new_content );  
+	$new_content = apply_filters( 'sensei_content_drip_lesson_message', $new_content );
 
 	$lesson->post_content = $new_content;
 	$lesson->post_excerpt = $new_content;
@@ -145,7 +142,6 @@ public function replace_lesson_content( $lesson ){
 
 } // end replace_lesson_content
 
-
 /**
 * Check if  the lesson can be made available to the the user at this point
 * according to the drip meta data
@@ -154,7 +150,6 @@ public function replace_lesson_content( $lesson ){
 * @param  WP_Post $lesson 
 * @return bool $dripped
 */
-
 public function is_lesson_drip_active( $lesson_id ){
 
 	$dripped = false;
@@ -197,7 +192,6 @@ public function is_lesson_drip_active( $lesson_id ){
 * @return bool $active
 */
 public function is_absolute_drip_active( $lesson_id ){
-	global $woo_sensei_content_drip;
 
 	// setup the default drip status 
 	$drip_status = false;
@@ -207,7 +201,7 @@ public function is_absolute_drip_active( $lesson_id ){
 	$user_id = $current_user->ID;
 
 	// convert string dates to date ojbect
-	$lesson_drip_date = $woo_sensei_content_drip->utils->get_lesson_drip_date( $lesson_id , $user_id );
+	$lesson_drip_date = Sensei_Content_Drip()->utils->get_lesson_drip_date( $lesson_id , $user_id );
 	$today = new DateTime();
 
 	// compare dates
@@ -230,7 +224,7 @@ public function is_absolute_drip_active( $lesson_id ){
 * @return bool $active
 */
 public function is_dynamic_drip_active( $lesson_id ){
-	global $woothemes_sensei , $woo_sensei_content_drip;
+	global $woothemes_sensei;
 	// setup the default drip status 
 	$drip_status = false;
 
@@ -264,7 +258,7 @@ public function is_dynamic_drip_active( $lesson_id ){
 		return $drip_status;
 	}
 	
-	$lesson_becomes_available_date =  $woo_sensei_content_drip->utils->get_lesson_drip_date( $lesson_id , $user_id );
+	$lesson_becomes_available_date =  Sensei_Content_Drip()->utils->get_lesson_drip_date( $lesson_id , $user_id );
 		
 	// get todays date	
 	$today = new DateTime();	
@@ -348,7 +342,6 @@ public function generate_absolute_drip_type_message( $lesson_id ){
 * @return bool $dripped
 */
 public function generate_dynamic_drip_type_message( $lesson_id ){
-	global $woo_sensei_content_drip;
 
 	// get the user details
 	$current_user = wp_get_current_user();
@@ -356,7 +349,7 @@ public function generate_dynamic_drip_type_message( $lesson_id ){
 
 	$dynamic_drip_type_message = '';
 
-	$lesson_available_date = $woo_sensei_content_drip->utils->get_lesson_drip_date( $lesson_id , $user_id );
+	$lesson_available_date = Sensei_Content_Drip()->utils->get_lesson_drip_date( $lesson_id , $user_id );
  	
 	$formatted_date =  $lesson_available_date->format( $this->get_date_format_string() );
 
@@ -381,5 +374,4 @@ public function get_date_format_string(){
 	return apply_filters( 'scd_drip_message_date_format' , $date_format );
 
 }//end get_date_format
-
 } // Scd_ext_lesson_frontend class 

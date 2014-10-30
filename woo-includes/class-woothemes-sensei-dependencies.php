@@ -19,7 +19,6 @@ class WooThemes_Sensei_Dependencies {
 	}
 
 	public static function sensei_active_check() {
-
 		if ( ! self::$active_plugins ) self::init();
 
 		return in_array( 'woothemes-sensei/woothemes-sensei.php', self::$active_plugins ) || array_key_exists( 'woothemes-sensei/woothemes-sensei.php', self::$active_plugins ) || in_array( 'sensei/woothemes-sensei.php', self::$active_plugins ) || array_key_exists( 'sensei/woothemes-sensei.php', self::$active_plugins );

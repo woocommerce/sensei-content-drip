@@ -81,11 +81,6 @@ class Sensei_Content_Drip {
 	 * @return  void
 	 */
 	public function __construct ( $file, $version = '1.0.0' ) {
-		global $woo_sensei_content_drip;
-
-		// create a global instace for further reference to this main class
-		$woo_sensei_content_drip =  $this;
-
 		$this->_version = $version;
 		$this->_token = 'sensei_content_drip';
 
@@ -110,14 +105,8 @@ class Sensei_Content_Drip {
 		$this->load_plugin_textdomain ();
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
 
-		// include classes
-		if( $this->_load_class_file('settings') ) { $this->settings = new Scd_Ext_settings();  } 
-		if( $this->_load_class_file('utilities') ) { $this->utils = new Sensei_Scd_Extension_Utils();  } 
-		if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  } 
-		if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  } 
-		if( $this->_load_class_file('drip-email') ) { $this->drip_email = new Scd_Ext_drip_email();  } 
-		if( $this->_load_class_file('manual-drip') ) { $this->manual_drip = new Scd_Ext_Manual_Drip();  }
-
+		// Load and initialize classes
+        add_action( 'init', array( $this, 'initialize_classes' ), 0 );
 	} // End __construct()
 
 	/**
@@ -128,7 +117,6 @@ class Sensei_Content_Drip {
 	 */
 	public function enqueue_styles () {
 		global $woothemes_sensei;
-
 		wp_register_style( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'css/frontend.css', array( $woothemes_sensei->token . '-frontend' ), $this->_version );
 		wp_enqueue_style( $this->_token . '-frontend' );
 	} // End enqueue_styles()
@@ -171,7 +159,6 @@ class Sensei_Content_Drip {
 		global $post;
 		//load the lesson idit/new screen script
 		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && ( !empty($post) && 'lesson' === $post->post_type) ){
-	
 			wp_register_script( $this->_token . '-lesson-admin-script', esc_url( $this->assets_url ). 'js/admin-lesson'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'backbone' ), $this->_version , true);
 			wp_enqueue_script( $this->_token . '-lesson-admin-script' );
 		}
@@ -225,8 +212,9 @@ class Sensei_Content_Drip {
 	 * @return Main Sensei_Content_Drip instance
 	 */
 	public static function instance ( $file, $version = '1.0.0' ) {
-		if ( is_null( self::$_instance ) )
+		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self( $file, $version );
+		}
 		return self::$_instance;
 	} // End instance()
 
@@ -264,7 +252,7 @@ class Sensei_Content_Drip {
 	 * @since   1.0.0
 	 * @return  void
 	 */
-	private function _log_version_number () {
+	private function _log_version_number() {
 		update_option( $this->_token . '_version', $this->_version );
 	}// end _log_version_number
 
@@ -279,35 +267,46 @@ class Sensei_Content_Drip {
 		return $this->asset_url;
 	}// end get_asset_url
 
-	/**
-	 * Load class and add them to the main class ass child objects sensei_content_drip->child 
-	 *
-	 * @access  protected
-	 * @since   1.0.0
-	 * @param   string $class
-	 * @return  void
-	 */
-	private function _load_class_file( $class ) {
+    /**
+     * Initialize classed need needed within this pluin
+     *
+     * @access  protected
+     * @since   1.0.0
+     * @param   string $class
+     * @return  void
+     */
+    public function initialize_classes() {
+        $classes = array('settings',
+                        'utilities',
+                        'lesson-frontend',
+                        'lesson-admin',
+                        'drip-email',
+                        'manual-drip');
 
-		if( '' == $class || empty( $class ) ){
-			return false;
-		}
+        foreach( $classes as $class_id ) {
+            // build the full class file name and path
+            $full_class_file_name = 'class-scd-ext-'.trim( $class_id ).'.php' ;
 
-		// build the full class file name and path
-		$full_class_file_name = 'class-scd-ext-'.trim( $class ).'.php' ;
-		$file_path = $this->dir . '/includes/' . $full_class_file_name;
+            $file_path = $this->dir . '/includes/' . $full_class_file_name;
 
-		// check if the file exists 
-		if( '' == $full_class_file_name || 
-			empty( $full_class_file_name ) || 
-			! file_exists( $file_path ) ){
-			return false;
-		} 
+            // check if the file exists
+            if( '' == $full_class_file_name ||
+                empty( $full_class_file_name ) ||
+                ! file_exists( $file_path ) ){
+                    continue;
+            }
 
-		// include the class file
-		require_once( realpath ( $file_path ) );
+            // include the class file
+            require_once( realpath ( $file_path ) );
 
-		// succes indeed 
-		return true;
-	}// end _load_class_file
+        }// end for each
+
+        // instantiate the classes
+        $this->settings = new Scd_Ext_settings();
+        $this->utils = new Sensei_Scd_Extension_Utils();
+        $this->lesson_frontend = new Scd_ext_lesson_frontend();
+        $this->lesson_admin = new Scd_ext_lesson_admin();
+        $this->drip_email = new Scd_Ext_drip_email();
+        $this->manual_drip = new Scd_Ext_Manual_Drip();
+    }// end _initialize_classes
 }// end class Sensei_Content_Drip

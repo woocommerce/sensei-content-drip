@@ -98,7 +98,6 @@ public function add_column_heading( $columns ){
  * @return void
  */
 public function add_column_data ( $column_key, $lesson_id ) {
-	global $woo_sensei_content_drip;
 
 	// exit early if this is not the column we want
 	if( 'scd_drip_schedule' != $column_key ){
@@ -106,7 +105,7 @@ public function add_column_data ( $column_key, $lesson_id ) {
 	}
 
 	// get the lesson drip type
-	$drip_type = $woo_sensei_content_drip->utils->get_lesson_drip_type( $lesson_id );
+	$drip_type = Sensei_Content_Drip()->utils->get_lesson_drip_type( $lesson_id );
 
 	//generate the messages
 	if('none'==$drip_type ){
@@ -159,7 +158,7 @@ public function content_drip_lesson_meta_content(){
 
 	//show nothing  if no course is selecteda
 	if( empty( $current_lesson_course ) ){
-		echo '<p>'. __( 'In order to use the content drip settings, please select a course for this lesson.' ) . '</p>';
+		echo '<p>'. __( 'In order to use the content drip settings, please select a course for this lesson.', 'sensei-content-drip' ) . '</p>';
 		// esit without displaying the rest of the settings
 		return;
 	}
@@ -189,10 +188,7 @@ public function content_drip_lesson_meta_content(){
 	
 	// Nonce field
 	wp_nonce_field( -1, 'woo_' . $this->_token . '_noonce');
-
-
 ?>
-
 	<p><?php _e( 'When should this lesson become available?', 'sensei-content-drip' ); ?></p>
 	<p><select name='sdc-lesson-drip-type' class="sdc-lesson-drip-type">
 		<option <?php selected( 'none', $selected_drip_type  ) ?> value="none" class="none"> <?php _e( 'As soon as the course is started', 'sensei-content-drip' ); ?></option>
@@ -201,15 +197,15 @@ public function content_drip_lesson_meta_content(){
 			//does this lesson have a  pre-requiste lesson ? 
 			$has_pre_requisite = empty( $lesson_pre_requisite ) ? 'false'  : 'true' ; 
 		?>
-		<option data-has-pre="<?php echo $has_pre_requisite ?> " <?php selected( 'dynamic', $selected_drip_type  ) ?> value="dynamic"  class="dynamic"> <?php _e( 'A specific interval after the course start date', 'sensei-content-drip' ); ?> </option>
+		<option data-has-pre="<?php esc_attr_e( $has_pre_requisite ); ?> " <?php selected( 'dynamic', $selected_drip_type  ); ?> value="dynamic"  class="dynamic"> <?php _e( 'A specific interval after the course start date', 'sensei-content-drip' ); ?> </option>
 	</select></p>
 	
-	<p><div class="dripTypeOptions absolute <?php echo $absolute_hidden_class;?> ">
+	<p><div class="dripTypeOptions absolute <?php esc_attr_e( $absolute_hidden_class ); ?> ">
 		<p><span class='description'><?php _e('Select the date on which this lesson should become available ?', 'sensei-content-drip'); ?></span></p>
-		<input type="date" id="datepicker" name="absolute[datepicker]" value="<?php echo $absolute_date_value  ;?>" class="absolute-datepicker" />
+		<input type="date" id="datepicker" name="absolute[datepicker]" value="<?php esc_attr_e( $absolute_date_value )  ;?>" class="absolute-datepicker" />
 	</div></p>
 	<p> 
-		<div class="dripTypeOptions dynamic <?php echo $dymaic_hidden_class;?> ">
+		<div class="dripTypeOptions dynamic <?php esc_attr_e( $dymaic_hidden_class );?> ">
 
 			
 		<?php if( empty( $current_lesson_course ) ){ ?>
@@ -220,7 +216,7 @@ public function content_drip_lesson_meta_content(){
 		<?php }else{  ?>
 
 			<div id="dynamic-dripping-1" class='dynamic-dripping'>
-				<input type='number' name='dynamic-unit-amount[1]' class='unit-amount' value="<?php echo $dynamic_unit_amount; ?>" ></input>
+				<input type='number' name='dynamic-unit-amount[1]' class='unit-amount' value="<?php esc_attr_e( $dynamic_unit_amount ); ?>" ></input>
 		
 				<select name='dynamic-time-unit-type[1]' class="dynamic-time-unit">
 					<option <?php selected( 'day', $selected_dynamic_time_unit_type );?> value="day"> <?php _e('Day(s)', 'sensei-content-drip'); ?></option>
@@ -235,7 +231,6 @@ public function content_drip_lesson_meta_content(){
 
 } // end content_drip_lesson_meta_content
 
-
 /**
  * get_course_lessons .
  *
@@ -244,8 +239,6 @@ public function content_drip_lesson_meta_content(){
  * @return array WP_Post 
  */
 public function get_course_lessons( $course_id = 0, $exclude = '' ) {
-
-	$lessons = array();
 
 	$args = array(	'post_type' 		=> 'lesson',
 						'numberposts' 		=> -1,
@@ -266,10 +259,7 @@ public function get_course_lessons( $course_id = 0, $exclude = '' ) {
 	$lessons = get_posts( $args );
 
 	return $lessons;
-
 } // End course_lessons()
-
-
 
 /**
 * save_course_drip_meta_box_data, listens to the save_post hook and saves the data accordingly
@@ -394,7 +384,7 @@ public function lesson_admin_notices(){
 	// print all notices
 	foreach ($notice as $type => $message) {
 			$message =  $message . ' The content drip type was reset to "none".';
-			echo '<div class="'. $type .' fade"><p>Sensei Content Drip '. $type .': ' . $message . '</p></div>';
+			echo '<div class="'. esc_attr( $type ) .' fade"><p>Sensei Content Drip '. $type .': ' . $message . '</p></div>';
 	}
 
 	// clear all notices

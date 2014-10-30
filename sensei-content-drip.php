@@ -1,6 +1,7 @@
 <?php
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
+
 /*
  * Plugin Name: Sensei Content Drip
  * Version: 1.0.0
@@ -15,8 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @author WooThemes
  * @since 1.0.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
  * Required functions
