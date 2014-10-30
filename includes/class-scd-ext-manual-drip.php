@@ -76,7 +76,7 @@ public function manual_drip_interface(){
 			<div class="inside">
 				<form name="scd_manual_drip_learners_lesson" action="" method="post">
 					<p>
-						<?php _e( 'Use this to give a learner access to any lesson, overriding the content drip schedule.', 'sensei-content-drip' ); ?>
+						<?php _e( 'Use this to give a learner access to any lesson (or remove existing access), overriding the content drip schedule.', 'sensei-content-drip' ); ?>
 					</p>	
 					<p>
 						<select name="scd_select_learner" id="scd_select_learner">

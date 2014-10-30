@@ -3,6 +3,7 @@
  * management page. It control the functionality of showing the give and remove action buttons
  * depending on the user current users manual drip data.
  */
+//todo: hide the give/remove access button while doing the ajax request
 (function( $, _, Backbone  ){
 
     ManualContentDrip = Backbone.View.extend({
