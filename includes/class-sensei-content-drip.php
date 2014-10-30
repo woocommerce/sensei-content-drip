@@ -252,7 +252,7 @@ class Sensei_Content_Drip {
 	 * @since   1.0.0
 	 * @return  void
 	 */
-	private function _log_version_number () {
+	private function _log_version_number() {
 		update_option( $this->_token . '_version', $this->_version );
 	}// end _log_version_number
 
@@ -275,44 +275,38 @@ class Sensei_Content_Drip {
      * @param   string $class
      * @return  void
      */
-    public function initialize_classes(){
-        if( $this->_load_class_file('settings') ) { $this->settings = new Scd_Ext_settings();  }
-        if( $this->_load_class_file('utilities') ) { $this->utils = new Sensei_Scd_Extension_Utils();  }
-        if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  }
-        if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  }
-        if( $this->_load_class_file('drip-email') ) { $this->drip_email = new Scd_Ext_drip_email();  }
-        if( $this->_load_class_file('manual-drip') ) { $this->manual_drip = new Scd_Ext_Manual_Drip();  }
+    public function initialize_classes() {
+        $classes = array('settings',
+                        'utilities',
+                        'lesson-frontend',
+                        'lesson-admin',
+                        'drip-email',
+                        'manual-drip');
+
+        foreach( $classes as $class_id ) {
+            // build the full class file name and path
+            $full_class_file_name = 'class-scd-ext-'.trim( $class_id ).'.php' ;
+
+            $file_path = $this->dir . '/includes/' . $full_class_file_name;
+
+            // check if the file exists
+            if( '' == $full_class_file_name ||
+                empty( $full_class_file_name ) ||
+                ! file_exists( $file_path ) ){
+                    continue;
+            }
+
+            // include the class file
+            require_once( realpath ( $file_path ) );
+
+        }// end for each
+
+        // instantiate the classes
+        $this->settings = new Scd_Ext_settings();
+        $this->utils = new Sensei_Scd_Extension_Utils();
+        $this->lesson_frontend = new Scd_ext_lesson_frontend();
+        $this->lesson_admin = new Scd_ext_lesson_admin();
+        $this->drip_email = new Scd_Ext_drip_email();
+        $this->manual_drip = new Scd_Ext_Manual_Drip();
     }// end _initialize_classes
-
-	/**
-	 * Load class and add them to the main class ass child objects sensei_content_drip->child
-	 *
-	 * @access  protected
-	 * @since   1.0.0
-	 * @param   string $class
-	 * @return  void
-	 */
-	private function _load_class_file( $class ) {
-
-		if( '' == $class || empty( $class ) ){
-			return false;
-		}
-
-		// build the full class file name and path
-		$full_class_file_name = 'class-scd-ext-'.trim( $class ).'.php' ;
-		$file_path = $this->dir . '/includes/' . $full_class_file_name;
-
-		// check if the file exists
-		if( '' == $full_class_file_name ||
-			empty( $full_class_file_name ) ||
-			! file_exists( $file_path ) ){
-			return false;
-		}
-
-		// include the class file
-		require_once( realpath ( $file_path ) );
-
-		// succes indeed
-		return true;
-	}// end _load_class_file
 }// end class Sensei_Content_Drip
