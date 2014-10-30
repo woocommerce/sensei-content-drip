@@ -128,8 +128,8 @@ public function replace_lesson_content( $lesson ) {
 	 */
 	$new_content = apply_filters( 'sensei_content_drip_lesson_message', $new_content );
 
-	$lesson->post_content = $new_content;
-	$lesson->post_excerpt = $new_content;
+    $lesson->post_content = '<p>' . wp_trim_words( $lesson->post_content , 10 ) . '</p>' . $new_content;
+	$lesson->post_excerpt = '<p>' .  $lesson->post_excerpt  . '... </p>' . $new_content;
 
 	//disable the current lessons video
 	remove_all_actions( 'sensei_lesson_video' );
