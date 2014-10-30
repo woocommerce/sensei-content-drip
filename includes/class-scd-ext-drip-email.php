@@ -30,7 +30,7 @@ class Scd_Ext_drip_email {
 	* Construction function that hooks into the WordPress workflow
 	*
 	*/
-	public function __construct( ){
+	public function __construct( ) {
 		//add email sending acction to the cron job
 		add_action ( 'woo_scd_daily_cron_hook' , array( $this, 'daily_drip_lesson_email_run' ) );
 	}// end __construct()
@@ -59,7 +59,7 @@ class Scd_Ext_drip_email {
 	*
 	* @return array $users a list of users with a sub array of lessons
 	*/
-	public function get_users_lessons_dripping_today(){
+	public function get_users_lessons_dripping_today() {
 
 		// get the lesson by the type of drip content
 		$all_dynamic_lessons = Sensei_Content_Drip()->utils->get_dripping_lessons_by_type('dynamic');
@@ -83,11 +83,11 @@ class Scd_Ext_drip_email {
 	*
 	* @return array $users_lessons
 	*/
-	public function combine_users_lessons( $users_lessons_1 ,  $users_lessons_2 ){
+	public function combine_users_lessons( $users_lessons_1 ,  $users_lessons_2 ) {
 		$combined = array();
 
 		// when both are emty exit, if only one is empty continue
-		if(  empty( $users_lessons_1 ) && empty( $users_lessons_2 ) ){
+		if(  empty( $users_lessons_1 ) && empty( $users_lessons_2 ) ) {
 			return $combined;
 		}
 		// create a master loop for easier loop function
@@ -117,7 +117,7 @@ class Scd_Ext_drip_email {
 	* @param array $lessons
 	* @return array $users_lessons
 	*/
-	public function attach_users( $lessons ){
+	public function attach_users( $lessons ) {
 
 		$users_lessons = array();
 		$courses_users = array();
@@ -158,7 +158,7 @@ class Scd_Ext_drip_email {
 	* @param array $users_lessons
 	* @return array $new_users_courses_lessons
 	*/
-	function filter_lessons_dripping_today( $users_lessons ){
+	function filter_lessons_dripping_today( $users_lessons ) {
 
 		// setup return array
 		$users_dripping_lessons = array();
@@ -181,7 +181,7 @@ class Scd_Ext_drip_email {
 	* @param string $lesson_id
 	* @return bool  dripping_today
 	*/
-	function is_dripping_today( $lesson_id , $user_id ='' ){
+	function is_dripping_today( $lesson_id , $user_id ='' ) {
 
 		// setup variables needed
 		$dripping_today = false;
@@ -212,7 +212,7 @@ class Scd_Ext_drip_email {
 				continue;
 			}
 
-			if( 'y' == $key || 'm'  == $key  || 'd'  == $key){
+			if( 'y' == $key || 'm'  == $key  || 'd'  == $key) {
 				if(  0 != $value ){
 					$dripping_today_flag = false;
 				}
@@ -233,7 +233,7 @@ class Scd_Ext_drip_email {
 	* @param array $users_lessons
 	* @return void
 	*/
-	public function send_bulk_drip_notifications( $users_lessons ){
+	public function send_bulk_drip_notifications( $users_lessons ) {
 		global $woothemes_sensei , $sensei_email_data;
 
 		if( ! empty( $users_lessons ) ){
@@ -266,7 +266,7 @@ class Scd_Ext_drip_email {
 	* @param array $email_wrappers
 	* @return void
 	*/
-	public function send_single_email_drip_notifications( $user_id, $lessons, $email_wrappers ){
+	public function send_single_email_drip_notifications( $user_id, $lessons, $email_wrappers ) {
 		global $woothemes_sensei , $sensei_email_data;
 
 		if( empty( $user_id ) || empty( $lessons ) || ! is_array( $lessons ) ){
@@ -296,11 +296,11 @@ class Scd_Ext_drip_email {
 
 		// check for empty settings and setup the defaults
 		if( empty( $settings['email_body_notice'] ) ){
-			$settings['email_body_notice'] = 'The following lessons will become available today:';
+			$settings['email_body_notice'] = __( 'The following lessons will become available today:' , 'sensei-content-drip' );
 		}
 
 		if( empty( $settings['email_footer'] ) ){
-			$settings['email_footer'] = 'Visit the online course today to start taking the lessons: [home_url]';
+			$settings['email_footer'] = __(  'Visit the online course today to start taking the lessons: [home_url]' , 'sensei-content-drip' );
 		}
 
 		// setup the  the message content
