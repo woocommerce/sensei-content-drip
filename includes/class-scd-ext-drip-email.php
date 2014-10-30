@@ -320,7 +320,7 @@ class Scd_Ext_drip_email {
 			// setup the lesson line item
 			$lesson_title = $lesson->post_title;
 			$lesson_url = get_permalink( $lesson_id );
-			$lesson_link = '<a href="' .esc_attr( $lesson_url ) . '">' . ecsc_html( $lesson_title ) . '</a>';
+			$lesson_link = '<a href="' .esc_attr( $lesson_url ) . '">' . esc_html( $lesson_title ) . '</a>';
 			$lesson_line_item = '<li>'. $lesson_link .'</li>';
 
 			// append the li line item to the email body lessons
