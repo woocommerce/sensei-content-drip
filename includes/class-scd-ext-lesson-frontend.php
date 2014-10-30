@@ -106,7 +106,6 @@ public function lessons_drip_filter( $lessons ){
 * @param  string $formatted_message a variable containing shortcodes options: [date]
 * @return WP_Post $lesson
 */
-
 public function replace_lesson_content( $lesson ) {
 
 	// ensure all things are in place before proceeding
@@ -127,7 +126,7 @@ public function replace_lesson_content( $lesson ) {
 	 *
 	 * @param string        $drip_message the message
 	 */
-	$new_content= esc_html( apply_filters( 'sensei_content_drip_lesson_message', $new_content ) );
+	$new_content = apply_filters( 'sensei_content_drip_lesson_message', $new_content );
 
 	$lesson->post_content = $new_content;
 	$lesson->post_excerpt = $new_content;

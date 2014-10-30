@@ -227,7 +227,9 @@ public function scd_manual_drip_admin_notice() {
 public function manipulate_drip_status( $hide_lesson_content ,  $lesson_id ){
  	//	get the current user id
  	$current_user = wp_get_current_user();
- 	if( 'WP_User' != get_class( $current_user ) ){
+    // return the default value if this is not a valid users
+    // or if the lesson has no drip set for this user
+ 	if( 'WP_User' != get_class( $current_user ) || !$hide_lesson_content ){
  		return $hide_lesson_content;
  	}
 	$user_id = $current_user->ID;
