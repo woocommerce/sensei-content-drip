@@ -81,7 +81,6 @@ class Sensei_Content_Drip {
 	 * @return  void
 	 */
 	public function __construct ( $file, $version = '1.0.0' ) {
-
 		$this->_version = $version;
 		$this->_token = 'sensei_content_drip';
 
@@ -106,13 +105,8 @@ class Sensei_Content_Drip {
 		$this->load_plugin_textdomain ();
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
 
-		// include classes
-		if( $this->_load_class_file('settings') ) { $this->settings = new Scd_Ext_settings();  }
-		if( $this->_load_class_file('utilities') ) { $this->utils = new Sensei_Scd_Extension_Utils();  }
-		if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  }
-		if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  }
-		if( $this->_load_class_file('drip-email') ) { $this->drip_email = new Scd_Ext_drip_email();  }
-		if( $this->_load_class_file('manual-drip') ) { $this->manual_drip = new Scd_Ext_Manual_Drip();  }
+		// Load and initialize classes
+        add_action( 'init', array( $this, 'initialize_classes' ), 0 );
 	} // End __construct()
 
 	/**
@@ -218,8 +212,9 @@ class Sensei_Content_Drip {
 	 * @return Main Sensei_Content_Drip instance
 	 */
 	public static function instance ( $file, $version = '1.0.0' ) {
-		if ( is_null( self::$_instance ) )
+		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self( $file, $version );
+		}
 		return self::$_instance;
 	} // End instance()
 
@@ -271,6 +266,23 @@ class Sensei_Content_Drip {
 	private function get_asset_url() {
 		return $this->asset_url;
 	}// end get_asset_url
+
+    /**
+     * Initialize classed need needed within this pluin
+     *
+     * @access  protected
+     * @since   1.0.0
+     * @param   string $class
+     * @return  void
+     */
+    public function initialize_classes(){
+        if( $this->_load_class_file('settings') ) { $this->settings = new Scd_Ext_settings();  }
+        if( $this->_load_class_file('utilities') ) { $this->utils = new Sensei_Scd_Extension_Utils();  }
+        if( $this->_load_class_file('lesson-frontend') ) { $this->lesson_frontend = new Scd_ext_lesson_frontend();  }
+        if( $this->_load_class_file('lesson-admin') ) { $this->lesson_admin = new Scd_ext_lesson_admin();  }
+        if( $this->_load_class_file('drip-email') ) { $this->drip_email = new Scd_Ext_drip_email();  }
+        if( $this->_load_class_file('manual-drip') ) { $this->manual_drip = new Scd_Ext_Manual_Drip();  }
+    }// end _initialize_classes
 
 	/**
 	 * Load class and add them to the main class ass child objects sensei_content_drip->child
