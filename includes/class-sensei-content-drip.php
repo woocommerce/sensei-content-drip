@@ -165,7 +165,7 @@ class Sensei_Content_Drip {
 
         //load the learner management functionality script
         if( 'sensei_page_sensei_learners' === $hook &&  isset( $_GET['course_id'] ) && isset( $_GET['view'] ) && 'learners'=== $_GET['view']  ){
-// TODO minimies this script
+// TODO minimies this script adding gulp support
             wp_register_script( $this->_token . '-admin-manual-drip-script', esc_url( $this->assets_url ). 'js/admin-manual-drip'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'backbone' ), $this->_version , true);
             wp_enqueue_script( $this->_token . '-admin-manual-drip-script' );
         }
@@ -279,6 +279,7 @@ class Sensei_Content_Drip {
         $classes = array('settings',
                         'utilities',
                         'access-control',
+						'lesson-frontend',
                         'lesson-admin',
                         'drip-email',
                         'manual-drip');
@@ -304,9 +305,30 @@ class Sensei_Content_Drip {
         // instantiate the classes
         $this->settings = new Scd_Ext_Settings();
         $this->utils = new Scd_Ext_Utils();
-        $this->lesson_frontend = new Scd_Ext_Access_Control();
+        $this->access_control = new Scd_Ext_Access_Control();
+		$this->lesson_frontend = new Scd_Ext_Lesson_Frontend();
         $this->lesson_admin = new Scd_Ext_Lesson_Admin();
         $this->drip_email = new Scd_Ext_Drip_Email();
         $this->manual_drip = new Scd_Ext_Manual_Drip();
+
     }// end _initialize_classes
+
+	/**
+	 * get the date format and allow the user to filter it. This format applies for the whole
+	 * content drip extension
+	 *
+	 * @since 1.0.0
+	 * @return string $date_format
+	 */
+	public function get_date_format_string(){
+
+		$date_format = 'l jS F Y';
+		/**
+		 * filter scd_drip_message_date_format
+		 * @param string
+		 */
+		return apply_filters( 'scd_drip_message_date_format' , $date_format );
+
+	}//end get_date_format
+
 }// end class Sensei_Content_Drip

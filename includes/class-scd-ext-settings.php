@@ -17,6 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * get_setting
  * register_settings_tab
  * register_settings_fields
+ * // todo update all the table of contents
  */
 class Scd_Ext_Settings {
     public function __construct(){

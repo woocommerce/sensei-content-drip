@@ -23,6 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * is_dripping_today
  * send_bulk_drip_notifications
  * send_single_email_drip_notifications
+ * // todo update all the table of contents
  */
 class Scd_Ext_Drip_Email {
 
