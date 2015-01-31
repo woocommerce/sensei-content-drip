@@ -105,21 +105,6 @@ public function is_lesson_access_blocked( $lesson_id ){
 
 } // end is_lesson_access_blocked
 
-
-/**
- * Check if the quiz can be made available to the the user at this point
- * according to the drip meta data
- *
- * @since 1.0.0
- * @param  WP_Post $quiz_id
- * @return bool $dripped
- */
-public function is_quiz_drip_active( $quiz_id ){
-	// todo: get the quiz lesson and then call the is lesson dript active
-
-}// end is_quiz_drip_active
-
-
 /**
 * Check specifically if the absolute drip is active on this lesson
 * depending only on the date

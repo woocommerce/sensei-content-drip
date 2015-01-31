@@ -80,6 +80,16 @@ class Scd_Ext_Settings {
                                         'section' => 'sensei-content-drip-settings'
                                         );
 
+        $sensei_settings_fields['scd_drip_quiz_message'] = array(
+            'name' => __( 'Quiz Drip Message', 'sensei-content-drip' ),
+            'description' => __( 'The user will see this on the lesson quiz when the lesson is not yet available. The [date] shortcode will be replaced by the actual date' ),
+            'type' => 'textarea',
+            'default' => 'This quiz will only become available on [date].',
+            'section' => 'sensei-content-drip-settings'
+        );
+
+
+
         // Email related settings
         $sensei_settings_fields['scd_email_body_notice_html'] = array(
                                     'name' => __( 'Email Before Lessons', 'sensei-content-drip' ),

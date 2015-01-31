@@ -281,6 +281,7 @@ class Sensei_Content_Drip {
                         'access-control',
 						'lesson-frontend',
                         'lesson-admin',
+						'quiz-frontend',
                         'drip-email',
                         'manual-drip');
 
@@ -308,6 +309,7 @@ class Sensei_Content_Drip {
         $this->access_control = new Scd_Ext_Access_Control();
 		$this->lesson_frontend = new Scd_Ext_Lesson_Frontend();
         $this->lesson_admin = new Scd_Ext_Lesson_Admin();
+		$this->quiz_frontend = new Scd_Ext_Quiz_Frontend();
         $this->drip_email = new Scd_Ext_Drip_Email();
         $this->manual_drip = new Scd_Ext_Manual_Drip();
 

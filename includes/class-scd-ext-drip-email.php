@@ -24,6 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * send_bulk_drip_notifications
  * send_single_email_drip_notifications
  * // todo update all the table of contents
+ * // todo make sure this works before you submit everytyhing for version 1.1
  */
 class Scd_Ext_Drip_Email {
 
