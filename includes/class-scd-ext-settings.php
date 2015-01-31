@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * register_settings_tab
  * register_settings_fields
  */
-class Scd_Ext_settings {
+class Scd_Ext_Settings {
     public function __construct(){
         if( is_admin() ){
             add_filter( 'sensei_settings_tabs', array( $this, 'register_settings_tab' ) );

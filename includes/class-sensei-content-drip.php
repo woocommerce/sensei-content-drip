@@ -278,7 +278,7 @@ class Sensei_Content_Drip {
     public function initialize_classes() {
         $classes = array('settings',
                         'utilities',
-                        'lesson-frontend',
+                        'access-control',
                         'lesson-admin',
                         'drip-email',
                         'manual-drip');
@@ -302,11 +302,11 @@ class Sensei_Content_Drip {
         }// end for each
 
         // instantiate the classes
-        $this->settings = new Scd_Ext_settings();
-        $this->utils = new Sensei_Scd_Extension_Utils();
-        $this->lesson_frontend = new Scd_ext_lesson_frontend();
-        $this->lesson_admin = new Scd_ext_lesson_admin();
-        $this->drip_email = new Scd_Ext_drip_email();
+        $this->settings = new Scd_Ext_Settings();
+        $this->utils = new Scd_Ext_Utils();
+        $this->lesson_frontend = new Scd_Ext_Access_Control();
+        $this->lesson_admin = new Scd_Ext_Lesson_Admin();
+        $this->drip_email = new Scd_Ext_Drip_Email();
         $this->manual_drip = new Scd_Ext_Manual_Drip();
     }// end _initialize_classes
 }// end class Sensei_Content_Drip

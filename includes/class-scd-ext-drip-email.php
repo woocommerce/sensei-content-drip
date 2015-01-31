@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * send_bulk_drip_notifications
  * send_single_email_drip_notifications
  */
-class Scd_Ext_drip_email {
+class Scd_Ext_Drip_Email {
 
 	/**
 	* Construction function that hooks into the WordPress workflow

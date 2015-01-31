@@ -3,7 +3,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Sensei Content Drip Utilities Class
+ * Sensei Content Drip Extension Utilities Class
  *
  * Common functions used by the Content drip extension
  *
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * get_course_users
  *
  */
-class Sensei_Scd_Extension_Utils {
+class Scd_Ext_Utils {
 	/**
 	*   Returns all the lesson with passed in drip type 
 	*	
