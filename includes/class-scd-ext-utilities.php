@@ -69,7 +69,7 @@ class Sensei_Scd_Extension_Utils {
 	}// end get_dripping_lessons_by_type
 
 	/**
-	* get_lesson_drip_date. determine the drip type and return the date teh lesson will become available
+	* get_lesson_drip_date. determine the drip type and return the date the lesson will become available
 	*
 	* @param string $lesson_id 
 	* @param string $user_id
@@ -87,7 +87,7 @@ class Sensei_Scd_Extension_Utils {
 		//get the post meta drip type
 		$drip_type = get_post_meta( $lesson_id , '_sensei_content_drip_type', true );
 
-		// we need a user id if the drip type is dynamice
+		// we need a user id if the drip type is dynamic
 		if( 'dynamic' === $drip_type  && empty( $user_id )  ){
 			return false; // exit early
 		}
@@ -109,30 +109,44 @@ class Sensei_Scd_Extension_Utils {
 			// get the lesson course
 			$course_id = get_post_meta( $lesson_id, '_lesson_course', true );
 
+			// the lesson must belong to a course for this drip type to be active
 			if( empty( $course_id ) ){
 				return false;
 			}
 
 			// get the previous lessons completion date
-			$activitiy_query = array( 'post_id' => $course_id, 'user_id' => $user_id, 'type' => 'sensei_course_start', 'field' => 'comment_date_gmt' );
-			$user_course_start_date_string =  WooThemes_Sensei_Utils::sensei_get_activity_value( $activitiy_query  );
+			$activity_query_args = array(
+									 'post_id' => $course_id,
+									 'user_id' => $user_id,
+									 'type' => 'sensei_course_status'
+								);
+			// get the activity/comment data
+			$activity = WooThemes_Sensei_Utils::sensei_check_for_activity( $activity_query_args, true );
 
-			// check if the user has finished the previous course
-			if( !$user_course_start_date_string  ){
+			// make sure there is a start date attached the users activity on the course
+			if( isset( $activity->comment_date_gmt ) && !empty( $activity->comment_date_gmt ) ) {
+
+				$user_course_start_date_string = $activity->comment_date_gmt;
+
+			} else {
+
 				return false;
+
 			}
 
-			// create a date interval object to determine when the lesson should become available
-			$unit_type_first_letter_uppercase = strtoupper( substr( $unit_type, 0, 1 ) ) ; 
-			$interval_to_lesson_availablilty = new DateInterval( 'P'.$unit_amount.$unit_type_first_letter_uppercase );
-
 			// create an object which the interval will be added to and add the interval
-			$course_start_date = new DateTime( $user_course_start_date_string );
+			$user_course_start_date = new DateTime( $user_course_start_date_string );
 
-			$drip_date = $course_start_date->add( $interval_to_lesson_availablilty );
+			// create a date interval object to determine when the lesson should become available
+			$unit_type_first_letter_uppercase = strtoupper( substr( $unit_type, 0, 1 ) ) ;
+			$interval_to_lesson_availability = new DateInterval( 'P'.$unit_amount.$unit_type_first_letter_uppercase );
+
+			// add the interval to the start date to get the date this lesson should become available
+			$drip_date = $user_course_start_date->add( $interval_to_lesson_availability );
+
 		}// end if
 
-		//strip out the hours minutes and seccond before returning the yyyy-mm-dd format
+		//strip out the hours minutes and second before returning the yyyy-mm-dd format
 		return  new DateTime( $drip_date->format('Y-m-d') );
 
 	}// end get_lesson_drip_date()
@@ -189,7 +203,7 @@ class Sensei_Scd_Extension_Utils {
 			return 'none';
 		}
 
-		// retrive the drip type from the lesson
+		// retrieve the drip type from the lesson
 		$drip_type = get_post_meta( $lesson_id , '_sensei_content_drip_type', true ) ;
 
 		// send back the type string
