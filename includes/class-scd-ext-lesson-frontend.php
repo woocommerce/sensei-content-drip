@@ -120,7 +120,7 @@ public function replace_lesson_content( $lesson ) {
 	$new_content = '<div class="sensei-message info">' . esc_html( $new_content ) . '</div>' ;
 	
 	/**
-	 * Filter a customise the message user will see when content is not available.
+	 * Filter the message a user will see when content is not available.
 	 *
 	 * @since 1.0.0
 	 *
@@ -128,8 +128,20 @@ public function replace_lesson_content( $lesson ) {
 	 */
 	$new_content = apply_filters( 'sensei_content_drip_lesson_message', $new_content );
 
-    $lesson->post_content = '<p>' . wp_trim_words( $lesson->post_content , 10 ) . '</p>' . $new_content;
-	$lesson->post_excerpt = '<p>' .  $lesson->post_excerpt  . '... </p>' . $new_content;
+    $lesson->post_content = '<p>' . wp_trim_words( $lesson->post_content , 20 ) . '</p>' . $new_content;
+
+	// set the excerpt to be a trimmed down version of the full content if it is empty
+	if( empty( $lesson->post_excerpt )  ){
+
+		$lesson->post_excerpt = '<p>' . wp_trim_words( $lesson->post_content , 20 ) . '</p>' . $new_content;
+
+	}else{
+
+		$lesson->post_excerpt = '<p>' .  $lesson->post_excerpt  . '... </p>' . $new_content;
+
+	}
+
+
 
 	//disable the current lessons video
 	remove_all_actions( 'sensei_lesson_video' );
