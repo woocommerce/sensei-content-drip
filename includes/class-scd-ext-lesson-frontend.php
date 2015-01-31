@@ -228,8 +228,7 @@ public function generate_dynamic_drip_type_message( $lesson_id ){
 	$dynamic_drip_type_message = '';
 
 	$lesson_available_date = Sensei_Content_Drip()->access_control->get_lesson_drip_date( $lesson_id , $user_id );
- 	
-	$formatted_date =  $lesson_available_date->format( Sensei_Content_Drip()->get_date_format_string() );
+	$formatted_date =  date_i18n( Sensei_Content_Drip()->get_date_format_string( ), $lesson_available_date->getTimestamp()  );
 
 	// replace string content in the class message_format property set in the constructor
 	$dynamic_drip_type_message =  str_replace('[date]' , $formatted_date , $this->message_format );

@@ -336,6 +336,6 @@ class Scd_Ext_Drip_Email {
 		// send
 		$woothemes_sensei->emails->send( $user_email, $email_subject, $formated_email_html );
 
-		return ;
+		return;
 	}// end bulk_email_drip_notifications
 }// end Scd_Ext_drip_email
