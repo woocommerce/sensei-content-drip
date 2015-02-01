@@ -129,7 +129,6 @@ class Sensei_Content_Drip {
 	 */
 	public function enqueue_scripts () {
 		global $woothemes_sensei;
-
 		// wp_register_script( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'js/frontend' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
 		//wp_enqueue_script( $this->_token . '-frontend' );
 	} // End enqueue_scripts()
@@ -146,7 +145,10 @@ class Sensei_Content_Drip {
 		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && ( !empty($post) && 'lesson' === $post->post_type) ) {
             wp_register_style($this->_token . '-admin-lesson', esc_url($this->assets_url) . 'css/admin-lesson.css', array(), $this->_version);
             wp_enqueue_style($this->_token . '-admin-lesson');
-        }
+			// Jquey UI
+			wp_register_style('scd-jquery-ui', esc_url($this->assets_url) . 'css/jquery-ui.css', array(), $this->_version);
+			wp_enqueue_style('scd-jquery-ui');
+		}
 	} // End admin_enqueue_styles()
 
 	/**
@@ -159,7 +161,7 @@ class Sensei_Content_Drip {
 		global $post;
 		//load the lesson idit/new screen script
 		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && ( !empty($post) && 'lesson' === $post->post_type) ){
-			wp_register_script( $this->_token . '-lesson-admin-script', esc_url( $this->assets_url ). 'js/admin-lesson'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'backbone' ), $this->_version , true);
+			wp_register_script( $this->_token . '-lesson-admin-script', esc_url( $this->assets_url ). 'js/admin-lesson'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'jquery-ui-datepicker' , 'backbone' ), $this->_version , true);
 			wp_enqueue_script( $this->_token . '-lesson-admin-script' );
 		}
 

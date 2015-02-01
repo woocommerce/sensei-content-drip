@@ -203,7 +203,7 @@ public function content_drip_lesson_meta_content(){
 	
 	<p><div class="dripTypeOptions absolute <?php esc_attr_e( $absolute_hidden_class ); ?> ">
 		<p><span class='description'><?php _e('Select the date on which this lesson should become available ?', 'sensei-content-drip'); ?></span></p>
-		<input type="date" id="datepicker" name="absolute[datepicker]" value="<?php esc_attr_e( $absolute_date_value )  ;?>" class="absolute-datepicker" />
+		<input type="text" id="datepicker" name="absolute[datepicker]" value="<?php esc_attr_e( $absolute_date_value )  ;?>" class="absolute-datepicker" />
 	</div></p>
 	<p> 
 		<div class="dripTypeOptions dynamic <?php esc_attr_e( $dymaic_hidden_class );?> ">
