@@ -129,9 +129,8 @@ class Sensei_Content_Drip {
 	 */
 	public function enqueue_scripts () {
 		global $woothemes_sensei;
-
-		wp_register_script( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'js/frontend' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
-		wp_enqueue_script( $this->_token . '-frontend' );
+		// wp_register_script( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'js/frontend' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
+		//wp_enqueue_script( $this->_token . '-frontend' );
 	} // End enqueue_scripts()
 
 	/**
@@ -146,7 +145,10 @@ class Sensei_Content_Drip {
 		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && ( !empty($post) && 'lesson' === $post->post_type) ) {
             wp_register_style($this->_token . '-admin-lesson', esc_url($this->assets_url) . 'css/admin-lesson.css', array(), $this->_version);
             wp_enqueue_style($this->_token . '-admin-lesson');
-        }
+			// Jquey UI
+			wp_register_style('scd-jquery-ui', esc_url($this->assets_url) . 'css/jquery-ui.css', array(), $this->_version);
+			wp_enqueue_style('scd-jquery-ui');
+		}
 	} // End admin_enqueue_styles()
 
 	/**
@@ -159,13 +161,13 @@ class Sensei_Content_Drip {
 		global $post;
 		//load the lesson idit/new screen script
 		if( ( 'post.php' === $hook || 'post-new.php' === $hook ) && ( !empty($post) && 'lesson' === $post->post_type) ){
-			wp_register_script( $this->_token . '-lesson-admin-script', esc_url( $this->assets_url ). 'js/admin-lesson'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'backbone' ), $this->_version , true);
+			wp_register_script( $this->_token . '-lesson-admin-script', esc_url( $this->assets_url ). 'js/admin-lesson'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'jquery-ui-datepicker' , 'backbone' ), $this->_version , true);
 			wp_enqueue_script( $this->_token . '-lesson-admin-script' );
 		}
 
         //load the learner management functionality script
         if( 'sensei_page_sensei_learners' === $hook &&  isset( $_GET['course_id'] ) && isset( $_GET['view'] ) && 'learners'=== $_GET['view']  ){
-// TODO minimies this script
+// TODO minimies this script adding gulp support
             wp_register_script( $this->_token . '-admin-manual-drip-script', esc_url( $this->assets_url ). 'js/admin-manual-drip'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'backbone' ), $this->_version , true);
             wp_enqueue_script( $this->_token . '-admin-manual-drip-script' );
         }
@@ -278,8 +280,10 @@ class Sensei_Content_Drip {
     public function initialize_classes() {
         $classes = array('settings',
                         'utilities',
-                        'lesson-frontend',
+                        'access-control',
+						'lesson-frontend',
                         'lesson-admin',
+						'quiz-frontend',
                         'drip-email',
                         'manual-drip');
 
@@ -302,11 +306,33 @@ class Sensei_Content_Drip {
         }// end for each
 
         // instantiate the classes
-        $this->settings = new Scd_Ext_settings();
-        $this->utils = new Sensei_Scd_Extension_Utils();
-        $this->lesson_frontend = new Scd_ext_lesson_frontend();
-        $this->lesson_admin = new Scd_ext_lesson_admin();
-        $this->drip_email = new Scd_Ext_drip_email();
+        $this->settings = new Scd_Ext_Settings();
+        $this->utils = new Scd_Ext_Utils();
+        $this->access_control = new Scd_Ext_Access_Control();
+		$this->lesson_frontend = new Scd_Ext_Lesson_Frontend();
+        $this->lesson_admin = new Scd_Ext_Lesson_Admin();
+		$this->quiz_frontend = new Scd_Ext_Quiz_Frontend();
+        $this->drip_email = new Scd_Ext_Drip_Email();
         $this->manual_drip = new Scd_Ext_Manual_Drip();
+
     }// end _initialize_classes
+
+	/**
+	 * get the date format and allow the user to filter it. This format applies for the whole
+	 * content drip extension
+	 *
+	 * @since 1.0.0
+	 * @return string $date_format
+	 */
+	public function get_date_format_string(){
+
+		$date_format = 'l jS F Y';
+		/**
+		 * filter scd_drip_message_date_format
+		 * @param string
+		 */
+		return apply_filters( 'scd_drip_message_date_format' , $date_format );
+
+	}//end get_date_format
+
 }// end class Sensei_Content_Drip

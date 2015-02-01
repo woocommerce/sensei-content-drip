@@ -1,5 +1,8 @@
 ( function( $, _ , Backbone  ){
-	
+
+	$('.dripTypeOptions #datepicker').datepicker();
+
+
 	// the Drip meta box view reponsible for all things dripped 
 	var DripMetaBox = Backbone.View.extend({
 

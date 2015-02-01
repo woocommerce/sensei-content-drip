@@ -23,8 +23,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * is_dripping_today
  * send_bulk_drip_notifications
  * send_single_email_drip_notifications
+ * // todo update all the table of contents
+ * // todo make sure this works before you submit everytyhing for version 1.1
  */
-class Scd_Ext_drip_email {
+class Scd_Ext_Drip_Email {
 
 	/**
 	* Construction function that hooks into the WordPress workflow
@@ -334,6 +336,6 @@ class Scd_Ext_drip_email {
 		// send
 		$woothemes_sensei->emails->send( $user_email, $email_subject, $formated_email_html );
 
-		return ;
+		return;
 	}// end bulk_email_drip_notifications
 }// end Scd_Ext_drip_email

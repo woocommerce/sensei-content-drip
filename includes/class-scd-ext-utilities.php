@@ -3,7 +3,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Sensei Content Drip Utilities Class
+ * Sensei Content Drip Extension Utilities Class
  *
  * Common functions used by the Content drip extension
  *
@@ -19,9 +19,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * get_lesson_drip_date
  * get_lesson_drip_type
  * get_course_users
- *
+ * todo: make sure all activity calls to sensei gives us what we need
+ * // todo update all the table of contents
  */
-class Sensei_Scd_Extension_Utils {
+class Scd_Ext_Utils {
 	/**
 	*   Returns all the lesson with passed in drip type 
 	*	
@@ -68,140 +69,13 @@ class Sensei_Scd_Extension_Utils {
 		return $dripping_lesson_ids;
 	}// end get_dripping_lessons_by_type
 
-	/**
-	* get_lesson_drip_date. determine the drip type and return the date teh lesson will become available
-	*
-	* @param string $lesson_id 
-	* @param string $user_id
-	* @return DateTime  drip_date format yyyy-mm-dd
-	*/
-	public function get_lesson_drip_date( $lesson_id , $user_id = '' ){
-		
-		//setup the basics, drip date default return will be false on error
-		$drip_date = false;
-
-		if( empty( $lesson_id ) ){
-			return $drip_date; // exit early 
-		}
-
-		//get the post meta drip type
-		$drip_type = get_post_meta( $lesson_id , '_sensei_content_drip_type', true );
-
-		// we need a user id if the drip type is dynamice
-		if( 'dynamic' === $drip_type  && empty( $user_id )  ){
-			return false; // exit early
-		}
-
-		if( 'absolute' === $drip_type ){
-			$lesson_set_date = get_post_meta( $lesson_id ,'_sensei_content_drip_details_date', true  );
-
-			if ( empty( $lesson_set_date ) ) {
-				return $drip_date; // exit early  
-			}
-
-			$drip_date = new DateTime( $lesson_set_date );
-
-		}elseif( 'dynamic' === $drip_type  ){
-			// get the drip details array data
-			$unit_type  =  get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_type', true );  
-			$unit_amount = get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_amount', true );
-			
-			// get the lesson course
-			$course_id = get_post_meta( $lesson_id, '_lesson_course', true );
-
-			if( empty( $course_id ) ){
-				return false;
-			}
-
-			// get the previous lessons completion date
-			$activitiy_query = array( 'post_id' => $course_id, 'user_id' => $user_id, 'type' => 'sensei_course_start', 'field' => 'comment_date_gmt' );
-			$user_course_start_date_string =  WooThemes_Sensei_Utils::sensei_get_activity_value( $activitiy_query  );
-
-			// check if the user has finished the previous course
-			if( !$user_course_start_date_string  ){
-				return false;
-			}
-
-			// create a date interval object to determine when the lesson should become available
-			$unit_type_first_letter_uppercase = strtoupper( substr( $unit_type, 0, 1 ) ) ; 
-			$interval_to_lesson_availablilty = new DateInterval( 'P'.$unit_amount.$unit_type_first_letter_uppercase );
-
-			// create an object which the interval will be added to and add the interval
-			$course_start_date = new DateTime( $user_course_start_date_string );
-
-			$drip_date = $course_start_date->add( $interval_to_lesson_availablilty );
-		}// end if
-
-		//strip out the hours minutes and seccond before returning the yyyy-mm-dd format
-		return  new DateTime( $drip_date->format('Y-m-d') );
-
-	}// end get_lesson_drip_date()
-
-	/**
-	*   The function returns an array of lesson_ids . All those with drip type set to dynamic or absolute
-	*	
-	*	@return array $lessons array containing lesson ids 
-	*/
-	public static function get_all_dripping_lessons(){
-		$lessons =  array();
-
-		// determine the lesson query args
-		$lesson_query_args = array( 
-							'post_type' => 'lesson' ,
-							'numberposts' => -1, 
-							'meta_query'=> array( 
-												'relation' => 'OR',
-												array(
-													'key' => '_sensei_content_drip_type',
-													'value' => 'absolute' , 
-												),
-												array(
-													'key' => '_sensei_content_drip_type',
-													'value' => 'dynamic' , 
-												),
-											),
-							);	 	
-
-		// get the lesson matching the query args
-		$wp_lesson_objects = get_posts( $lesson_query_args );
-
-		// create the lessons id array
-		if( !empty( $wp_lesson_objects ) ){
-			foreach ($wp_lesson_objects as $lesson_object) {
-				$lessons[] = $lesson_object->ID; 
-			}	
-		}
-
-		return $lessons;
-	} // get_all_dripping_lessons
-
-	/**
-	*   This function checks the lesson drip type
-	*
-	*
-	*	@param  string | int $lesson_id
-	*	@return string $drip_type ( 'none' || 'absolute' || 'dynamic' )
-	*/
-	public function get_lesson_drip_type( $lesson_id ){
-
-		// basics, checking out the passed in lesson object
-		if( empty( $lesson_id) || 'lesson' != get_post_type( $lesson_id ) ){
-			return 'none';
-		}
-
-		// retrive the drip type from the lesson
-		$drip_type = get_post_meta( $lesson_id , '_sensei_content_drip_type', true ) ;
-
-		// send back the type string
-		return  empty( $drip_type ) ? 'none' : $drip_type; 
-
-	} // end get_drip_type
 
 	/**
 	*   Return all the user taking a given course
 	*
 	*	@param string $course_id
 	*	@return  array $course_users
+	*
 	*/
 	public function get_course_users( $course_id ){
 
@@ -214,12 +88,13 @@ class Sensei_Scd_Extension_Utils {
 
 		// build up the query parameters to
 		// get all users in this course id
-		$activitiy_query = array( 
+		$activity_query = array(
 								'post_id' => $course_id, 
-								'type' => 'sensei_course_start', 
+								'type' => 'sensei_course_status',
+								'value'=>'in-progress',
 								'field' => 'user_id' 
 							);
-		$course_users =  WooThemes_Sensei_Utils::sensei_activity_ids( $activitiy_query );
+		$course_users =  WooThemes_Sensei_Utils::sensei_activity_ids( $activity_query );
 	
 		return $course_users;
 

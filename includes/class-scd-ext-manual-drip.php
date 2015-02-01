@@ -21,6 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * scd_manual_drip_admin_notice
  * manipulate_drip_status
  * send_learner_lesson_manual_drip_status
+ * // todo update all the table of contents
  */
 
 class Scd_Ext_Manual_Drip{
@@ -32,6 +33,7 @@ private $_token;
 
 /**
 * constructor
+* @param string $scd_token
 *
 */
 public function __construct( $scd_token = 'sensei_content_drip' ){
@@ -321,7 +323,7 @@ public function send_learner_lesson_manual_drip_status(){
         die;
     }
 
-    //get the manual drip activiy
+    //get the manual drip activity
     $manual_drip_status = $this->get_manual_drip_status( $user_id, $lesson_id );
 
     // setup the response array and new nonce

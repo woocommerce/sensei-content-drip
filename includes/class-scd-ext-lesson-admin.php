@@ -25,6 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * save_lesson_drip_data
  * get_lesson_drip_data
  * delete_lesson_drip_data
+ * // todo update all the table of contents
  */
 
 class Scd_Ext_Lesson_Admin {
@@ -105,7 +106,7 @@ public function add_column_data ( $column_key, $lesson_id ) {
 	}
 
 	// get the lesson drip type
-	$drip_type = Sensei_Content_Drip()->utils->get_lesson_drip_type( $lesson_id );
+	$drip_type = Sensei_Content_Drip()->lesson_frontend->get_lesson_drip_type( $lesson_id );
 
 	//generate the messages
 	if('none'==$drip_type ){
@@ -117,7 +118,7 @@ public function add_column_data ( $column_key, $lesson_id ) {
 		$unit_type  =  get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_type', true );  
 		$unit_amount = get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_amount', true );
 
-		//setup the time perioud strings
+		//setup the time period strings
 		$time_period =  $unit_amount.' '.$unit_type;
 
 		// append an s to the unit if it is more than 1
@@ -194,7 +195,7 @@ public function content_drip_lesson_meta_content(){
 		<option <?php selected( 'none', $selected_drip_type  ) ?> value="none" class="none"> <?php _e( 'As soon as the course is started', 'sensei-content-drip' ); ?></option>
 		<option <?php selected( 'absolute', $selected_drip_type  ) ?> value="absolute" class="absolute"> <?php _e( 'On a specific date', 'sensei-content-drip' ); ?>  </option>
 		<?php 
-			//does this lesson have a  pre-requiste lesson ? 
+			//does this lesson have a  pre-requisites lesson ?
 			$has_pre_requisite = empty( $lesson_pre_requisite ) ? 'false'  : 'true' ; 
 		?>
 		<option data-has-pre="<?php esc_attr_e( $has_pre_requisite ); ?> " <?php selected( 'dynamic', $selected_drip_type  ); ?> value="dynamic"  class="dynamic"> <?php _e( 'A specific interval after the course start date', 'sensei-content-drip' ); ?> </option>
@@ -202,7 +203,7 @@ public function content_drip_lesson_meta_content(){
 	
 	<p><div class="dripTypeOptions absolute <?php esc_attr_e( $absolute_hidden_class ); ?> ">
 		<p><span class='description'><?php _e('Select the date on which this lesson should become available ?', 'sensei-content-drip'); ?></span></p>
-		<input type="date" id="datepicker" name="absolute[datepicker]" value="<?php esc_attr_e( $absolute_date_value )  ;?>" class="absolute-datepicker" />
+		<input type="text" id="datepicker" name="absolute[datepicker]" value="<?php esc_attr_e( $absolute_date_value )  ;?>" class="absolute-datepicker" />
 	</div></p>
 	<p> 
 		<div class="dripTypeOptions dynamic <?php esc_attr_e( $dymaic_hidden_class );?> ">
@@ -216,7 +217,7 @@ public function content_drip_lesson_meta_content(){
 		<?php }else{  ?>
 
 			<div id="dynamic-dripping-1" class='dynamic-dripping'>
-				<input type='number' name='dynamic-unit-amount[1]' class='unit-amount' value="<?php esc_attr_e( $dynamic_unit_amount ); ?>" ></input>
+				<input type='number' name='dynamic-unit-amount[1]' class='unit-amount' value="<?php esc_attr_e( $dynamic_unit_amount ); ?>"  />
 		
 				<select name='dynamic-time-unit-type[1]' class="dynamic-time-unit">
 					<option <?php selected( 'day', $selected_dynamic_time_unit_type );?> value="day"> <?php _e('Day(s)', 'sensei-content-drip'); ?></option>
@@ -491,6 +492,44 @@ public function delete_lesson_drip_data( $post_id ){
 		delete_post_meta( $post_id , $fieldKey );
 	}
 
-} // delete_lesson_drip_data 
+} // delete_lesson_drip_data
+
+/**
+ *   The function returns an array of lesson_ids . All those with drip type set to dynamic or absolute
+ *
+ *	@return array $lessons array containing lesson ids
+ */
+public static function get_all_dripping_lessons(){
+	$lessons =  array();
+
+	// determine the lesson query args
+	$lesson_query_args = array(
+		'post_type' => 'lesson' ,
+		'numberposts' => -1,
+		'meta_query'=> array(
+			'relation' => 'OR',
+			array(
+				'key' => '_sensei_content_drip_type',
+				'value' => 'absolute' ,
+			),
+			array(
+				'key' => '_sensei_content_drip_type',
+				'value' => 'dynamic' ,
+			),
+		),
+	);
+
+	// get the lesson matching the query args
+	$wp_lesson_objects = get_posts( $lesson_query_args );
+
+	// create the lessons id array
+	if( !empty( $wp_lesson_objects ) ){
+		foreach ($wp_lesson_objects as $lesson_object) {
+			$lessons[] = $lesson_object->ID;
+		}
+	}
+
+	return $lessons;
+} // get_all_dripping_lessons
 
 } // Scd_ext_lesson_frontend class 

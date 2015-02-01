@@ -17,8 +17,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * get_setting
  * register_settings_tab
  * register_settings_fields
+ * // todo update all the table of contents
+ * // todo go through all functions to make sure theyr doc info is correct
  */
-class Scd_Ext_settings {
+class Scd_Ext_Settings {
     public function __construct(){
         if( is_admin() ){
             add_filter( 'sensei_settings_tabs', array( $this, 'register_settings_tab' ) );
@@ -78,6 +80,16 @@ class Scd_Ext_settings {
                                         'default' => 'This lesson will only become available on [date].',
                                         'section' => 'sensei-content-drip-settings'
                                         );
+
+        $sensei_settings_fields['scd_drip_quiz_message'] = array(
+            'name' => __( 'Quiz Drip Message', 'sensei-content-drip' ),
+            'description' => __( 'The user will see this on the lesson quiz when the lesson is not yet available. The [date] shortcode will be replaced by the actual date' ),
+            'type' => 'textarea',
+            'default' => 'This quiz will only become available on [date].',
+            'section' => 'sensei-content-drip-settings'
+        );
+
+
 
         // Email related settings
         $sensei_settings_fields['scd_email_body_notice_html'] = array(
