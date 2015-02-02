@@ -2,7 +2,7 @@
 
 2015.01.31 - version 1.0.1
 * tweak - change the data queries to be compatible with sensei 1.7.0
-* tweak - apply the content access block on quizes as well
+* tweak - apply the content access block on quizzes as well
 * Fix - load WordPress localized dates instead of standard date
 * Fix - Remove the un needed frontend javascript file
 * Tweak - Add jquery data picker for cross browser support

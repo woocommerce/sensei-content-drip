@@ -104,7 +104,7 @@ class Sensei_Content_Drip {
 	 * @param $file
 	 * @param string $version
 	 */
-	public function __construct ( $file, $version = '1.0.0' ) {
+	public function __construct ( $file, $version = '1.0.1' ) {
 
 		$this->_version = $version;
 		$this->_token = 'sensei_content_drip';
@@ -240,7 +240,7 @@ class Sensei_Content_Drip {
 	 * @see Sensei_Content_Drip()
 	 * @return Main Sensei_Content_Drip instance
 	 */
-	public static function instance ( $file, $version = '1.0.0' ) {
+	public static function instance ( $file, $version = '1.0.1' ) {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self( $file, $version );
 		}
