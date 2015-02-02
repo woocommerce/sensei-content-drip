@@ -1,7 +1,7 @@
 <?php  
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
-/*
+/**
  * Sensei Content Drip ( scd ) Manual Drip functionality
  *
  * This class handles all of the functionality for the manual drip override functionality
@@ -14,28 +14,28 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * TABLE OF CONTENTS
  * 
- * __construct
- * manual_drip_interface
- * log_manual_drip_activity
- * localize_data
- * scd_manual_drip_admin_notice
- * manipulate_drip_status
- * send_learner_lesson_manual_drip_status
- * // todo update all the table of contents
+ * - __construct
+ * - manual_drip_interface
+ * - update_manual_drip_activity
+ * - localize_data
+ * - scd_manual_drip_admin_notice
+ * - manipulate_drip_status
+ * - get_manual_drip_status
+ * - send_learner_lesson_manual_drip_status
  */
 
 class Scd_Ext_Manual_Drip{
 
-/*
+/**
  * Token variable referencing the global sense content drip token
  */
 private $_token;
 
 /**
-* constructor
-* @param string $scd_token
-*
-*/
+ * constructor
+ * @param string $scd_token
+ *
+ */
 public function __construct( $scd_token = 'sensei_content_drip' ){
 
     $this->_token = $scd_token;
@@ -56,14 +56,15 @@ public function __construct( $scd_token = 'sensei_content_drip' ){
         add_action( 'wp_ajax_get_manual_drip_status', array( $this , 'send_learner_lesson_manual_drip_status') );
         add_action( 'wp_ajax_nopriv_get_manual_drip_status', array( $this , 'send_learner_lesson_manual_drip_status') );
     }
+
 }// end construct
 
 
 /**
-* manual_drip_interface() markup for the manual drip functionality
-*
-* @return void
-*/
+ * manual_drip_interface() markup for the manual drip functionality
+ *
+ * @return void
+ */
 public function manual_drip_interface(){
 
 	$course_id = $_GET['course_id'];
@@ -123,13 +124,14 @@ public function manual_drip_interface(){
 			</div>
 	</div>
 <?php
+
 }// end manual_drip_interface
 
 /**
-* get the $_POST form data and update the users lesson manual drip status
-*
-* @return void
-*/
+ * get the $_POST form data and update the users lesson manual drip status
+ *
+ * @return void
+ */
 public function update_manual_drip_activity(){
 	global $woothemes_sensei;
 
@@ -194,11 +196,12 @@ public function update_manual_drip_activity(){
 }// end update_manual_drip_activity
 
 /**
- * localize_data
+ * localize_data , localize the 'scdManualDrip' data for JS activity
  *
  * @return void
  */
 public function localize_data(){
+
     // setup the data to be localized
     $data =  array(
         'nonce' =>  wp_create_nonce( 'get-manual-drip-status' )
@@ -206,27 +209,32 @@ public function localize_data(){
 
     wp_localize_script(  $this->_token . '-admin-manual-drip-script', 'scdManualDrip', $data);
     return;
+
 }// end localize_data
 
 /**
-* show the success on update
-*
-* @return void
-*/
+ * show the success on update
+ *
+ * @return void
+ */
 public function scd_manual_drip_admin_notice() {
+
     ?>
     <div class="updated">
         <p><?php _e( 'Manual Drip Status Saved', 'sensei-content-drip' ); ?></p>
     </div>
     <?php
+
 }// end scd_manual_drip_admin_notice
 
 /**
-* manipulate_drip_status() possibly change the drip active status
-*
-* @return void
-*/
+ * manipulate_drip_status() possibly change the drip active status
+ * @param string $hide_lesson_content
+ * @param int $lesson_id
+ * @return string $hide_lesson_content
+ */
 public function manipulate_drip_status( $hide_lesson_content ,  $lesson_id ){
+
  	//	get the current user id
  	$current_user = wp_get_current_user();
     // return the default value if this is not a valid users
@@ -245,6 +253,7 @@ public function manipulate_drip_status( $hide_lesson_content ,  $lesson_id ){
         $hide_lesson_content = true;
     }
 	return $hide_lesson_content;
+
 }// end manipulate_drip_status
 
 /**
@@ -252,10 +261,10 @@ public function manipulate_drip_status( $hide_lesson_content ,  $lesson_id ){
  *
  * @since 1.0.0
  *
- * @param $user_id
- * @param $lesson_id
+ * @param int $user_id
+ * @param int $lesson_id
  *
- * @return $status boolean
+ * @return bool $drip_status
  */
 public function get_manual_drip_status( $user_id, $lesson_id  ){
 
@@ -273,6 +282,7 @@ public function get_manual_drip_status( $user_id, $lesson_id  ){
     }
 
     return $drip_status;
+
 } // end get_manual_drip_status
 
 /**
@@ -280,9 +290,10 @@ public function get_manual_drip_status( $user_id, $lesson_id  ){
  *
  * user lesson manual drip status json data for the incoming ajax request
  *
- * @return $manual_drip_status json
+ * @return void  json
  */
 public function send_learner_lesson_manual_drip_status(){
+
     // incoming request security
     check_ajax_referer( 'get-manual-drip-status', 'nonce' );
 
@@ -340,5 +351,7 @@ public function send_learner_lesson_manual_drip_status(){
     //return
     wp_send_json( $response );
     return;
+
 } // end send_learner_lesson_manual_drip_status
+
 }// end class  Scd_Ext_Manual_Drip

@@ -1,10 +1,10 @@
 <?php  
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
-/*
- * Sensei Content Drip ( scd ) Exctension lesson admin class
+/**
+ * Sensei Content Drip ( scd ) Extension lesson admin class
  *
- * Thie class controls all admin functionaliy related to sensei lessons
+ * This class controls all admin functionality related to sensei lessons
  *
  * @package WordPress
  * @subpackage Sensei Content Drip
@@ -13,19 +13,19 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 1.0.0
  *
  * TABLE OF CONTENTS
- * __construct
- * add_leson_content_drip_meta_box
- * add_column_heading
- * add_column_data
- * content_drip_lesson_meta_content
- * get_course_lessons
- * save_course_drip_meta_box_data
- * lesson_admin_notices
- * get_meta_field_keys
- * save_lesson_drip_data
- * get_lesson_drip_data
- * delete_lesson_drip_data
- * // todo update all the table of contents
+ * - __construct
+ * - add_lesson_content_drip_meta_box
+ * - add_column_heading
+ * - add_column_data
+ * - content_drip_lesson_meta_content
+ * - get_course_lessons
+ * - save_course_drip_meta_box_data
+ * - lesson_admin_notices
+ * - get_meta_field_keys
+ * - save_lesson_drip_data
+ * - get_lesson_drip_data
+ * - delete_lesson_drip_data
+ * - get_all_dripping_lessons
  */
 
 class Scd_Ext_Lesson_Admin {
@@ -52,7 +52,7 @@ public function __construct(){
 	add_action( 'manage_posts_custom_column', array( $this, 'add_column_data' ), 20, 2 );
 
 	// hook int all post of type lesson to determin if they are 
-	add_action('add_meta_boxes', array( $this, 'add_leson_content_drip_meta_box' ) );
+	add_action('add_meta_boxes', array( $this, 'add_lesson_content_drip_meta_box' ) );
 
 	// save the meta box
 	add_action('save_post', array( $this, 'save_course_drip_meta_box_data' ) );
@@ -63,19 +63,17 @@ public function __construct(){
 }// end __construct()
 
 /**
-* single_course_lessons_content, loops through each post on the single crouse page 
-* to confirm if ths content should be hidden
-* 
+* add_lesson_content_drip_meta_box, hooking the meta box content into the edit lesson screen
+*
 * @since 1.0.0
-* @param array $posts
-* @return array $posts
+* @return void
 * @uses the_posts()
 */
 
-public function add_leson_content_drip_meta_box( ){
+public function add_lesson_content_drip_meta_box( ){
 	add_meta_box( 'content-drip-lesson', __('Sensei Content Drip','sensei-content-drip') , array( $this, 'content_drip_lesson_meta_content'  ), 'lesson' , 'normal', 'default' , null  );
 
-} // end add_leson_content_drip_meta_box
+} // end add_lesson_content_drip_meta_box
 
 /**
 * Add a new column to the vew all lessons admin screen
@@ -87,7 +85,7 @@ public function add_leson_content_drip_meta_box( ){
 public function add_column_heading( $columns ){
 	$columns['scd_drip_schedule'] = _x( 'Drip Schedule', 'column name', 'sensei-content-drip' );
 	return $columns;
-} // end add_leson_content_drip_meta_box
+} // end add_lesson_content_drip_meta_box
 
 
 /**
@@ -136,12 +134,11 @@ public function add_column_data ( $column_key, $lesson_id ) {
 * content_drip_lesson_meta_content , display the content inside the meta box
 * 
 * @since 1.0.0
-* @param array $posts
 * @return array $posts
 * @uses the_posts()
 */
-
 public function content_drip_lesson_meta_content(){
+
 	global $post;
 
 	// setup the forms value variable to be empty , this is to avoid php notices
@@ -157,10 +154,10 @@ public function content_drip_lesson_meta_content(){
 	$lesson_pre_requisite = get_post_meta( $post->ID , '_lesson_prerequisite', true );
 	$current_lesson_course = get_post_meta( $post->ID , '_lesson_course', true );
 
-	//show nothing  if no course is selecteda
+	//show nothing  if no course is selected
 	if( empty( $current_lesson_course ) ){
 		echo '<p>'. __( 'In order to use the content drip settings, please select a course for this lesson.', 'sensei-content-drip' ) . '</p>';
-		// esit without displaying the rest of the settings
+		// exit without displaying the rest of the settings
 		return;
 	}
 
@@ -237,6 +234,7 @@ public function content_drip_lesson_meta_content(){
  *
  * @access public
  * @param int $course_id (default: 0)
+ * @param string $exclude
  * @return array WP_Post 
  */
 public function get_course_lessons( $course_id = 0, $exclude = '' ) {
@@ -267,9 +265,10 @@ public function get_course_lessons( $course_id = 0, $exclude = '' ) {
 *
 * @since 1.0.0
 * @param string $post_id
+* @return string $post_id
 */
-
 public function save_course_drip_meta_box_data( $post_id ) {
+
 	global $post, $messages;
 
 	 // verify if this is an auto save routine. 
@@ -361,14 +360,14 @@ public function save_course_drip_meta_box_data( $post_id ) {
 	$this->save_lesson_drip_data( $post_id , $new_data  );
 
 	return $post_id;
+
 } // end save_course_drip_meta_box_data
 
 /**
 * lesson_admin_notices 
-* edit / new messages , loop through the messasges save in the options table and display theme here
+* edit / new messages , loop through the messages save in the options table and display theme here
 * 
 * @since 1.0.0
-* @param array $posts
 * @return array $posts
 * @uses the_posts()
 */
@@ -394,7 +393,7 @@ public function lesson_admin_notices(){
 } // end lesson_admin_notices
 
 /**
-* Maintianing the acceptable list of meta data field keys for the lesson drip data.
+* Maintaining the acceptable list of meta data field keys for the lesson drip data.
 *
 * @return array $meta_fields_keys
 */
@@ -413,12 +412,13 @@ public function get_meta_field_keys(){
 
 
 /**
-* translates and array of key values into the respective post meta data key values
-* 
-* @since 1.0.0
-* @param array $keys_values  
-* @return bool $saved 
-*/
+ * translates and array of key values into the respective post meta data key values
+ *
+ * @since 1.0.0
+ * @param int $post_id
+ * @param array $drip_form_data
+ * @return bool $saved
+ */
 public function save_lesson_drip_data( $post_id , $drip_form_data  ){
 
 	if(empty($post_id) ||  empty( $drip_form_data ) ){
@@ -443,7 +443,7 @@ public function save_lesson_drip_data( $post_id , $drip_form_data  ){
 * 
 * @since 1.0.0
 * @param string $post_id 
-* @return array $drip_data
+* @return array $lesson_drip_data
 */
 public function get_lesson_drip_data( $post_id ){
 	
@@ -474,11 +474,12 @@ public function get_lesson_drip_data( $post_id ){
  
 
 /**
-* cleans out the lessons existing drip meta data to prepare for saving
-* 
-* @since 1.0.0
-* @return void 
-*/
+ * cleans out the lessons existing drip meta data to prepare for saving
+ *
+ * @param int $post_id
+ * @since 1.0.0
+ * @return void
+ */
 public function delete_lesson_drip_data( $post_id ){
 
 	if( empty( $post_id ) ){
@@ -500,6 +501,7 @@ public function delete_lesson_drip_data( $post_id ){
  *	@return array $lessons array containing lesson ids
  */
 public static function get_all_dripping_lessons(){
+
 	$lessons =  array();
 
 	// determine the lesson query args

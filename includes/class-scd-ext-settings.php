@@ -1,7 +1,7 @@
 <?php  
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
-/*
+/**
  * Sensei Content Drip ( scd ) Email Settings class
  *
  * This class handles all of the functionality for the plugins email functionality.
@@ -13,12 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 1.0.0
  *
  * TABLE OF CONTENTS
- * __construct
- * get_setting
- * register_settings_tab
- * register_settings_fields
- * // todo update all the table of contents
- * // todo go through all functions to make sure theyr doc info is correct
+ * - __construct
+ * - get_setting
+ * - register_settings_tab
+ * - register_settings_fields
+ * todo go through all functions to make sure theyr doc info is correct
  */
 class Scd_Ext_Settings {
     public function __construct(){

@@ -2,7 +2,7 @@
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/*
+/**
  * Sensei Content Drip ( scd ) Extension Lesson Frontend
  *
  * The class controls all frontend activity relating to sensei lessons.
@@ -14,17 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 1.0.0
  *
  * TABLE OF CONTENTS
- * __construct
- * lessons_drip_filter
- * replace_lesson_content
- * is_absolute_drip_active
- * is_dynamic_drip_active
- * get_drip_type_message
- * generate_absolute_drip_type_message
- * generate_dynamic_drip_type_message
- * get_date_format_string
- * // todo update all the table of contents
- * // todo update all the table of contents
+ * - __construct
+ * - lesson_content_drip_filter
+ * - get_lesson_with_updated_content
+ * - get_drip_type_message
+ * - generate_absolute_drip_type_message
+ * - generate_dynamic_drip_type_message
+ * - get_lesson_drip_type
  */
 
 class Scd_Ext_Lesson_Frontend {
@@ -47,10 +43,10 @@ protected $drip_message;
 
 
 /**
-* constructor function
-*
-* @uses add_filter
-*/
+ * constructor function
+ *
+ * @uses add_filter 'the_posts'
+  */
 public function __construct(){
 	
 	// set a formatted  message shown to user when the content has not yet dripped
@@ -65,15 +61,16 @@ public function __construct(){
 
 
 /**
-* lesson_content_drip_filter, loops through each post page
-* to confirm if ths content should be hidden
-* 
-* @since 1.0.0
-* @param array $lessons
-* @return array $lessons
-* @uses the_posts()
-*/
+ * lesson_content_drip_filter, loops through each post page
+ * to confirm if ths content should be hidden
+ *
+ * @since 1.0.0
+ * @param array $lessons
+ * @return array $lessons
+ * @uses the_posts()
+ */
 public function lesson_content_drip_filter( $lessons ){
+
 	// this should only apply to the front end on single course and lesson pages
 	if( is_admin() ||  empty( $lessons ) ){
 		return $lessons;	
@@ -97,13 +94,13 @@ public function lesson_content_drip_filter( $lessons ){
 } // end lessons_drip_filter
 
 /**
-* Replace post content with settings or filtered message
-* This function acts on the title , content , embedded video and quiz
-* 
-* @since 1.0.0
-* @param  WP_Post $lesson
-* @return WP_Post $lesson
-*/
+ * Replace post content with settings or filtered message
+ * This function acts on the title , content , embedded video and quiz
+ *
+ * @since 1.0.0
+ * @param  WP_Post $lesson
+ * @return WP_Post $lesson
+ */
 public function get_lesson_with_updated_content( $lesson ) {
 
 	// ensure all things are in place before proceeding
@@ -154,13 +151,13 @@ public function get_lesson_with_updated_content( $lesson ) {
 
 
 /**
-* Check if  the lesson can be made available to the the user at this point
-* according to the drip meta data
-* 
-* @since 1.0.0
-* @param string $lesson_id 
-* @return bool $dripped
-*/
+ * Check if  the lesson can be made available to the the user at this point
+ * according to the drip meta data
+ *
+ * @since 1.0.0
+ * @param string $lesson_id
+ * @return bool $dripped
+ */
 public function get_drip_type_message( $lesson_id ){
 
     $message = '';
@@ -188,12 +185,12 @@ public function get_drip_type_message( $lesson_id ){
 }
 
 /**
-* Absolute drip type: converting the formatted messages into a standard string depending on the details passed in
-* 
-* @since 1.0.0
-* @param  int $lesson_id
-* @return bool $dripped
-*/
+ * Absolute drip type: converting the formatted messages into a standard string depending on the details passed in
+ *
+ * @since 1.0.0
+ * @param  int $lesson_id
+ * @return bool $dripped
+ */
 
 public function generate_absolute_drip_type_message( $lesson_id ){
 
@@ -210,15 +207,16 @@ public function generate_absolute_drip_type_message( $lesson_id ){
 	}
 
 	return $absolute_drip_type_message;
+
 } // end generate_absolute_drip_type_message
 
 /**
-* dynamic drip type: converting the formatted message into a standard string depending on the details passed in
-* 
-* @since 1.0.0
-* @param  int $lesson_id
-* @return bool $dripped
-*/
+ * dynamic drip type: converting the formatted message into a standard string depending on the details passed in
+ *
+ * @since 1.0.0
+ * @param  int $lesson_id
+ * @return bool $dripped
+ */
 public function generate_dynamic_drip_type_message( $lesson_id ){
 
 	// get the user details
@@ -234,6 +232,7 @@ public function generate_dynamic_drip_type_message( $lesson_id ){
 	$dynamic_drip_type_message =  str_replace('[date]' , $formatted_date , $this->message_format );
 
 	return $dynamic_drip_type_message;
+
 }// end generate_dynamic_drip_type_message
 
 /**

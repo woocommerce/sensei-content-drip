@@ -7,6 +7,29 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Class Sensei_Content_Drip
  *
  * The main class for the content drip plugin. This class hooks the plugin into the required WordPress actions.
+ *
+ * @package WordPress
+ * @subpackage Sensei Content Drip
+ * @category Utilities
+ * @author WooThemes
+ * @since 1.0.0
+ *
+ * Table Of Contents:
+ * - __construct
+ * - enqueue_styles
+ * - enqueue_scripts
+ * - admin_enqueue_styles
+ * - admin_enqueue_scripts
+ * - load_localisation
+ * - load_plugin_textdomain
+ * - instance
+ * - __clone
+ * - __wakeup
+ * - install
+ * - _log_version_number
+ * - get_asset_url
+ * - initialize_classes
+ * - get_date_format_string
  */
 class Sensei_Content_Drip {
 
@@ -67,7 +90,7 @@ class Sensei_Content_Drip {
 	private $assets_url;
 
 	/**
-	 * Suffix for Javascripts.
+	 * Suffix for Javascript files.
 	 * @var     string
 	 * @access  private
 	 * @since   1.0.0
@@ -78,9 +101,11 @@ class Sensei_Content_Drip {
 	 * Constructor function.
 	 * @access  public
 	 * @since   1.0.0
-	 * @return  void
+	 * @param $file
+	 * @param string $version
 	 */
 	public function __construct ( $file, $version = '1.0.0' ) {
+
 		$this->_version = $version;
 		$this->_token = 'sensei_content_drip';
 
@@ -107,6 +132,7 @@ class Sensei_Content_Drip {
 
 		// Load and initialize classes
         add_action( 'init', array( $this, 'initialize_classes' ), 0 );
+
 	} // End __construct()
 
 	/**
@@ -116,9 +142,11 @@ class Sensei_Content_Drip {
 	 * @return void
 	 */
 	public function enqueue_styles () {
+
 		global $woothemes_sensei;
 		wp_register_style( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'css/frontend.css', array( $woothemes_sensei->token . '-frontend' ), $this->_version );
 		wp_enqueue_style( $this->_token . '-frontend' );
+
 	} // End enqueue_styles()
 
 	/**
@@ -167,7 +195,6 @@ class Sensei_Content_Drip {
 
         //load the learner management functionality script
         if( 'sensei_page_sensei_learners' === $hook &&  isset( $_GET['course_id'] ) && isset( $_GET['view'] ) && 'learners'=== $_GET['view']  ){
-// TODO minimies this script adding gulp support
             wp_register_script( $this->_token . '-admin-manual-drip-script', esc_url( $this->assets_url ). 'js/admin-manual-drip'. $this->script_suffix .'.js' , array( 'underscore','jquery', 'backbone' ), $this->_version , true);
             wp_enqueue_script( $this->_token . '-admin-manual-drip-script' );
         }

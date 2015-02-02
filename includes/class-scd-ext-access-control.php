@@ -2,7 +2,7 @@
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/*
+/**
  * Sensei Content Drip ( scd ) Extension Access Control class
  *
  * The class controls all frontend activity relating to sensei lessons.
@@ -14,17 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 1.0.0
  *
  * TABLE OF CONTENTS
- * __construct
- * lessons_drip_filter
- * replace_lesson_content
- * is_lesson_drip_active
- * is_absolute_drip_active
- * is_dynamic_drip_active
- * get_drip_type_message
- * generate_absolute_drip_type_message
- * generate_dynamic_drip_type_message
- * get_date_format_string
- * // todo update all the table of contents
+ * - _token
+ * - drip_message
+ * - __construct
+ * - is_lesson_access_blocked
+ * - is_absolute_drip_type_content_blocked
+ * - is_dynamic_drip_type_content_blocked
+ * - get_lesson_drip_date
  */
 
 class Scd_Ext_Access_Control {
@@ -49,7 +45,6 @@ protected $drip_message;
 /**
 * constructor function
 *
-* @uses add_filter
 */
 public function __construct(){
 	
@@ -60,15 +55,13 @@ public function __construct(){
 
 }// end __construct()
 
-
-
 /**
 * Check if  the lesson can be made available to the the user at this point
 * according to the drip meta data
 * 
 * @since 1.0.0
-* @param int $lesson
-* @return bool $dripped
+* @param int $lesson_id
+* @return bool $content_access_blocked
 */
 public function is_lesson_access_blocked( $lesson_id ){
 
@@ -106,11 +99,11 @@ public function is_lesson_access_blocked( $lesson_id ){
 } // end is_lesson_access_blocked
 
 /**
-* Check specifically if the absolute drip is active on this lesson
-* depending only on the date
+* Check specifically if the absolute drip type is active on this lesson
+* depending only on the date stored on this lesson
 * 
 * @since 1.0.0
-* @param  array $dripped_data
+* @param  array $lesson_id
 * @return bool $active
 */
 public function is_absolute_drip_type_content_blocked( $lesson_id ){
@@ -276,6 +269,5 @@ public function get_lesson_drip_date( $lesson_id , $user_id = '' ){
 	return  new DateTime( $drip_date->format('Y-m-d') );
 
 }// end get_lesson_drip_date()
-
 
 } // Scd_ext_lesson_frontend class 

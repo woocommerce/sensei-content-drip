@@ -2,7 +2,7 @@
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/*
+/**
  * Sensei Content Drip ( scd ) Extension Quiz Frontend
  *
  * The class controls all frontend activity relating to blocking access if it is part of a drip campaign
@@ -14,16 +14,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 1.0.0
  *
  * TABLE OF CONTENTS
- * __construct
- * quizzes_drip_filter
- * replace_quiz_content
- * is_absolute_drip_active
- * is_dynamic_drip_active
- * get_drip_type_message
- * generate_absolute_drip_type_message
- * generate_dynamic_drip_type_message
- * get_date_format_string
- * // todo update all the table of contents
+ * - __construct
+ * - quiz_content_drip_filter
+ * - get_quiz_with_updated_content
+ * - get_drip_type_message
+ * - generate_absolute_drip_type_message
+ * - generate_dynamic_drip_type_message
+ * - get_quiz_drip_type
+ * - get_quiz_lesson_id
  */
 
 class Scd_Ext_Quiz_Frontend {
@@ -46,10 +44,10 @@ protected $drip_message;
 
 
 /**
-* constructor function
-*
-* @uses add_filter
-*/
+ * constructor function
+ *
+ * @uses add_filter
+ */
 public function __construct(){
 	
 	// set a formatted  message shown to user when the content has not yet dripped
@@ -64,15 +62,16 @@ public function __construct(){
 
 
 /**
-* quiz_content_drip_filter, loops through each post page
-* to confirm if ths content should be hidden
-* 
-* @since 1.0.0
-* @param array quizes
-* @return array quizes
-* @uses the_posts()
-*/
+ * quiz_content_drip_filter, loops through each post page
+ * to confirm if ths content should be hidden
+ *
+ * @since 1.0.0
+ * @param array $quizzes
+ * @return array $quizzes
+ * @uses the_posts()
+ */
 public function quiz_content_drip_filter( $quizzes ){
+
 	// this should only apply to the front end on single course and quiz pages
 	if( is_admin() ||  empty( $quizzes ) || 'quiz' !== $quizzes[0]->post_type  ){
 		return $quizzes;

@@ -1,7 +1,7 @@
 <?php
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
-/*
+/**
  * Sensei Content Drip ( scd ) Email functionality class
  *
  * This class handles all of the functionality for the plugins email functionality.
@@ -14,17 +14,15 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * TABLE OF CONTENTS
  *
- * __construct
- * daily_drip_lesson_email_run
- * get_users_lessons_dripping_today
- * combine_users_lessons
- * attach_users
- * filter_lessons_dripping_today
- * is_dripping_today
- * send_bulk_drip_notifications
- * send_single_email_drip_notifications
- * // todo update all the table of contents
- * // todo make sure this works before you submit everytyhing for version 1.1
+ * - __construct
+ * -daily_drip_lesson_email_run
+ * -get_users_lessons_dripping_today
+ * -combine_users_lessons
+ * -attach_users
+ * -filter_lessons_dripping_today
+ * -is_dripping_today
+ * -send_bulk_drip_notifications
+ * -send_single_email_drip_notifications
  */
 class Scd_Ext_Drip_Email {
 
@@ -33,7 +31,7 @@ class Scd_Ext_Drip_Email {
 	*
 	*/
 	public function __construct( ) {
-		//add email sending acction to the cron job
+		//add email sending action to the cron job
 		add_action ( 'woo_scd_daily_cron_hook' , array( $this, 'daily_drip_lesson_email_run' ) );
 	}// end __construct()
 
@@ -190,7 +188,7 @@ class Scd_Ext_Drip_Email {
 		$today = new DateTime( date('Y-m-d') ); // get the date ignoring H:M:S
 
 		// get the lesson drip date
-		$lesson_drip_date = Sensei_Content_Drip()->utils->get_lesson_drip_date( $lesson_id , $user_id);
+		$lesson_drip_date = Sensei_Content_Drip()->access_control->get_lesson_drip_date( $lesson_id , $user_id);
 
 		// if no lesson drip date could be found exit
 		if( !$lesson_drip_date ){
