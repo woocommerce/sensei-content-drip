@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Author: WooThemes
  * Author URI: http://www.woothemes.com/
  * Requires at least: 3.9
- * Tested up to: 4.0.0
+ * Tested up to: 4.1.0
  *
  * @package WordPress
  * @author WooThemes

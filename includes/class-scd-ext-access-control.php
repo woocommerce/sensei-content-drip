@@ -149,12 +149,11 @@ public function is_dynamic_drip_type_content_blocked( $lesson_id ){
 	if( empty( $dripped_data ) 
 		|| empty( $dripped_data['_sensei_content_drip_details_date_unit_type'] )   
 		|| empty( $dripped_data['_sensei_content_drip_details_date_unit_amount'] ) ){  
-		// deafult set to false
+		// default set to false
 		return $access_blocked;
 	}
 	
-	// if the user is not logged in ignore this type and show the blocked 
-	// lesson content  as sensei normally would
+	// if the user is not logged in ignore this type and exit
 	if( !is_user_logged_in() ){
 		return $access_blocked;
 	}
@@ -240,11 +239,21 @@ public function get_lesson_drip_date( $lesson_id , $user_id = '' ){
 			'type' => 'sensei_course_status'
 		);
 		// get the activity/comment data
-		$activity = WooThemes_Sensei_Utils::sensei_check_for_activity( $activity_query_args, true );
+		$activity = WooThemes_Sensei_Utils::user_course_status( $course_id , $user_id );
 
-		// make sure there is a start date attached the users activity on the course
-		if( isset( $activity->comment_date_gmt ) && !empty( $activity->comment_date_gmt ) ) {
+		if( isset( $activity->comment_ID ) && intval( $activity->comment_ID ) > 0 ){
+			$course_start_date = get_comment_meta( $activity->comment_ID , 'start' , true);
+		}
 
+		// make sure there is a start date attached the users sensei_course_status comment data on the course
+		if( !empty( $course_start_date ) ){
+
+			$user_course_start_date_string = $course_start_date;
+
+		} else if( isset( $activity->comment_date_gmt ) && !empty( $activity->comment_date_gmt ) ) {
+
+			// this is for backwards compatibility for users who have not yet
+			// updated to the new course status data format since sensei version 1.7.0
 			$user_course_start_date_string = $activity->comment_date_gmt;
 
 		} else {

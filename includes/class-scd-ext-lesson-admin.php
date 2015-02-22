@@ -327,6 +327,7 @@ public function save_course_drip_meta_box_data( $post_id ) {
 		$date_unit_type = $_POST['dynamic-time-unit-type']['1'];	// unit type eg: months, weeks, days		
 
 		// input validation
+		$dynamic_save_error =  false;
 		if( empty( $date_unit_amount ) || empty( $date_unit_type  ) ){
 
 			$save_error_notices = array( 'error' => __('Please select the correct units for your chosen option "After previous lesson" .',  'sensei-content-drip' ) );
