@@ -198,7 +198,7 @@ public function generate_absolute_drip_type_message( $lesson_id ){
 
 	// get this lessons drip data
 	$lesson_drip_date =  new DateTime( get_post_meta( $lesson_id , '_sensei_content_drip_details_date' , true ) );
-	$formatted_date =  $lesson_drip_date->format( Sensei_Content_Drip()->get_date_format_string() );
+	$formatted_date =  date_i18n( get_option( 'date_format' ), $lesson_drip_date->getTimestamp() );
 	// replace the shortcode in the class message_format property set in the constructor
 	if( strpos( $this->message_format , '[date]') ){
 		$absolute_drip_type_message =  str_replace( '[date]', $formatted_date , $this->message_format ) ;
@@ -226,7 +226,7 @@ public function generate_dynamic_drip_type_message( $lesson_id ){
 	$dynamic_drip_type_message = '';
 
 	$lesson_available_date = Sensei_Content_Drip()->access_control->get_lesson_drip_date( $lesson_id , $user_id );
-	$formatted_date =  date_i18n( Sensei_Content_Drip()->get_date_format_string( ), $lesson_available_date->getTimestamp()  );
+	$formatted_date =  date_i18n( get_option( 'date_format' ), $lesson_available_date->getTimestamp() );
 
 	// replace string content in the class message_format property set in the constructor
 	$dynamic_drip_type_message =  str_replace('[date]' , $formatted_date , $this->message_format );

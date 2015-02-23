@@ -357,6 +357,7 @@ class Sensei_Content_Drip {
 		/**
 		 * filter scd_drip_message_date_format
 		 * @param string
+		 * @deprecated since 1.0.2
 		 */
 		return apply_filters( 'scd_drip_message_date_format' , $date_format );
 
