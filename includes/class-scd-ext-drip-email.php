@@ -274,7 +274,8 @@ class Scd_Ext_Drip_Email {
 		}
 
 		//collect all information needed for sensing
-		$email_subject = 'Lessons dripping today '; // should be ins ettings
+		$email_subject = 'Lessons dripping today '; // todo: should be filtarable
+													// todo: all things filterable
 
 		// get the users details
 		$user = get_user_by('id', $user_id );

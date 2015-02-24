@@ -4,13 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 /*
  * Plugin Name: Sensei Content Drip
- * Version: 1.0.1
+ * Version: 1.0.2
  * Plugin URI: http://www.woothemes.com/products/sensei-content-drip/
  * Description:  I will allow you to release sensei lesson content at a determined time so you can control when students have access to the content.
  * Author: WooThemes
  * Author URI: http://www.woothemes.com/
  * Requires at least: 3.9
- * Tested up to: 4.0.0
+ * Tested up to: 4.1.0
  *
  * @package WordPress
  * @author WooThemes
@@ -57,7 +57,7 @@ if( is_sensei_active() ) {
 	 * @return object Sensei_Content_Drip
 	 */
 	function Sensei_Content_Drip() {
-		return Sensei_Content_Drip::instance( __FILE__, '1.0.1' );
+		return Sensei_Content_Drip::instance( __FILE__, '1.0.2' );
 	}
 	// load this plugin only after sensei becomes available globaly
 	add_action('plugins_loaded', 'Sensei_Content_Drip') ;
