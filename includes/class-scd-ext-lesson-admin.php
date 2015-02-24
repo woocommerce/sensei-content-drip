@@ -278,7 +278,8 @@ public function save_course_drip_meta_box_data( $post_id ) {
     } 
       
 	/* Verify the nonce before proceeding. */
-	if ( get_post_type() != 'lesson'  
+	if ( get_post_type() != 'lesson'
+		 || !isset( $_POST['woo_' . $this->_token . '_noonce'] )
 		 || !wp_verify_nonce( $_POST['woo_' . $this->_token . '_noonce'] ) 
 		 || !isset( $_POST['sdc-lesson-drip-type'] ) ) {
 
