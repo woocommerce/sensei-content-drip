@@ -74,7 +74,7 @@ class Scd_Ext_Settings {
 
         $sensei_settings_fields['scd_drip_message'] = array(
                                         'name' => __( 'Drip Message', 'sensei-content-drip' ),
-                                        'description' => __( 'The user will see this when the content is not yet available. The [date] shortcode will be replaced by the actual date' ),
+                                        'description' => __( 'The user will see this when the content is not yet available. The [date] shortcode will be replaced by the actual date', 'sensei-content-drip' ),
                                         'type' => 'textarea',
                                         'default' => 'This lesson will become available on [date].',
                                         'section' => 'sensei-content-drip-settings'
@@ -82,7 +82,7 @@ class Scd_Ext_Settings {
 
         $sensei_settings_fields['scd_drip_quiz_message'] = array(
             'name' => __( 'Quiz Drip Message', 'sensei-content-drip' ),
-            'description' => __( 'The user will see this on the lesson quiz when the lesson is not yet available. The [date] shortcode will be replaced by the actual date' ),
+            'description' => __( 'The user will see this on the lesson quiz when the lesson is not yet available. The [date] shortcode will be replaced by the actual date', 'sensei-content-drip' ),
             'type' => 'textarea',
             'default' => 'This quiz will become available on [date].',
             'section' => 'sensei-content-drip-settings'
@@ -93,7 +93,7 @@ class Scd_Ext_Settings {
         // Email related settings
         $sensei_settings_fields['scd_email_body_notice_html'] = array(
                                     'name' => __( 'Email Before Lessons', 'sensei-content-drip' ),
-                                    'description' => __( 'The text before the list of lessons dripping today.' ),
+                                    'description' => __( 'The text before the list of lessons dripping today.', 'sensei-content-drip' ),
                                     'type' => 'textarea',
                                     'default' => 'The following lessons will become available today:',
                                     'section' => 'sensei-content-drip-settings'
@@ -101,7 +101,7 @@ class Scd_Ext_Settings {
 
         $sensei_settings_fields['scd_email_footer_html'] = array(
                                     'name' => __( 'Email Footer', 'sensei-content-drip' ),
-                                    'description' => __( 'The text below the list of lessons dripping today' ),
+                                    'description' => __( 'The text below the list of lessons dripping today', 'sensei-content-drip' ),
                                     'type' => 'textarea',
                                     'default' => 'Visit the online course today to start taking the lessons: [home_url]',
                                     'section' => 'sensei-content-drip-settings'
