@@ -1,4 +1,4 @@
-<?php  
+<?php
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -49,11 +49,11 @@ protected $drip_message;
  * @uses add_filter
  */
 public function __construct(){
-	
+
 	// set a formatted  message shown to user when the content has not yet dripped
-	$defaultMessage = __( 'This quiz will only become available on [date].', 'sensei-content-drip' ) ;
+	$defaultMessage = __( 'This quiz will become available on [date].', 'sensei-content-drip' ) ;
 	$settingsMessage =  Sensei_Content_Drip()->settings->get_setting( 'scd_drip_quiz_message' ) ;
-	$this->message_format = empty( $settingsMessage ) ? $defaultMessage : $settingsMessage ; 
+	$this->message_format = empty( $settingsMessage ) ? $defaultMessage : $settingsMessage ;
 
 	// hook int all post of type quiz to determine if they should be
 	add_filter('the_posts', array( $this, 'quiz_content_drip_filter' ), 1 );
@@ -76,7 +76,7 @@ public function quiz_content_drip_filter( $quizzes ){
 	if( is_admin() ||  empty( $quizzes ) || 'quiz' !== $quizzes[0]->post_type  ){
 		return $quizzes;
 	}
-	 	
+
 	// loop through each post and replace the content
 	foreach ($quizzes as $index => $quiz ) {
 		$lesson_id = $this->get_quiz_lesson_id( $quiz->ID );
@@ -93,7 +93,7 @@ public function quiz_content_drip_filter( $quizzes ){
 /**
 * Replace post content with settings or filtered message
 * This function acts on the title , content , embedded video and quiz
-* 
+*
 * @since 1.0.0
 * @param  WP_Post $quiz
 * @return WP_Post $quiz
@@ -112,7 +112,7 @@ public function get_quiz_with_updated_content( $quiz ) {
 
 	// wrap the message in sensei notice
 	$new_content = '<div class="sensei-message info">' . esc_html( $new_content ) . '</div>' ;
-	
+
 	/**
 	 * Filter the message a user will see when content is not available.
 	 *
@@ -138,7 +138,7 @@ public function get_quiz_with_updated_content( $quiz ) {
 	//hide the quiz questions
 	remove_all_actions( 'sensei_quiz_questions' );
 
-	//hide the quiz quiz notice and quiz buttons 
+	//hide the quiz quiz notice and quiz buttons
 	remove_all_actions( 'sensei_pagination' );
 
 	// return the quiz with changed content
@@ -150,9 +150,9 @@ public function get_quiz_with_updated_content( $quiz ) {
 /**
 * Check if  the quiz can be made available to the the user at this point
 * according to the drip meta data
-* 
+*
 * @since 1.0.0
-* @param string $quiz_id 
+* @param string $quiz_id
 * @return bool $dripped
 */
 public function get_drip_type_message( $quiz_id ){
@@ -171,7 +171,7 @@ public function get_drip_type_message( $quiz_id ){
 
 		// call the absolute drip type message creator function which creates a message dependant on the date
 		$message = $this->generate_absolute_drip_type_message( $quiz_id );
-	
+
 	}elseif( 'dynamic' === $drip_type ){
 		// call the dynamic drip type message creator function which creates a message dependant on the date
 		$message = $this->generate_dynamic_drip_type_message( $quiz_id );
@@ -183,7 +183,7 @@ public function get_drip_type_message( $quiz_id ){
 
 /**
 * Absolute drip type: converting the formatted messages into a standard string depending on the details passed in
-* 
+*
 * @since 1.0.0
 * @param  int $quiz_id
 * @return bool $dripped
@@ -200,7 +200,7 @@ public function generate_absolute_drip_type_message( $quiz_id ){
 	if( strpos( $this->message_format , '[date]') ){
 		$absolute_drip_type_message =  str_replace( '[date]', $formatted_date , $this->message_format ) ;
 	}else{
-		$absolute_drip_type_message = $this->message_format . ' ' . $formatted_date; 
+		$absolute_drip_type_message = $this->message_format . ' ' . $formatted_date;
 	}
 
 	return $absolute_drip_type_message;
@@ -208,7 +208,7 @@ public function generate_absolute_drip_type_message( $quiz_id ){
 
 /**
 * dynamic drip type: converting the formatted message into a standard string depending on the details passed in
-* 
+*
 * @since 1.0.0
 * @param  int $quiz_id
 * @return bool $dripped
