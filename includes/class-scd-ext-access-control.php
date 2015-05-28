@@ -1,4 +1,4 @@
-<?php  
+<?php
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -47,10 +47,10 @@ protected $drip_message;
 *
 */
 public function __construct(){
-	
+
 	// set a formatted  message shown to user when the content has not yet dripped
-	$defaultMessage = __( 'This lesson will only become available on [date].', 'sensei-content-drip' ) ;
-	$settingsMessage =  Sensei_Content_Drip()->settings->get_setting( 'scd_drip_message' ) ; 
+	$defaultMessage = __( 'This lesson will become available on [date].', 'sensei-content-drip' ) ;
+	$settingsMessage =  Sensei_Content_Drip()->settings->get_setting( 'scd_drip_message' ) ;
 	$this->message_format = empty( $settingsMessage ) ? $defaultMessage : $settingsMessage ;
 
 }// end __construct()
@@ -58,7 +58,7 @@ public function __construct(){
 /**
 * Check if  the lesson can be made available to the the user at this point
 * according to the drip meta data
-* 
+*
 * @since 1.0.0
 * @param int $lesson_id
 * @return bool $content_access_blocked
@@ -71,8 +71,8 @@ public function is_lesson_access_blocked( $lesson_id ){
 	if( is_super_admin() || empty( $lesson_id ) || 'lesson' !== get_post_type( $lesson_id ) ){
 		return $content_access_blocked;
 	}
-	
-	// get the lessons drip data if any 
+
+	// get the lessons drip data if any
 	$drip_type = get_post_meta( $lesson_id , '_sensei_content_drip_type', true );
 
 	// check if the content should be dripped
@@ -101,14 +101,14 @@ public function is_lesson_access_blocked( $lesson_id ){
 /**
 * Check specifically if the absolute drip type is active on this lesson
 * depending only on the date stored on this lesson
-* 
+*
 * @since 1.0.0
 * @param  array $lesson_id
 * @return bool $active
 */
 public function is_absolute_drip_type_content_blocked( $lesson_id ){
 
-	// setup the default drip status 
+	// setup the default drip status
 	$access_blocked = false;
 
 	// get the user details
@@ -132,27 +132,27 @@ public function is_absolute_drip_type_content_blocked( $lesson_id ){
 /**
 * Check specifically if the dynamic drip content is active on this lesson
 * depending only on the time span specified by the user
-* 
+*
 * @since 1.0.0
 * @param string $lesson_id
 * @return bool $active
 */
 public function is_dynamic_drip_type_content_blocked( $lesson_id ){
 	global $woothemes_sensei;
-	// setup the default drip status 
+	// setup the default drip status
 	$access_blocked = false;
 
 	// get the lessons data
 	$dripped_data = Sensei_Content_Drip()->lesson_admin->get_lesson_drip_data( $lesson_id );
 
-	// confirm that all needed data is in place otherwise this content will be available 
-	if( empty( $dripped_data ) 
-		|| empty( $dripped_data['_sensei_content_drip_details_date_unit_type'] )   
-		|| empty( $dripped_data['_sensei_content_drip_details_date_unit_amount'] ) ){  
+	// confirm that all needed data is in place otherwise this content will be available
+	if( empty( $dripped_data )
+		|| empty( $dripped_data['_sensei_content_drip_details_date_unit_type'] )
+		|| empty( $dripped_data['_sensei_content_drip_details_date_unit_amount'] ) ){
 		// default set to false
 		return $access_blocked;
 	}
-	
+
 	// if the user is not logged in ignore this type and exit
 	if( !is_user_logged_in() ){
 		return $access_blocked;
@@ -170,12 +170,12 @@ public function is_dynamic_drip_type_content_blocked( $lesson_id ){
 	if( !in_array($unit_type, array( 'day','week' ,'month' ) ) || ! is_numeric( $unit_amount ) ){
 		return $access_blocked;
 	}
-	
+
 	$lesson_becomes_available_date =  $this->get_lesson_drip_date( $lesson_id , $user_id );
-		
+
 	// get today's date
-	$today = new DateTime();	
-	
+	$today = new DateTime();
+
 	// compare dates
 	// if lesson_becomes_available_date is greater than the today the drip date ist still active and lesson content should be hidden
 	if( $lesson_becomes_available_date > $today  ){
@@ -279,4 +279,4 @@ public function get_lesson_drip_date( $lesson_id , $user_id = '' ){
 
 }// end get_lesson_drip_date()
 
-} // Scd_ext_lesson_frontend class 
+} // Scd_ext_lesson_frontend class

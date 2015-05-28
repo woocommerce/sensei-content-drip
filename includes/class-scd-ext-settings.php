@@ -1,4 +1,4 @@
-<?php  
+<?php
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
 /**
@@ -76,7 +76,7 @@ class Scd_Ext_Settings {
                                         'name' => __( 'Drip Message', 'sensei-content-drip' ),
                                         'description' => __( 'The user will see this when the content is not yet available. The [date] shortcode will be replaced by the actual date' ),
                                         'type' => 'textarea',
-                                        'default' => 'This lesson will only become available on [date].',
+                                        'default' => 'This lesson will become available on [date].',
                                         'section' => 'sensei-content-drip-settings'
                                         );
 
@@ -84,7 +84,7 @@ class Scd_Ext_Settings {
             'name' => __( 'Quiz Drip Message', 'sensei-content-drip' ),
             'description' => __( 'The user will see this on the lesson quiz when the lesson is not yet available. The [date] shortcode will be replaced by the actual date' ),
             'type' => 'textarea',
-            'default' => 'This quiz will only become available on [date].',
+            'default' => 'This quiz will become available on [date].',
             'section' => 'sensei-content-drip-settings'
         );
 

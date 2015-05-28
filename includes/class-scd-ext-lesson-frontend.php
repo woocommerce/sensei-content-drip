@@ -1,4 +1,4 @@
-<?php  
+<?php
 //security first
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -48,11 +48,11 @@ protected $drip_message;
  * @uses add_filter 'the_posts'
   */
 public function __construct(){
-	
+
 	// set a formatted  message shown to user when the content has not yet dripped
-	$defaultMessage = __( 'This lesson will only become available on [date].', 'sensei-content-drip' ) ;
-	$settingsMessage =  Sensei_Content_Drip()->settings->get_setting( 'scd_drip_message' ) ; 
-	$this->message_format = empty( $settingsMessage ) ? $defaultMessage : $settingsMessage ; 
+	$defaultMessage = __( 'This lesson will become available on [date].', 'sensei-content-drip' ) ;
+	$settingsMessage =  Sensei_Content_Drip()->settings->get_setting( 'scd_drip_message' ) ;
+	$this->message_format = empty( $settingsMessage ) ? $defaultMessage : $settingsMessage ;
 
 	// hook int all post of type lesson to determine if they should be
 	add_filter('the_posts', array( $this, 'lesson_content_drip_filter' ), 1 );
@@ -73,14 +73,14 @@ public function lesson_content_drip_filter( $lessons ){
 
 	// this should only apply to the front end on single course and lesson pages
 	if( is_admin() ||  empty( $lessons ) ){
-		return $lessons;	
+		return $lessons;
 	}
 
 	//the first post in the array should be of post type lesson
 	if( 'lesson' !== $lessons[0]->post_type  ){
 		return $lessons;
 	}
-	 	
+
 	// loop through each post and replace the content
 	foreach ($lessons as $index => $lesson ) {
 		if ( Sensei_Content_Drip()->access_control->is_lesson_access_blocked( $lesson->ID ) ){
@@ -115,7 +115,7 @@ public function get_lesson_with_updated_content( $lesson ) {
 
 	// wrap the message in sensei notice
 	$new_content = '<div class="sensei-message info">' . esc_html( $new_content ) . '</div>' ;
-	
+
 	/**
 	 * Filter the message a user will see when content is not available.
 	 *
@@ -141,7 +141,7 @@ public function get_lesson_with_updated_content( $lesson ) {
 	//disable the current lessons video
 	remove_all_actions( 'sensei_lesson_video' );
 
-	//hide the lesson quiz notice and quiz buttons 
+	//hide the lesson quiz notice and quiz buttons
 	remove_all_actions( 'sensei_lesson_quiz_meta' );
 
 	// return the lesson with changed content
@@ -174,7 +174,7 @@ public function get_drip_type_message( $lesson_id ){
 
 		// call the absolute drip type message creator function which creates a message dependant on the date
 		$message = $this->generate_absolute_drip_type_message( $lesson_id );
-	
+
 	}elseif( 'dynamic' === $drip_type ){
 		// call the dynamic drip type message creator function which creates a message dependant on the date
 		$message = $this->generate_dynamic_drip_type_message( $lesson_id );
@@ -203,7 +203,7 @@ public function generate_absolute_drip_type_message( $lesson_id ){
 	if( strpos( $this->message_format , '[date]') ){
 		$absolute_drip_type_message =  str_replace( '[date]', $formatted_date , $this->message_format ) ;
 	}else{
-		$absolute_drip_type_message = $this->message_format . ' ' . $formatted_date; 
+		$absolute_drip_type_message = $this->message_format . ' ' . $formatted_date;
 	}
 
 	return $absolute_drip_type_message;
