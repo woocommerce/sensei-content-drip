@@ -337,19 +337,57 @@ class Scd_Ext_Drip_Email {
 		// loop through each lesson to get its title and relative url
 		$email_body_lessons .= '<p><ul>';
 
+        // group lessons by course and order them according their order within the course
+        $courses_and_lessons = array();
 		foreach( $lessons as $lesson_id ) {
+
 			// get the post type object for this post id
 			$lesson = get_post( $lesson_id );
 
+            $course_id = Sensei()->lesson->get_course_id( $lesson_id );
 			// setup the lesson line item
 			$lesson_title = $lesson->post_title;
 			$lesson_url = get_permalink( $lesson_id );
 			$lesson_link = '<a href="' .esc_attr( $lesson_url ) . '">' . esc_html( $lesson_title ) . '</a>';
 			$lesson_line_item = '<li>'. $lesson_link .'</li>';
 
-			// append the li line item to the email body lessons
-			$email_body_lessons .= $lesson_line_item;
+            // add it to the list that will be ordered later
+            if( is_array( $courses_and_lessons[ $course_id ] ) ){
+
+                $courses_and_lessons[ $course_id ][ $lesson_id ] = $lesson_line_item;
+
+            }else{
+
+                $courses_and_lessons[ $course_id ] = array( $lesson_id => $lesson_line_item );
+
+            }
+
 		}// end for each $lessons
+
+        //loop through and ordered list of lessons for each course
+        foreach( $courses_and_lessons as $course_id => $lesson_line_items ){
+
+            // set the current order as the default just in case the course lesson order is not set
+            $ordered_lesson_line_items = $lesson_line_items;
+
+            $course_lesson_order = get_post_meta( $course_id, '_lesson_order',true );
+
+            if( !empty( $course_lesson_order ) ) {
+
+                $ordered_lesson_line_items = $this->order_course_lesson_items( $lesson_line_items , $course_lesson_order);
+                $courses_and_lessons[ $course_id ] =  $ordered_lesson_line_items;
+
+            }
+
+            foreach( $ordered_lesson_line_items as $lesson_id => $lesson_line_item ){
+
+                // add the li html element to the email body in between the ul element
+                $email_body_lessons .= $lesson_line_item;
+
+            }// for each
+
+        }
+
 		$email_body_lessons .= '</ul></p>';
 
 		// assemble the message content
@@ -361,4 +399,43 @@ class Scd_Ext_Drip_Email {
 
 		return;
 	}// end bulk_email_drip_notifications
+
+    /**
+     * Order the lesson items according to courses and course order given.
+     * This function will remove the lesson ids from the order that do not matched the lessons array.
+     *
+     *
+     * @since 1.0.3
+     *
+     * @param array $lessons{
+     *   type string $lesson_id => $lesson_line_item
+     * }
+     *
+     * @param string $course_order csv list
+     *
+     * @return array $course_lessons{
+     *    array $course_id => $course_lessons{
+     *       $lesson_id => $lesson_line_item
+     *    }
+     * }
+     */
+    public function order_course_lesson_items( $lessons = array(), $course_order ){
+
+        $ordered_lessons = explode( ',', $course_order );
+        // swap keys and values so we can use the order given
+        // as the index for the values that should be returned
+        // fill t
+        $ordered_lessons = array_flip( $ordered_lessons );
+        $ordered_lessons =  array_map(create_function('$n', 'return false;'), $ordered_lessons );
+
+        foreach( $lessons as $lesson_id => $lesson_line_item ){
+
+            $ordered_lessons[ $lesson_id ] = $lesson_line_item;
+        }
+
+        // remove all false values before returning
+        return array_filter( $ordered_lessons );
+
+    } //order_course_lesson_items
+
 }// end Scd_Ext_drip_email
