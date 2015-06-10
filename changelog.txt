@@ -1,5 +1,11 @@
 *** Sensei Content Drip Changelog ***
 
+2015.06.10 - version 1.0.3
+* Tweak - replace deprecated post query 'numberofposts' argument with 'posts_per_page'
+* Tweak -  add filters for the email subject, heading and greeting
+* Fix - Widen the number input for the time units after course start option
+* Fix - Email lesson list order was random and not as set by admin.
+
 2015.02.25 - version 1.0.2
 * Tweak - use the WordPress date format when displaying the drip date notification
 * Fix - The dynamic drip now uses the 'start' comment meta on the sensei_course_status since Sensei 1.7.0
