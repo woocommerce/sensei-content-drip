@@ -67,7 +67,7 @@ public function is_lesson_access_blocked( $lesson_id ){
 
 	$content_access_blocked = false;
 
-	// return drip not active for the fllowing conditions
+	// return drip not active for the following conditions
 	if( is_super_admin() || empty( $lesson_id ) || 'lesson' !== get_post_type( $lesson_id ) ){
 		return $content_access_blocked;
 	}

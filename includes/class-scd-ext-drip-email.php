@@ -131,7 +131,7 @@ class Scd_Ext_Drip_Email {
 				// get the lessons course
 				$course_id = get_post_meta( $lesson_id, '_lesson_course', true );
 
-				// a luesson must have a course for the rest to work
+				// a lesson must have a course for the rest to work
 				if( empty( $course_id ) ){
 					continue;
 				}
@@ -176,11 +176,13 @@ class Scd_Ext_Drip_Email {
 	}// end filter_lessons_dripping_today
 
 	/**
-	* is_dripping_tody. determine if the lesson is dripping today
-	*
-	* @param string $lesson_id
-	* @return bool  dripping_today
-	*/
+     * is_dripping_today. determine if the lesson is dripping today
+     *
+     * @param string $lesson_id
+     * @param $user_id
+     *
+     * @return bool  dripping_today
+     */
 	function is_dripping_today( $lesson_id , $user_id ='' ) {
 
 		// setup variables needed
@@ -206,9 +208,9 @@ class Scd_Ext_Drip_Email {
 		foreach ($offset as $key => $value) {
 
 			if( !$dripping_today_flag ){
-				// do not exutuing anything else as this lesson
+				// do not execute anything else as this lesson
 				// has already been defined as not dripping based on
-				// a previous time interfa unit ( y, m , d )
+				// a previous time interface unit ( y, m , d )
 				continue;
 			}
 
@@ -225,7 +227,7 @@ class Scd_Ext_Drip_Email {
 		}
 
 		return $dripping_today;
-	}// end is_dripping_tody
+	}// end is_dripping_today
 
 	/**
 	* bulk_email_drip_notifications. go through all lesson and send and email for each user
@@ -241,7 +243,14 @@ class Scd_Ext_Drip_Email {
 			// Construct data array sensei needs before it can send an email
 			$sensei_email_data = array(
 				'template'			=> 'sensei-content-drip',
-				'heading'			=> 'Content Drip',
+                /**
+                 * Content Drip email heading filter. This main email heading and shows on top of the email.
+                 *
+                 * @since 1.0.3
+                 *
+                 * @param string $email_heading
+                 */
+				'heading'			=> apply_filters( 'scd_email_heading',__( 'Content Drip', 'sensei-content-drip' )),
 				'user_id'			=> '',
 				'course_id'			=> '',
 				'passed'			=> '',
@@ -267,15 +276,19 @@ class Scd_Ext_Drip_Email {
 	* @return void
 	*/
 	public function send_single_email_drip_notifications( $user_id, $lessons, $email_wrappers ) {
-		global $woothemes_sensei , $sensei_email_data;
+		global $woothemes_sensei;
 
 		if( empty( $user_id ) || empty( $lessons ) || ! is_array( $lessons ) ){
 			return ;
 		}
 
-		//collect all information needed for sensing
-		$email_subject = 'Lessons dripping today '; // todo: should be filtarable
-													// todo: all things filterable
+        /**
+         * Filter content drip email subject
+         *
+         * @param string $email_subject
+         * @since 1.3.0
+         */
+		$email_subject = apply_filters( 'scd_email_subject', __( 'Lessons dripping today', 'sensei-content-drip' ) );
 
 		// get the users details
 		$user = get_user_by('id', $user_id );
@@ -305,9 +318,19 @@ class Scd_Ext_Drip_Email {
 		}
 
 		// setup the  the message content
-		$email_heading = '<p>' . __('Good Day', 'sensei-content-drip' ) . ' ' . $first_name . '</p>';
+
+        /**
+         * Email user greeting filter.
+         *
+         * @since 1.0.3
+         *
+         * @param string $email_greeting Defaults to "Good Day $first_name"
+         * @param int $user_id
+         */
+		$email_greeting = '<p>' . apply_filters( 'scd_email_greeting', __('Good Day', 'sensei-content-drip' ). ' ' . $first_name ) . '</p>';
 		$email_body_notice = '<p>'. $settings['email_body_notice'] . '</p>';
 		$email_body_lessons = '';
+
 		// get the footer from the settings and replace the shortcode [home_url] with the actual site url
 		$email_footer = '<p>'. str_ireplace('[home_url]'  , '<a href="'.esc_attr( home_url() ) .'" >'.esc_html( home_url() ).'</a>' , $settings['email_footer'] ) . '</p>';
 
@@ -330,10 +353,11 @@ class Scd_Ext_Drip_Email {
 		$email_body_lessons .= '</ul></p>';
 
 		// assemble the message content
-		$formated_email_html = $wrap_header . $email_heading . $email_body_notice . $email_body_lessons . $email_footer .  $wrap_footer ;
+        // $wrap_header and $wrap_footer is extracted above from $email_wrappers
+		$formatted_email_html = $wrap_header . $email_greeting . $email_body_notice . $email_body_lessons . $email_footer .  $wrap_footer ;
 
 		// send
-		$woothemes_sensei->emails->send( $user_email, $email_subject, $formated_email_html );
+		$woothemes_sensei->emails->send( $user_email, $email_subject, $formatted_email_html );
 
 		return;
 	}// end bulk_email_drip_notifications
