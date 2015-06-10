@@ -36,18 +36,22 @@ class Scd_Ext_Utils {
 
 		// if type none return all lessons with no meta query
 		if( 'none' == $type ){
+
 			$meta_query = '';
+
 		}else{
+
 			$meta_query = array( array(
 									'key' => '_sensei_content_drip_type',
 									'value' => $type, 
 									),);
+
 		}
 
 		// create the lesson query args
 		$lesson_query_args = array( 
 							'post_type' => 'lesson' , 
-							'limit' => 200,
+							'posts_per_page' => 500,
 							'meta_query'=>  $meta_query,
 							);	 
 
