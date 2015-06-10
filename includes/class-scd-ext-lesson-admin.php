@@ -509,7 +509,7 @@ public static function get_all_dripping_lessons(){
 	// determine the lesson query args
 	$lesson_query_args = array(
 		'post_type' => 'lesson' ,
-		'numberposts' => -1,
+		'posts_per_page' => -1,
 		'meta_query'=> array(
 			'relation' => 'OR',
 			array(
