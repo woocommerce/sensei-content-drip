@@ -125,18 +125,22 @@ public function get_lesson_with_updated_content( $lesson ) {
 	 */
 	$new_content = apply_filters( 'sensei_content_drip_lesson_message', $new_content );
 
-    $lesson->post_content = '<p>' . wp_trim_words( $lesson->post_content , 20 ) . '</p>' . $new_content;
 
 	// set the excerpt to be a trimmed down version of the full content if it is empty
 	if( empty( $lesson->post_excerpt )  ){
 
-		$lesson->post_excerpt = '<p>' . wp_trim_words( $lesson->post_content , 20 ) . '</p>' . $new_content;
+        $lesson->post_excerpt = $new_content;
 
-	}else{
+        $lesson->post_content = $new_content;
 
-		$lesson->post_excerpt = '<p>' .  $lesson->post_excerpt  . '... </p>' . $new_content;
 
-	}
+    }else{
+
+        $lesson->post_content = '<p>' .  $lesson->post_excerpt  . '</p>' . $new_content;
+
+        $lesson->post_excerpt = '<p>' .  $lesson->post_excerpt  . '</p>' . $new_content;
+
+    }
 
 	//disable the current lessons video
 	remove_all_actions( 'sensei_lesson_video' );
