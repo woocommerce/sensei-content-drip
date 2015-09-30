@@ -126,7 +126,8 @@ public function get_lesson_with_updated_content( $lesson ) {
 	$new_content = apply_filters( 'sensei_content_drip_lesson_message', $new_content );
 
 
-	// set the excerpt to be a trimmed down version of the full content if it is empty
+	// If a manual excerpt is not set, do not show an auto excerpt, and instead only
+	// display the sensei_content_drip_lesson_message.
 	if( empty( $lesson->post_excerpt )  ){
 
         $lesson->post_excerpt = $new_content;
