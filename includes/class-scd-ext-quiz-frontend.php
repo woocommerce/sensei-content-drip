@@ -51,7 +51,7 @@ class Scd_Ext_Quiz_Frontend {
 		// Set a formatted  message shown to user when the content has not yet dripped
 		$default_message = 'This quiz will become available on [date].';
 		$settings_field=  'scd_drip_quiz_message';
-    	$this->message_format = Sensei_Content_Drip()->utils->check_for_translation($default_message, $settings_field );
+		$this->message_format = Sensei_Content_Drip()->utils->check_for_translation($default_message, $settings_field );
 
 		// Hook int all post of type quiz to determine if they should be
 		add_filter( 'the_posts', array( $this, 'quiz_content_drip_filter' ), 1 );

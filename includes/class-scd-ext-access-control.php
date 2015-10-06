@@ -47,10 +47,9 @@ class Scd_Ext_Access_Control {
 	 */
 	public function __construct() {
 		// set a formatted  message shown to user when the content has not yet dripped
-    	$default_message = 'This lesson will become available on [date].';
-    	$settings_field =  'scd_drip_message';
-    	$this->message_format = Sensei_Content_Drip()->utils->check_for_translation($default_message, $settings_field );
-
+		$default_message = 'This lesson will become available on [date].';
+		$settings_field =  'scd_drip_message';
+		$this->message_format = Sensei_Content_Drip()->utils->check_for_translation($default_message, $settings_field );
 	}// end __construct()
 
 	/**
