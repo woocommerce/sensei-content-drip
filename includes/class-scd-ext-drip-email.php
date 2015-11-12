@@ -344,7 +344,7 @@ class Scd_Ext_Drip_Email {
 			// get the post type object for this post id
 			$lesson = get_post( $lesson_id );
 
-            $course_id = Sensei()->lesson->get_course_id( $lesson_id );
+            $course_id = $woothemes_sensei->lesson->get_course_id( $lesson_id );
 			// setup the lesson line item
 			$lesson_title = $lesson->post_title;
 			$lesson_url = get_permalink( $lesson_id );
@@ -368,7 +368,7 @@ class Scd_Ext_Drip_Email {
         foreach( $courses_and_lessons as $course_id => $lesson_line_items ){
 
             // set the current order as the default just in case the course lesson order is not set
-            $ordered_lesson_line_items = $lesson_line_items;
+            $course_id = $woothemes_sensei->lesson->get_course_id( $lesson_id );
 
             $course_lesson_order = get_post_meta( $course_id, '_lesson_order',true );
 
