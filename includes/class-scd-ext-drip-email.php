@@ -344,7 +344,7 @@ class Scd_Ext_Drip_Email {
 			// get the post type object for this post id
 			$lesson = get_post( $lesson_id );
 
-            $course_id = Sensei()->lesson->get_course_id( $lesson_id );
+            $course_id = $woothemes_sensei->lesson->get_course_id( $lesson_id );
 			// setup the lesson line item
 			$lesson_title = $lesson->post_title;
 			$lesson_url = get_permalink( $lesson_id );
