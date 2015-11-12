@@ -368,7 +368,7 @@ class Scd_Ext_Drip_Email {
         foreach( $courses_and_lessons as $course_id => $lesson_line_items ){
 
             // set the current order as the default just in case the course lesson order is not set
-            $course_id = $woothemes_sensei->lesson->get_course_id( $lesson_id );
+            $ordered_lesson_line_items = $lesson_line_items;
 
             $course_lesson_order = get_post_meta( $course_id, '_lesson_order',true );
 
