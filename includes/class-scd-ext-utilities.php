@@ -94,7 +94,7 @@ class Scd_Ext_Utils {
 								'value'=>'in-progress',
 								'field' => 'user_id' 
 							);
-		$course_users =  WooThemes_Sensei_Utils::sensei_activity_ids( $activity_query );
+		$course_users =  Sensei_Utils::sensei_activity_ids( $activity_query );
 	
 		return $course_users;
 

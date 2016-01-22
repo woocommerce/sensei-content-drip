@@ -239,7 +239,7 @@ public function get_lesson_drip_date( $lesson_id , $user_id = '' ){
 			'type' => 'sensei_course_status'
 		);
 		// get the activity/comment data
-		$activity = WooThemes_Sensei_Utils::user_course_status( $course_id , $user_id );
+		$activity = Sensei_Utils::user_course_status( $course_id , $user_id );
 
 		if( isset( $activity->comment_ID ) && intval( $activity->comment_ID ) > 0 ){
 			$course_start_date = get_comment_meta( $activity->comment_ID , 'start' , true);

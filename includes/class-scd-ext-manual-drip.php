@@ -184,10 +184,10 @@ public function update_manual_drip_activity(){
 
     if( 'Give Access'== $_POST[ 'scd_log_learner_lesson_manual_drip_submit' ] ){
         // log the users activity on the lesson drip
-        $activity_updated = WooThemes_Sensei_Utils::sensei_log_activity( $args );
+        $activity_updated = Sensei_Utils::sensei_log_activity( $args );
     }else{
         // log the users activity on the lesson drip
-        $activity_updated  = WooThemes_Sensei_Utils::sensei_delete_activities( $args );
+        $activity_updated  = Sensei_Utils::sensei_delete_activities( $args );
     }
 
 	add_action( 'admin_notices', array( $this, 'scd_manual_drip_admin_notice' ) );
@@ -272,7 +272,7 @@ public function get_manual_drip_status( $user_id, $lesson_id  ){
     $args =  array( 'post_id' => intval( $lesson_id ) , 'user_id' => $user_id , 'type' => 'scd_manual_drip' ) ;
 
     // get the sensei activity, false asks to only return the comment count
-    $activity = WooThemes_Sensei_Utils::sensei_check_for_activity( $args ,  false );
+    $activity = Sensei_Utils::sensei_check_for_activity( $args ,  false );
 
     // set  the drip status value
     if( ! empty( $activity ) && $activity > 0 ){
