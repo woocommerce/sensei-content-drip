@@ -144,6 +144,12 @@ public function get_lesson_with_updated_content( $lesson ) {
 	//hide the lesson quiz notice and quiz buttons
 	remove_all_actions( 'sensei_lesson_quiz_meta' );
 
+    //hide buttons from sensei version 1.9 onwards
+    remove_action( 'sensei_single_lesson_content_inside_after', array('Sensei_Lesson', 'footer_quiz_call_to_action' ));
+
+    // hide the lesson quiz notice
+    remove_action( 'sensei_single_lesson_content_inside_before', array( 'Sensei_Lesson', 'user_lesson_quiz_status_message' ), 20 );
+
 	// return the lesson with changed content
 	return $lesson;
 
