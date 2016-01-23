@@ -268,6 +268,9 @@ public function manipulate_drip_status( $hide_lesson_content ,  $lesson_id ){
  */
 public function get_manual_drip_status( $user_id, $lesson_id  ){
 
+    if( empty( $user_id ) ){
+        return false;
+    }
     // get the lesson/course sensei activity for drip manual drip
     $args =  array( 'post_id' => intval( $lesson_id ) , 'user_id' => $user_id , 'type' => 'scd_manual_drip' ) ;
 
