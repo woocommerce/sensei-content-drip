@@ -1,5 +1,9 @@
 *** Sensei Content Drip Changelog ***
 
+2016.02.02 - version 1.0.4
+* Fix - Makes sure the auto-excert is not displayed if the lesson has not dripped
+* Tweak - Ensures compatibility with Sensei 1.9
+
 2015.06.10 - version 1.0.3
 * Tweak - replace deprecated post query 'numberofposts' argument with 'posts_per_page'
 * Tweak -  add filters for the email subject, heading and greeting
