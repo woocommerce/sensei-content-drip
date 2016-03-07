@@ -1,6 +1,8 @@
 Sensei Content Drip
 =====================
 
+Sensei Content Drip is a commercial plugin available from http://www.woothemes.com/products/sensei-content-drip/. It is an extension for the Sensei plugin: https://www.woothemes.com/products/sensei/. The plugin is hosted here on a public Github repository in order to better facilitate community contributions from developers and users alike. If you have a suggestion, a bug report, or a patch for an issue, feel free to submit it here. We do ask, however, that if you are using the plugin on a live site that you please purchase a valid license from the website. We cannot provide support or one-click updates to anyone that does not hold a valid license key.
+
 **User problems:**
 - users downloading all content then getting a refund (protects revenue)
 - students not spending enough time on basic topics before rushing into more advanced lessons (structured learning)
