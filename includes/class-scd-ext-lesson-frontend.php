@@ -87,10 +87,14 @@ public function lesson_content_drip_filter( $lessons ){
 			// change the lesson content accordingly
 			$lessons[ $index ] =  $this->get_lesson_with_updated_content( $lesson );
 
-			// remove hooked content
-			$current_lesson_id = get_the_ID();
-			if( 'lesson'== get_post_type( $current_lesson_id ) && $current_lesson_id == $lesson->ID ){
-				$this->remove_single_lesson_hooks();
+			// remove hooked
+			global $wp_query;
+			if (  $wp_query->is_main_query() && 'lesson' == $wp_query->query['post_type'] ) {
+
+				$current_lesson = array_shift( $wp_query->posts );
+				if( isset( $current_lesson->ID ) && $current_lesson->ID == $lesson->ID ){
+					$this->remove_single_lesson_hooks();
+				}
 			}
 		}
 	} // end for each
