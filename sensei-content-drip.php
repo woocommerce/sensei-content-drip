@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Author URI: http://www.woothemes.com/
  * Requires at least: 3.9
  * Tested up to: 4.1.0
+ * Domain path: /lang/
  *
  * @package WordPress
  * @author WooThemes

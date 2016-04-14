@@ -2,6 +2,8 @@ var gulp = require('gulp');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var minifyCSS = require('gulp-minify-css');
+var wpPot     = require( 'gulp-wp-pot' );
+var sort      = require( 'gulp-sort' );
 del = require('del');
 
 var paths = {
@@ -34,11 +36,12 @@ gulp.task('javascript', function(){
         .pipe( gulp.dest( 'assets/js' ));
 });
 
-gulp.task('watch', function() {
-    // NOTE: this watch recusrively loops when .min changes, find a way to avoid this then
-    // activate the watch again.
-    // Watch .js files
-    //gulp.watch( ['assets/js/*.js' , '!assets/js/*.js' ], ['javascript']);
-   // gulp.watch('assets/css/*.css', ['css']);
-
+gulp.task( 'pot', function() {
+    return gulp.src( [ '**/**.php', '!node_modules/**'] )
+        .pipe( sort() )
+        .pipe( wpPot({
+            domain: 'sensei-content-drip',
+            bugReport: 'https://www.transifex.com/woothemes/sensei-by-woothemes/'
+        }) )
+        .pipe( gulp.dest( 'lang' ) );
 });
