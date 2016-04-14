@@ -67,8 +67,10 @@ public function __construct( $scd_token = 'sensei_content_drip' ){
  */
 public function manual_drip_interface(){
 
-	$course_id = $_GET['course_id'];
-	
+	$course_id = isset( $_GET['course_id'] ) ? $_GET['course_id'] : 0 ;
+	if ( empty( $course_id ) ) {
+		return;
+	}
 	// get al the users taking this course
 	$course_users = Sensei_Content_Drip()->utils->get_course_users( $course_id );
 	$course_lessons = Sensei_Content_Drip()->lesson_admin->get_course_lessons( $course_id );
