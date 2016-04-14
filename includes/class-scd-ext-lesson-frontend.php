@@ -86,12 +86,18 @@ public function lesson_content_drip_filter( $lessons ){
 		if ( Sensei_Content_Drip()->access_control->is_lesson_access_blocked( $lesson->ID ) ){
 			// change the lesson content accordingly
 			$lessons[ $index ] =  $this->get_lesson_with_updated_content( $lesson );
+
+			// remove hooked content
+			$current_lesson_id = get_the_ID();
+			if( 'lesson'== get_post_type( $current_lesson_id ) && $current_lesson_id == $lesson->ID ){
+				$this->remove_single_lesson_hooks();
+			}
 		}
 	} // end for each
 
 	return $lessons;
 
-} // end lessons_drip_filter
+} // end
 
 /**
  * Replace post content with settings or filtered message
@@ -143,22 +149,31 @@ public function get_lesson_with_updated_content( $lesson ) {
 
     }
 
+	// return the lesson with changed content
+	return $lesson;
+
+} // end replace_lesson_content
+
+/**
+ * Hide all things on the single lesson
+ *
+ * @since 1.0.5 introduced
+ */
+public function remove_single_lesson_hooks(){
+
 	//disable the current lessons video
 	remove_all_actions( 'sensei_lesson_video' );
 
 	//hide the lesson quiz notice and quiz buttons
 	remove_all_actions( 'sensei_lesson_quiz_meta' );
 
-    //hide buttons from sensei version 1.9 onwards
-    remove_action( 'sensei_single_lesson_content_inside_after', array('Sensei_Lesson', 'footer_quiz_call_to_action' ));
+	//hide buttons from sensei version 1.9 onwards
+	remove_action( 'sensei_single_lesson_content_inside_after', array('Sensei_Lesson', 'footer_quiz_call_to_action' ));
 
-    // hide the lesson quiz notice
-    remove_action( 'sensei_single_lesson_content_inside_before', array( 'Sensei_Lesson', 'user_lesson_quiz_status_message' ), 20 );
+	// hide the lesson quiz notice
+	remove_action( 'sensei_single_lesson_content_inside_before', array( 'Sensei_Lesson', 'user_lesson_quiz_status_message' ), 20 );
 
-	// return the lesson with changed content
-	return $lesson;
-
-} // end replace_lesson_content
+}
 
 
 /**

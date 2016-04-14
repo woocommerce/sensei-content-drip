@@ -66,10 +66,13 @@ public function __construct(){
 public function is_lesson_access_blocked( $lesson_id ){
 
 	$content_access_blocked = false;
+	$lesson_course_id = Sensei()->lesson->get_course_id( $lesson_id );
 
-	// return drip not active for the following conditions
-	if( is_super_admin() || empty( $lesson_id ) || 'lesson' !== get_post_type( $lesson_id ) ){
-		return $content_access_blocked;
+	// Return drip not active for the following conditions.
+	if ( is_super_admin() || empty( $lesson_id ) || 'lesson' !== get_post_type( $lesson_id )
+	     || Sensei_Utils::user_completed_lesson( $lesson_id, get_current_user_id() )
+	     || ! Sensei_Utils::user_started_course( $lesson_course_id, get_current_user_id() ) ) {
+		return false;
 	}
 
 	// get the lessons drip data if any
