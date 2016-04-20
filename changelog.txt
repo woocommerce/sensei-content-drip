@@ -1,5 +1,9 @@
 *** Sensei Content Drip Changelog ***
 
+2016.04.20 - version 1.0.5
+* Fix - Ensure lesson video and meta can still be viewed after completing a lesson.
+* New - Added a .pot file to enable translation.
+
 2016.02.02 - version 1.0.4
 * Fix - Makes sure the auto-excert is not displayed if the lesson has not dripped
 * Tweak - Ensures compatibility with Sensei 1.9
