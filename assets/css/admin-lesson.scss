@@ -5,25 +5,26 @@
 
 	input[type=number]::-webkit-inner-spin-button,
 	input[type=number]::-webkit-outer-spin-button {
-    	-webkit-appearance: none;
-    	margin: 0;
+		-webkit-appearance: none;
+		margin: 0;
 	}
 
-	input.unit-amount{
-		width: 2em;
+	input.unit-amount {
 		font-size: 14px;
+		width: 2em;
 	}
 
-	div.dynamic-dripping{
-		clear:both;
+	div.dynamic-dripping {
+		clear: both;
 		width: 100%;
 	}
-	select#dynamic-drip-related-lessons{
-	  display: inline; 
-	  width: 60%;
+	select#dynamic-drip-related-lessons {
+		display: inline;
+		width: 60%;
 	}
-	#dynamic-dripping-1{
-	  display: inline;
-	  clear: left;
+
+	#dynamic-dripping-1 {
+		clear: left;
+		display: inline;
 	}
 }
