@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Plugin Name: Sensei Content Drip
  * Version: 1.0.5
  * Plugin URI: http://www.woothemes.com/products/sensei-content-drip/
- * Description:  I will allow you to release sensei lesson content at a determined time so you can control when students have access to the content.
+ * Description: This plugin offers the possibility to schedule release at a determined time to make a Sensei lesson content available for access.
  * Author: WooThemes
  * Author URI: http://www.woothemes.com/
  * Requires at least: 3.9
