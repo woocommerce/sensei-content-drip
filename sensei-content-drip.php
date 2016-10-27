@@ -1,7 +1,4 @@
 <?php
-//security first
-if ( ! defined( 'ABSPATH' ) ) exit;
-
 /*
  * Plugin Name: Sensei Content Drip
  * Version: 1.0.5
@@ -17,6 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @author WooThemes
  * @since 1.0.0
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 /**
  * Required functions
@@ -41,13 +43,13 @@ if ( ! class_exists( 'WooThemes_Sensei_Dependencies' ) ) {
  * Sensei Detection
  */
 if ( ! function_exists( 'is_sensei_active' ) ) {
-  function is_sensei_active() {
-    return WooThemes_Sensei_Dependencies::sensei_active_check();
-  }
+	function is_sensei_active() {
+		return WooThemes_Sensei_Dependencies::sensei_active_check();
+	}
 }
 
 
-if( is_sensei_active() ) {
+if ( is_sensei_active() ) {
 
 	require_once( 'includes/class-sensei-content-drip.php' );
 
@@ -60,9 +62,10 @@ if( is_sensei_active() ) {
 	function Sensei_Content_Drip() {
 		return Sensei_Content_Drip::instance( __FILE__, '1.0.5' );
 	}
+
 	// load this plugin only after sensei becomes available globaly
-	add_action('plugins_loaded', 'Sensei_Content_Drip') ;
-	
+	add_action( 'plugins_loaded', 'Sensei_Content_Drip' ) ;
+
 	/**
 	* Plugin Activation
 	*/
@@ -70,7 +73,7 @@ if( is_sensei_active() ) {
 
 	function sensei_content_drip_activation(){
 		wp_schedule_event( time(), 'daily', 'woo_scd_daily_cron_hook' );
-	}// end sensei_content_drip_activation
+	}
 
 
 	/**
@@ -79,21 +82,23 @@ if( is_sensei_active() ) {
 	register_deactivation_hook( __FILE__, 'sensei_content_drip_deactivation' );
 
 	function sensei_content_drip_deactivation() {
-		
-		$hook = 'woo_scd_daily_cron_hook';
-		// get all system crons
-	    $crons = _get_cron_array();
-	    if ( empty( $crons ) ) {
-	        return;
-	    }
 
-	    // loop through all of cron jobs plugin's cron
-	    foreach( $crons as $timestamp => $cron ) {
-	        if ( ! empty( $cron[$hook] ) )  {
-	            unset( $crons[$timestamp][$hook] );
-	        }
-	    }
-	    _set_cron_array( $crons );
-	    
-	} // end sensei_content_drip_deactivation
-} // end if is_sensei_active()
+		$hook = 'woo_scd_daily_cron_hook';
+
+		// get all system crons
+		$crons = _get_cron_array();
+		if ( empty( $crons ) ) {
+			return;
+		}
+
+		// loop through all of cron jobs plugin's cron
+		foreach ( $crons as $timestamp => $cron ) {
+			if ( ! empty( $cron[ $hook ] ) )  {
+				unset( $crons[ $timestamp ][ $hook ] );
+			}
+		}
+
+		_set_cron_array( $crons );
+
+	}
+}
