@@ -35,12 +35,12 @@ class Scd_Ext_Utils {
 
 		// If type none return all lessons with no meta query
 		if ( 'none' === $type ) {
-			$meta_query = '';
+			$meta_query = array();
 		} else {
 			$meta_query = array(
 				array(
-					'key' => '_sensei_content_drip_type',
-					'value' => $type,
+					'key'   => '_sensei_content_drip_type',
+					'value' => sanitize_key( $type ),
 				),
 			);
 		}
@@ -59,7 +59,7 @@ class Scd_Ext_Utils {
 		if ( ! empty( $lesson_objects ) ) {
 			// Get only the lesson ids
 			foreach ( $lesson_objects as $lesson ) {
-				array_push( $dripping_lesson_ids, $lesson->ID );
+				array_push( $dripping_lesson_ids, absint( $lesson->ID ) );
 			}
 		}
 
@@ -82,7 +82,7 @@ class Scd_Ext_Utils {
 		// Guild up the query parameters to
 		// get all users in this course id
 		$activity_query = array(
-			'post_id' => $course_id,
+			'post_id' => absint( $course_id ),
 			'type'    => 'sensei_course_status',
 			'value'   => 'in-progress',
 			'field'   => 'user_id',
