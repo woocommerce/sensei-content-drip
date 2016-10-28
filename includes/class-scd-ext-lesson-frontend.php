@@ -48,9 +48,9 @@ class Scd_Ext_Lesson_Frontend {
 	 */
 	public function __construct() {
 		// Set a formatted  message shown to user when the content has not yet dripped
-		$defaultMessage       = __( 'This lesson will become available on [date].', 'sensei-content-drip' );
-		$settingsMessage      = Sensei_Content_Drip()->settings->get_setting( 'scd_drip_message' );
-		$this->message_format = empty( $settingsMessage ) ? $defaultMessage : $settingsMessage;
+		$default_message       = esc_html__( 'This lesson will become available on [date].', 'sensei-content-drip' );
+		$settings_message      = Sensei_Content_Drip()->settings->get_setting( 'scd_drip_message' );
+		$this->message_format = empty( $settings_message ) ? $default_cessage : $settings_message;
 
 		// Hook int all post of type lesson to determine if they should be
 		add_filter('the_posts', array( $this, 'lesson_content_drip_filter' ), 1 );
@@ -123,7 +123,7 @@ class Scd_Ext_Lesson_Frontend {
 		 * @since 1.0.0
 		 * @param string $drip_message the message
 		 */
-		$new_content = apply_filters( 'sensei_content_drip_lesson_message', $new_content );
+		$new_content = wp_kses_post( apply_filters( 'sensei_content_drip_lesson_message', $new_content ) );
 
 		// If a manual excerpt is not set, do not show an auto excerpt, and instead only
 		// display the sensei_content_drip_lesson_message.
@@ -179,7 +179,7 @@ class Scd_Ext_Lesson_Frontend {
 			return $message;
 		}
 
-		$drip_type = get_post_meta( $lesson_id , '_sensei_content_drip_type', true );
+		$drip_type = get_post_meta( $lesson_id, '_sensei_content_drip_type', true );
 		if ( 'absolute' === $drip_type ) {
 			// Call the absolute drip type message creator function which creates a message dependant on the date
 			$message = $this->generate_absolute_drip_type_message( $lesson_id );
@@ -188,7 +188,7 @@ class Scd_Ext_Lesson_Frontend {
 			$message = $this->generate_dynamic_drip_type_message( $lesson_id );
 		}
 
-		return $message;
+		return esc_html( $message );
 	}
 
 	/**
@@ -210,12 +210,12 @@ class Scd_Ext_Lesson_Frontend {
 
 		// Replace the shortcode in the class message_format property set in the constructor
 		if ( strpos( $this->message_format , '[date]' ) ) {
-			$absolute_drip_type_message = str_replace( '[date]', $formatted_date , $this->message_format );
+			$absolute_drip_type_message = str_replace( '[date]', $formatted_date, $this->message_format );
 		} else {
 			$absolute_drip_type_message = $this->message_format . ' ' . $formatted_date;
 		}
 
-		return $absolute_drip_type_message;
+		return esc_html( $absolute_drip_type_message );
 	}
 
 	/**
@@ -234,9 +234,9 @@ class Scd_Ext_Lesson_Frontend {
 		$formatted_date            = date_i18n( get_option( 'date_format' ), $lesson_available_date->getTimestamp() );
 
 		// Replace string content in the class message_format property set in the constructor
-		$dynamic_drip_type_message = str_replace( '[date]' , $formatted_date , $this->message_format );
+		$dynamic_drip_type_message = str_replace( '[date]', $formatted_date, $this->message_format );
 
-		return $dynamic_drip_type_message;
+		return esc_html( $dynamic_drip_type_message );
 	}
 
 	/**
@@ -252,8 +252,8 @@ class Scd_Ext_Lesson_Frontend {
 		}
 
 		// Retrieve the drip type from the lesson
-		$drip_type = get_post_meta( $lesson_id , '_sensei_content_drip_type', true );
+		$drip_type = get_post_meta( $lesson_id, '_sensei_content_drip_type', true );
 
-		return  empty( $drip_type ) ? 'none' : $drip_type;
+		return empty( $drip_type ) ? 'none' : esc_html( $drip_type );
 	}
 }
