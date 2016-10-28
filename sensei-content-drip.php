@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Required functions
  */
 if ( ! function_exists( 'woothemes_queue_update' ) ) {
-	require_once( 'woo-includes/woo-functions.php' );
+	require_once __DIR__ . '/woo-includes/woo-functions.php';
 }
 
 /**
@@ -36,7 +36,7 @@ woothemes_queue_update( plugin_basename( __FILE__ ), '8ee2cdf89f55727f57733133cc
  * Functions used by plugins
  */
 if ( ! class_exists( 'WooThemes_Sensei_Dependencies' ) ) {
-	require_once 'woo-includes/class-woothemes-sensei-dependencies.php';
+	require_once __DIR__ . '/woo-includes/class-woothemes-sensei-dependencies.php';
 }
 
 /**
@@ -51,7 +51,7 @@ if ( ! function_exists( 'is_sensei_active' ) ) {
 
 if ( is_sensei_active() ) {
 
-	require_once( 'includes/class-sensei-content-drip.php' );
+	require_once __DIR__ . 'includes/class-sensei-content-drip.php';
 
 	/**
 	 * Returns the main instance of Sensei_Content_Drip to prevent the need to use globals.
