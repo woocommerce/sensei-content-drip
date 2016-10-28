@@ -77,15 +77,15 @@ class Scd_Ext_Manual_Drip {
 		$course_lessons = Sensei_Content_Drip()->lesson_admin->get_course_lessons( $course_id );
 		?>
 		<div class="postbox scd-learner-managment manual-content-drip">
-				<h3><span><?php _e( 'Manual Content Drip', 'sensei-content-drip' ); ?></span></h3>
+				<h3><span><?php esc_html_e( 'Manual Content Drip', 'sensei-content-drip' ); ?></span></h3>
 				<div class="inside">
 					<form name="scd_manual_drip_learners_lesson" action="" method="post">
 						<p>
-							<?php _e( 'Use this to give a learner access to any lesson (or remove existing access), overriding the content drip schedule.', 'sensei-content-drip' ); ?>
+							<?php esc_html_e( 'Use this to give a learner access to any lesson (or remove existing access), overriding the content drip schedule.', 'sensei-content-drip' ); ?>
 						</p>
 						<p>
 							<select name="scd_select_learner" id="scd_select_learner">
-								<option value=""><?php _e( 'Select learner', 'sensei-content-drip' ); ?></option>
+								<option value=""><?php esc_html_e( 'Select learner', 'sensei-content-drip' ); ?></option>
 								<?php
 								// Add the users as option
 								foreach ( $course_users as $user_id ) {
@@ -97,7 +97,7 @@ class Scd_Ext_Manual_Drip {
 									$last_name    = $user->last_name;
 									$display_name = $user->display_name;
 
-									esc_html_e( $first_name . ' ' . $last_name . ' ( ' . $display_name . ' ) ' );
+									echo esc_html( $first_name . ' ' . $last_name . ' ( ' . $display_name . ' ) ' );
 									echo '</option>';
 								}
 								?>
@@ -105,11 +105,11 @@ class Scd_Ext_Manual_Drip {
 						</p>
 						<p>
 							<select name="scd_select_course_lesson" id="scd_select_course_lesson" class=''>
-								<option value=""><?php _e( 'Select a Lesson', 'sensei-content-drip' ); ?></option>
+								<option value=""><?php esc_html_e( 'Select a Lesson', 'sensei-content-drip' ); ?></option>
 								<?php
 								// Add the users as option
 								foreach ( $course_lessons as $lesson ) {
-									echo '<option value="' . esc_attr( $lesson->ID ) . '" >';
+									echo '<option value="' . esc_attr( $lesson->ID ) . '">';
 
 									// Get the lesson title
 									echo esc_html( $lesson->post_title );
@@ -117,9 +117,9 @@ class Scd_Ext_Manual_Drip {
 								}
 								?>
 							</select>
-							<img src="<?php esc_attr_e( admin_url() . 'images/wpspin_light.gif' ); ?>" class="loading hidden" style="margin-left: 0.5em;" />
+							<img src="<?php echo esc_url( admin_url() . 'images/wpspin_light.gif' ); ?>" class="loading hidden" style="margin-left: 0.5em;" />
 						</p>
-						<p><?php submit_button( __( 'Give Access', 'sensei-content-drip' ), 'primary', 'scd_log_learner_lesson_manual_drip_submit', false, array() ); ?></p>
+						<p><?php submit_button( esc_html__( 'Give Access', 'sensei-content-drip' ), 'primary', 'scd_log_learner_lesson_manual_drip_submit', false, array() ); ?></p>
 						<?php echo wp_nonce_field( 'scd_log_learner_lesson_manual_drip', 'scd_learner_lesson_manual_drip' ); ?>
 					</form>
 				</div>
@@ -156,8 +156,8 @@ class Scd_Ext_Manual_Drip {
 		}
 
 		// Get the $_POST values
-		$user_id   = $_POST[ 'scd_select_learner' ];
-		$lesson_id = $_POST[ 'scd_select_course_lesson' ];
+		$user_id   = absint( $_POST[ 'scd_select_learner' ] );
+		$lesson_id = absint( $_POST[ 'scd_select_course_lesson' ] );
 
 		// Get the users details
 		$user = get_user_by( 'id', $user_id );
@@ -212,7 +212,7 @@ class Scd_Ext_Manual_Drip {
 	public function scd_manual_drip_admin_notice() {
 		?>
 		<div class="updated">
-			<p><?php _e( 'Manual Drip Status Saved', 'sensei-content-drip' ); ?></p>
+			<p><?php esc_html_e( 'Manual Drip Status Saved', 'sensei-content-drip' ); ?></p>
 		</div>
 		<?php
 	}
@@ -298,13 +298,13 @@ class Scd_Ext_Manual_Drip {
 		$new_nonce = wp_create_nonce( 'get-manual-drip-status' );
 
 		// Check for a valid user
-		$user_id = $_POST['userId'];
+		$user_id = absint( $_POST['userId'] );
 		$user    = get_user_by( 'id', $user_id );
 
 		if ( ! $user ) {
 			// Create the error response array
 			$response = array(
-				'notice'   => 'The userID( ' . $user_id . ' ) is invalid, there is no user that matches this ID ',
+				'notice'   => sprintf( esc_html__( 'The userID( %d ) is invalid, there is no user that matches this ID ', 'sensei-content-drip' ), $user_id ),
 				'newNonce' => $new_nonce,
 			);
 
@@ -313,13 +313,13 @@ class Scd_Ext_Manual_Drip {
 		}
 
 		// Check for a valid lesson
-		$lesson_id = $_POST['lessonId'];
+		$lesson_id = absint( $_POST['lessonId'] );
 		$lesson    = get_post( $lesson_id );
 
 		if ( is_null( $lesson ) || empty( $lesson ) ) {
 			// Create the error response array
 			$response = array(
-				'notice'   => 'The lessonId( ' . $lesson_id . ' ) is invalid, there is no lesson that matches this ID ',
+				'notice'   => sprintf( esc_html__( 'The lessonId( %d ) is invalid, there is no lesson that matches this ID ', 'sensei-content-drip' ), $lesson_id ),
 				'newNonce' => $new_nonce,
 			);
 
@@ -334,7 +334,7 @@ class Scd_Ext_Manual_Drip {
 		$response = array(
 			'success' => true,
 			'data'    => array(
-				'userId'           => $user_id ,
+				'userId'           => $user_id,
 				'lessonId'         => $lesson_id,
 				'manualDripStatus' => $manual_drip_status,
 				'newNonce'         => $new_nonce,
