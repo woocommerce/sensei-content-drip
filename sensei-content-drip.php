@@ -51,7 +51,7 @@ if ( ! function_exists( 'is_sensei_active' ) ) {
 
 if ( is_sensei_active() ) {
 
-	require_once __DIR__ . 'includes/class-sensei-content-drip.php';
+	require_once __DIR__ . '/includes/class-sensei-content-drip.php';
 
 	/**
 	 * Returns the main instance of Sensei_Content_Drip to prevent the need to use globals.
