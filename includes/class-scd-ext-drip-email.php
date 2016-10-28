@@ -27,7 +27,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * -send_single_email_drip_notifications
  */
 class Scd_Ext_Drip_Email {
-
 	/**
 	 * Construction function that hooks into the WordPress workflow
 	 */
@@ -81,7 +80,7 @@ class Scd_Ext_Drip_Email {
 	 *
 	 * @return array
 	 */
-	public function combine_users_lessons( $users_lessons_1 ,  $users_lessons_2 ) {
+	public function combine_users_lessons( $users_lessons_1, $users_lessons_2 ) {
 		$combined = array();
 
 		// When both are emty exit, if only one is empty continue
@@ -90,7 +89,10 @@ class Scd_Ext_Drip_Email {
 		}
 
 		// Create a master loop for easier loop function
-		$multi_users_lessons = array( $users_lessons_1, $users_lessons_2 );
+
+		$multi_users_lessons    = array();
+		$multi_users_lessons[0] = (array) $users_lessons_1;
+		$multi_users_lessons[1] = (array) $users_lessons_2;
 
 		// Loop through each of the inputs
 		foreach ( $multi_users_lessons as $users_lessons ) {
@@ -132,7 +134,7 @@ class Scd_Ext_Drip_Email {
 
 		foreach ( $lessons as $lesson_id ) {
 				// Get the lessons course
-				$course_id = get_post_meta( $lesson_id, '_lesson_course', true );
+				$course_id = absint( get_post_meta( absint( $lesson_id ), '_lesson_course', true ) );
 
 				// A lesson must have a course for the rest to work
 				if ( empty( $course_id ) ) {
@@ -183,16 +185,16 @@ class Scd_Ext_Drip_Email {
 	 * @param  int $user_id
 	 * @return bool
 	 */
-	function is_dripping_today( $lesson_id , $user_id = '' ) {
+	function is_dripping_today( $lesson_id, $user_id = '' ) {
 		// Setup variables needed
 		$dripping_today = false;
 		$today          = new DateTime( date( 'Y-m-d' ) ); // Get the date ignoring H:M:S
 
 		// Get the lesson drip date
-		$lesson_drip_date = Sensei_Content_Drip()->access_control->get_lesson_drip_date( $lesson_id , $user_id );
+		$lesson_drip_date = Sensei_Content_Drip()->access_control->get_lesson_drip_date( absint( $lesson_id ), absint( $user_id ) );
 
 		// If no lesson drip date could be found exit
-		if ( ! $lesson_drip_date ) {
+		if ( empty( $lesson_drip_date ) ) {
 			return false;
 		}
 
@@ -237,7 +239,7 @@ class Scd_Ext_Drip_Email {
 	 * @return void
 	 */
 	public function send_bulk_drip_notifications( $users_lessons ) {
-		global $woothemes_sensei , $sensei_email_data;
+		global $woothemes_sensei, $sensei_email_data;
 
 		if ( ! empty( $users_lessons ) ) {
 
@@ -258,11 +260,13 @@ class Scd_Ext_Drip_Email {
 			);
 
 			// Construct the email pieces
-			$email_wrappers['wrap_header'] = $woothemes_sensei->emails->load_template( 'header' );
-			$email_wrappers['wrap_footer'] = $woothemes_sensei->emails->load_template( 'footer' );
+			$email_wrappers = array(
+				'wrap_header' => $woothemes_sensei->emails->load_template( 'header' ),
+				'wrap_footer' => $woothemes_sensei->emails->load_template( 'footer' ),
+			);
 
 			foreach ( $users_lessons as $user_id => $lessons ) {
-				$this->send_single_email_drip_notifications( $user_id , $lessons , $email_wrappers );
+				$this->send_single_email_drip_notifications( $user_id, $lessons, $email_wrappers );
 			}
 		}
 	}
@@ -291,7 +295,7 @@ class Scd_Ext_Drip_Email {
 		$email_subject = apply_filters( 'scd_email_subject', __( 'Lessons dripping today', 'sensei-content-drip' ) );
 
 		// Get the users details
-		$user       = get_user_by( 'id', $user_id );
+		$user       = get_user_by( 'id', absint( $user_id ) );
 		$first_name = $user->first_name ;
 		$user_email = $user->user_email;
 
@@ -299,12 +303,9 @@ class Scd_Ext_Drip_Email {
 			return;
 		}
 
-		/**
-		 * Load all the array keys from email pieces into variables:
-		 *  - $wrap_header
-		 *  - $wrap_footer
-		 */
-		extract( $email_wrappers );
+		// Load all the array keys from email pieces into variables
+		$wrap_header = $email_wrappers['wrap_header'];
+		$wrap_footer = $email_wrappers['wrap_footer'];
 
 		// Get the settings values
 		$settings['email_body_notice'] = Sensei_Content_Drip()->settings->get_setting( 'scd_email_body_notice_html' );
@@ -329,12 +330,12 @@ class Scd_Ext_Drip_Email {
 		 * @param string $email_greeting Defaults to "Good Day $first_name"
 		 * @param int $user_id
 		 */
-		$email_greeting     = '<p>' . apply_filters( 'scd_email_greeting', __( 'Good Day', 'sensei-content-drip' ) . ' ' . $first_name ) . '</p>';
-		$email_body_notice  = '<p>' . $settings['email_body_notice'] . '</p>';
+		$email_greeting     = sprintf( '<p>%s</p>', esc_html( apply_filters( 'scd_email_greeting', __( 'Good Day', 'sensei-content-drip' ) . ' ' . $first_name ) ) );
+		$email_body_notice  = '<p>' . esc_html( $settings['email_body_notice'] ) . '</p>';
 		$email_body_lessons = '';
 
 		// Get the footer from the settings and replace the shortcode [home_url] with the actual site url
-		$email_footer = '<p>' . str_ireplace( '[home_url]'  , '<a href="' . esc_attr( home_url() ) . '" >' . esc_html( home_url() ) . '</a>' , $settings['email_footer'] ) . '</p>';
+		$email_footer = '<p>' . str_ireplace( '[home_url]'  , '<a href="' . esc_attr( home_url() ) . '" >' . esc_html( home_url() ) . '</a>' , esc_html( $settings['email_footer'] ) ) . '</p>';
 
 		// Loop through each lesson to get its title and relative url
 		$email_body_lessons .= '<p><ul>';
@@ -344,7 +345,7 @@ class Scd_Ext_Drip_Email {
 		foreach ( $lessons as $lesson_id ) {
 			// Get the post type object for this post id
 			$lesson    = get_post( $lesson_id );
-			$course_id = Sensei()->lesson->get_course_id( $lesson_id );
+			$course_id = absint( Sensei()->lesson->get_course_id( $lesson_id ) );
 
 			// Setup the lesson line item
 			$lesson_title     = $lesson->post_title;
