@@ -92,4 +92,23 @@ class Scd_Ext_Utils {
 
 		return $course_users;
 	}
+
+	/**
+	 * Return a DateTime object for the given lesson ID (bwc support)
+	 *
+	 * @param  string $lesson_id
+	 * @return DateTime|bool
+	 */
+	public static function date_from_datestring_or_timestamp( $lesson_id ) {
+		$lesson_set_date = get_post_meta( $lesson_id, '_sensei_content_drip_details_date', true );
+
+		if ( ! ctype_digit( $lesson_set_date ) ) {
+			// backwards compatibility for data that's still using the old format
+			$drip_date = new DateTime( $lesson_set_date );
+		} else {
+			$drip_date = DateTime::createFromFormat( 'U', $lesson_set_date );
+		}
+
+		return $drip_date;
+	}
 }

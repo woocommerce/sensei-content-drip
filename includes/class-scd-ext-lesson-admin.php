@@ -93,6 +93,23 @@ class Scd_Ext_Lesson_Admin {
 	}
 
 	/**
+	 * Attempts to retrieve the date in localized format (if using new format), otherwise return plain format
+	 *
+	 * @param  string $lesson_id
+	 * @return DateTime|string
+	 */
+	private function date_or_datestring_from_lesson( $lesson_id ) {
+		$lesson_set_date = get_post_meta( $lesson_id, '_sensei_content_drip_details_date', true );
+
+		if ( ctype_digit( $lesson_set_date ) ) {
+			// we are using new data in db, format accordingly
+			$lesson_set_date = date_i18n( get_option( 'date_format' ), $lesson_set_date );
+		}
+
+		return $lesson_set_date;
+	}
+
+	/**
 	 * Add data for our drip schedule custom column
 	 *
 	 * @since  1.0.0
@@ -113,7 +130,7 @@ class Scd_Ext_Lesson_Admin {
 		if ( 'none' === $drip_type ) {
 			echo 'Immediately';
 		} else if ( 'absolute' === $drip_type ) {
-			$lesson_set_date = get_post_meta( $lesson_id ,'_sensei_content_drip_details_date', true  );
+			$lesson_set_date = $this->date_or_datestring_from_lesson( $lesson_id );
 			echo 'On '. $lesson_set_date;
 		} else if ( 'dynamic' === $drip_type ) {
 			$unit_type   = get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_type', true );
@@ -174,7 +191,7 @@ class Scd_Ext_Lesson_Admin {
 			$dymaic_hidden_class   = 'hidden';
 
 			// Get the absolute date stored field value
-			$absolute_date_value =  $lesson_drip_data['_sensei_content_drip_details_date'];
+			$absolute_date_value = $this->date_or_datestring_from_lesson( $post->ID );
 		} else if ( 'dynamic' === $selected_drip_type ) {
 			$absolute_hidden_class = 'hidden';
 			$dymaic_hidden_class   = '';
@@ -308,6 +325,8 @@ class Scd_Ext_Lesson_Admin {
 
 				return $post_id;
 			}
+
+			$date_string = DateTime::createFromFormat( get_option( 'date_format' ), $date_string )->getTimestamp();
 
 			// Set the meta data to be saves later
 			// Set the mets data to ready to pass it onto saving
