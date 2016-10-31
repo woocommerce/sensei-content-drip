@@ -113,7 +113,7 @@ class Scd_Ext_Lesson_Admin {
 		if ( 'none' === $drip_type ) {
 			echo 'Immediately';
 		} else if ( 'absolute' === $drip_type ) {
-			$lesson_set_date = get_post_meta( $lesson_id ,'_sensei_content_drip_details_date', true  );
+			$lesson_set_date = date_i18n( get_option( 'date_format' ), $lesson_set_date );
 			echo 'On '. $lesson_set_date;
 		} else if ( 'dynamic' === $drip_type ) {
 			$unit_type   = get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_type', true );
@@ -174,7 +174,7 @@ class Scd_Ext_Lesson_Admin {
 			$dymaic_hidden_class   = 'hidden';
 
 			// Get the absolute date stored field value
-			$absolute_date_value =  $lesson_drip_data['_sensei_content_drip_details_date'];
+			$absolute_date_value = date_i18n( get_option( 'date_format' ), $lesson_drip_data['_sensei_content_drip_details_date'] );
 		} else if ( 'dynamic' === $selected_drip_type ) {
 			$absolute_hidden_class = 'hidden';
 			$dymaic_hidden_class   = '';
@@ -308,6 +308,8 @@ class Scd_Ext_Lesson_Admin {
 
 				return $post_id;
 			}
+
+			$date_string = DateTime::createFromFormat( get_option( 'date_format' ), $date_string )->getTimestamp();
 
 			// Set the meta data to be saves later
 			// Set the mets data to ready to pass it onto saving
