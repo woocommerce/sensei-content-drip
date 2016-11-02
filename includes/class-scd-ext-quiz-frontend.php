@@ -169,8 +169,7 @@ class Scd_Ext_Quiz_Frontend {
 		$absolute_drip_type_message = '';
 
 		// Get this quizs drip data
-
-		$quiz_drip_date = DateTime::createFromFormat( 'U', get_post_meta( $quiz_id , '_sensei_content_drip_details_date' , true ) );
+		$quiz_drip_date = new DateTime( get_post_meta( $quiz_id , '_sensei_content_drip_details_date' , true ) );
 		$formatted_date = $quiz_drip_date->format( Sensei_Content_Drip()->get_date_format_string() );
 
 		// Replace the shortcode in the class message_format property set in the constructor
