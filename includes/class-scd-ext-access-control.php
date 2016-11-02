@@ -218,7 +218,7 @@ class Scd_Ext_Access_Control {
 				return $drip_date;
 			}
 
-			$drip_date = DateTime::createFromFormat( 'U', $lesson_set_date );
+			$drip_date = new DateTime( $lesson_set_date );
 
 		} elseif ( 'dynamic' === $drip_type ) {
 			// Get the drip details array data
