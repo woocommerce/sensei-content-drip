@@ -200,8 +200,9 @@ class Scd_Ext_Lesson_Frontend {
 		$absolute_drip_type_message = '';
 
 		// Get this lessons drip data
-		$lesson_drip_date = new DateTime( get_post_meta( $lesson_id , '_sensei_content_drip_details_date' , true ) );
-		$formatted_date   = date_i18n( get_option( 'date_format' ), $lesson_drip_date->getTimestamp() );
+
+		$lesson_drip_timestamp = get_post_meta( $lesson_id , '_sensei_content_drip_details_date' , true );
+		$formatted_date = date_i18n( get_option( 'date_format' ), $lesson_drip_timestamp );
 
 		// Replace the shortcode in the class message_format property set in the constructor
 		if ( strpos( $this->message_format , '[date]' ) ) {
