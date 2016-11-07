@@ -212,14 +212,7 @@ class Scd_Ext_Access_Control {
 		}
 
 		if ( 'absolute' === $drip_type ) {
-			$lesson_set_date = get_post_meta( $lesson_id ,'_sensei_content_drip_details_date', true  );
-
-			if ( empty( $lesson_set_date ) ) {
-				return $drip_date;
-			}
-
-			$drip_date = new DateTime( $lesson_set_date );
-
+			$drip_date = Scd_Ext_Utils::date_from_datestring_or_timestamp( $lesson_id );
 		} elseif ( 'dynamic' === $drip_type ) {
 			// Get the drip details array data
 			$unit_type   = get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_type', true );
