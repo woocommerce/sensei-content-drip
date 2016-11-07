@@ -55,6 +55,10 @@ class Scd_Ext_Quiz_Frontend {
 
 		// Hook int all post of type quiz to determine if they should be
 		add_filter( 'the_posts', array( $this, 'quiz_content_drip_filter' ), 1 );
+		// Show SCD Message if Quiz lesson is restricted
+		add_action( 'sensei_single_quiz_content_inside_before', array( $this, 'the_user_status_message' ), 40 );
+		// User Should not be able to view restricted quiz Questions
+		add_filter( 'sensei_can_user_view_lesson', array( $this, 'can_user_access_quiz_for_lesson' ), 20, 2 );
 	}
 
 	/**
@@ -82,6 +86,50 @@ class Scd_Ext_Quiz_Frontend {
 		}
 
 		return $quizzes;
+	}
+
+	/**
+	 * Don't show quiz content when part of a lesson that hasn't dripped yet.
+	 * Hooked into "sensei_can_user_view_lesson"
+	 * @since 1.0.6
+	 * @param $can_user_view_lesson
+	 * @param $lesson_id
+	 * @param $user_id
+	 * @return bool
+	 */
+	public function can_user_access_quiz_for_lesson( $can_user_view_lesson, $lesson_id, $user_id = null ) {
+		if ( false == empty( $lesson_id ) && Sensei_Content_Drip()->access_control->is_lesson_access_blocked( $lesson_id ) ) {
+			return false;
+		}
+
+		return $can_user_view_lesson;
+	}
+
+	/**
+	 * Display SCD Message if this Quiz is part of a lesson that has't dripped yet.
+	 * Hooked into "sensei_single_quiz_content_inside_before"
+	 * @since 1.0.6
+	 * @param $quiz_id
+	 */
+	public function the_user_status_message( $quiz_id ) {
+		if ( empty( $quiz_id ) ) {
+			return;
+		}
+
+		$lesson_id =  Sensei()->quiz->get_lesson_id( $quiz_id );
+		if ( empty( $lesson_id ) ) {
+			return;
+		}
+
+		if ( Sensei_Content_Drip()->access_control->is_lesson_access_blocked( $lesson_id ) ) {
+			$drip_message_body = $this->get_drip_type_message( $quiz_id );
+			$message = '<div class="sensei-message info">' . esc_html( $drip_message_body ) . '</div>';
+			if ( !empty( Sensei()->frontend->messages ) ) {
+				$message .= Sensei()->frontend->messages;
+			}
+
+			echo $message;
+		}
 	}
 
 	/**
