@@ -64,7 +64,7 @@ class Scd_Ext_Lesson_Frontend {
 	 * @return array $lessons
 	 * @uses   the_posts()
 	 */
-	public function lesson_content_drip_filter( $lessons, WP_Query $query = null ) {
+	public function lesson_content_drip_filter( $lessons ) {
 		// This should only apply to the front end on single course and lesson pages
 		if ( is_admin() || empty( $lessons ) ) {
 			return $lessons;
@@ -84,8 +84,8 @@ class Scd_Ext_Lesson_Frontend {
 				// Remove hooked
 				global $wp_query;
 
-				if ( $wp_query->is_main_query() && $query === $wp_query && 'lesson' === $wp_query->query_vars['post_type'] ) {
-					$current_lesson = array_shift( $wp_query->posts );
+				if ( $wp_query->is_main_query() && count( $wp_query->posts ) > 0 && 'lesson' === $wp_query->query_vars['post_type'] ) {
+					$current_lesson = $wp_query->posts[0];
 
 					if ( isset( $current_lesson->ID ) && $current_lesson->ID === $lesson->ID ) {
 						$this->remove_single_lesson_hooks();
