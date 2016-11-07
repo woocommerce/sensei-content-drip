@@ -57,8 +57,6 @@ class Scd_Ext_Quiz_Frontend {
 		add_filter( 'the_posts', array( $this, 'quiz_content_drip_filter' ), 1 );
 		// Show SCD Message if Quiz lesson is restricted
 		add_action( 'sensei_single_quiz_content_inside_before', array( $this, 'the_user_status_message' ), 40 );
-		// User Should not be able to view restricted quiz Questions
-		add_filter( 'sensei_can_user_view_lesson', array( $this, 'can_user_access_quiz_for_lesson' ), 20, 2 );
 	}
 
 	/**
@@ -82,6 +80,8 @@ class Scd_Ext_Quiz_Frontend {
 			if ( Sensei_Content_Drip()->access_control->is_lesson_access_blocked( $lesson_id ) ) {
 				// Change the quiz content accordingly
 				$quizzes[ $index ] = $this->get_quiz_with_updated_content( $quiz );
+				// User Should not be able to view restricted quiz Questions
+				add_filter( 'sensei_can_user_view_lesson', array( $this, 'can_user_access_quiz_for_lesson' ), 20, 2 );
 			}
 		}
 
