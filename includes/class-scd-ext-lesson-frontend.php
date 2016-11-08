@@ -156,6 +156,9 @@ class Scd_Ext_Lesson_Frontend {
 
 		// Hide the lesson quiz notice
 		remove_action( 'sensei_single_lesson_content_inside_before', array( 'Sensei_Lesson', 'user_lesson_quiz_status_message' ), 20 );
+		
+		// Hide lesson meta (e.g. Media from Sensei-Media-Items.)
+		remove_all_actions( 'sensei_lesson_single_meta' );
 	}
 
 
