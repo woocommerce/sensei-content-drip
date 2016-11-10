@@ -91,6 +91,14 @@ class Scd_Ext_Settings {
 		);
 
 		// Email related settings
+		$sensei_settings_fields['scd_disable_email_notifications'] = array(
+			'name'        => __( 'Email Notifications', 'sensei-content-drip' ),
+			'description' => __( 'Disable Email Notifications', 'sensei-content-drip' ),
+			'type'        => 'checkbox',
+			'default'     => 'false',
+			'section'     => 'sensei-content-drip-settings',
+		);
+
 		$sensei_settings_fields['scd_email_body_notice_html'] = array(
 			'name'        => __( 'Email Before Lessons', 'sensei-content-drip' ),
 			'description' => __( 'The text before the list of lessons dripping today.', 'sensei-content-drip' ),
