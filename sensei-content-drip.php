@@ -71,8 +71,14 @@ if ( is_sensei_active() ) {
 	*/
 	register_activation_hook( __FILE__, 'sensei_content_drip_activation' );
 
-	function sensei_content_drip_activation(){
-		wp_schedule_event( time(), 'daily', 'woo_scd_daily_cron_hook' );
+	function sensei_content_drip_activation() {
+		$hook = 'woo_scd_daily_cron_hook';
+
+		if ( false !== wp_next_scheduled( $hook ) ) {
+			wp_clear_scheduled_hook( $hook );
+		}
+
+		wp_schedule_event( time(), 'daily', $hook );
 	}
 
 
@@ -82,23 +88,8 @@ if ( is_sensei_active() ) {
 	register_deactivation_hook( __FILE__, 'sensei_content_drip_deactivation' );
 
 	function sensei_content_drip_deactivation() {
-
 		$hook = 'woo_scd_daily_cron_hook';
-
-		// get all system crons
-		$crons = _get_cron_array();
-		if ( empty( $crons ) ) {
-			return;
-		}
-
-		// loop through all of cron jobs plugin's cron
-		foreach ( $crons as $timestamp => $cron ) {
-			if ( ! empty( $cron[ $hook ] ) )  {
-				unset( $crons[ $timestamp ][ $hook ] );
-			}
-		}
-
-		_set_cron_array( $crons );
+		wp_clear_scheduled_hook( $hook );
 
 	}
 }

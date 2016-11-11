@@ -90,17 +90,22 @@ class Scd_Ext_Drip_Email {
 		}
 
 		// Create a master loop for easier loop function
-		$multi_users_lessons    = array();
-		$multi_users_lessons[0] = $users_lessons_1;
-		$multi_users_lessons[1] = $users_lessons_2;
+		$multi_users_lessons = array( $users_lessons_1, $users_lessons_2 );
 
 		// Loop through each of the inputs
 		foreach ( $multi_users_lessons as $users_lessons ) {
 			// Skip empty inputs
 			if ( ! empty( $users_lessons ) ) {
 				foreach ( $users_lessons as $user_id => $lessons ) {
-					foreach ( $lessons as $lesson_id ) {
-						$combined[ $user_id ][] = $lesson_id;
+					if ( ! isset( $combined[ $user_id ] ) && ! empty( $lessons ) ) {
+						$combined[ $user_id ] = array();
+					}
+					$unique_lesson_ids = array_unique( $lessons );
+					foreach ( $unique_lesson_ids as $lesson_id ) {
+						if ( false === array_search( $lesson_id, $combined[ $user_id ] ) ) {
+							$combined[ $user_id ][] = $lesson_id;
+						}
+
 					}
 				}
 			}
