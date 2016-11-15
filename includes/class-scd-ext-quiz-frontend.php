@@ -117,14 +117,15 @@ class Scd_Ext_Quiz_Frontend {
 		}
 
 		$lesson_id =  Sensei()->quiz->get_lesson_id( $quiz_id );
-		if ( empty( $lesson_id ) ) {
-			return;
-		}
 
 		if ( Sensei_Content_Drip()->access_control->is_lesson_access_blocked( $lesson_id ) ) {
 			$drip_message_body = $this->get_drip_type_message( $quiz_id );
+			if ( empty( $drip_message_body ) ) {
+				return;
+			}
+
 			$message = '<div class="sensei-message info">' . esc_html( $drip_message_body ) . '</div>';
-			if ( !empty( Sensei()->frontend->messages ) ) {
+			if ( ! empty( Sensei()->frontend->messages ) ) {
 				$message .= Sensei()->frontend->messages;
 			}
 
