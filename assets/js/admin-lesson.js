@@ -8,7 +8,8 @@
 
 		el: '#content-drip-lesson .inside',
 		events: {
-			'change .sdc-lesson-drip-type': 'dripTypeChange'
+			'change .sdc-lesson-drip-type': 'dripTypeChange',
+			'click .send_test_email': 'sendTestEmail'
 		},
 
 		/**
@@ -88,6 +89,23 @@
 
 			this.dripType = e.target.value;
 			this.render();
+		},
+
+		/**
+		 * sendTestEmail, this function implements the logic for sending test emails through AJAX
+		 */
+		sendTestEmail: function( e ) {
+			var data = {
+				'action': 'send_test_email',
+				'nonce': scdManualDrip.nonce,
+				'userId': jQuery('#user-id').val(),
+				'lessonId': jQuery('#post_ID').val(),
+			};
+
+			jQuery.post( ajaxurl, data, function( response ) {
+				scdManualDrip.nonce = response.data.newNonce;
+				alert( response.data.notice );
+			});
 		},
 	} );
 

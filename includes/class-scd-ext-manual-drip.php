@@ -58,6 +58,7 @@ class Scd_Ext_Manual_Drip {
 			// Listen for incoming ajax requests
 			add_action( 'wp_ajax_get_manual_drip_status', array( $this , 'send_learner_lesson_manual_drip_status' ) );
 			add_action( 'wp_ajax_nopriv_get_manual_drip_status', array( $this , 'send_learner_lesson_manual_drip_status' ) );
+			add_action( 'wp_ajax_send_test_email', array( $this , 'send_test_email' ) );
 		}
 	}
 
@@ -202,6 +203,7 @@ class Scd_Ext_Manual_Drip {
 		);
 
 		wp_localize_script( $this->_token . '-admin-manual-drip-script', 'scdManualDrip', $data );
+		wp_localize_script( $this->_token . '-lesson-admin-script', 'scdManualDrip', $data );
 	}
 
 	/**
@@ -277,6 +279,70 @@ class Scd_Ext_Manual_Drip {
 		}
 
 		return $drip_status;
+	}
+
+	/**
+	 * AJAX method for sending test e-mails
+	 *
+	 * @return void
+	 */
+	public function send_test_email() {
+		// Incoming request security
+		check_ajax_referer( 'get-manual-drip-status', 'nonce' );
+
+		// Incoming request required data check
+		if ( ! isset( $_POST[ 'userId' ] ) || ! isset( $_POST[ 'lessonId' ] ) ) {
+			wp_send_json_error( array( 'notice' => 'The userID and lessonID are required' ) );
+			die;
+		}
+
+		// Setup the new security nonce
+		$new_nonce = wp_create_nonce( 'get-manual-drip-status' );
+
+		// Check for a valid user
+		$user_id = $_POST[ 'userId' ];
+		$user    = get_user_by( 'id', $user_id );
+
+		if ( ! $user ) {
+			// Create the error response array
+			$response = array(
+				'notice'   => 'There is no user that matches this userID ( ' . $user_id . ' )',
+				'newNonce' => $new_nonce,
+			);
+
+			wp_send_json_error( $response );
+			die;
+		}
+
+		// Check for a valid lesson
+		$lesson_id = $_POST[ 'lessonId' ];
+		$lesson    = get_post( $lesson_id );
+
+		if ( is_null( $lesson ) || empty( $lesson ) ) {
+			// Create the error response array
+			$response = array(
+				'notice'   => 'There is no lesson that matches this lessonId ( ' . $lesson_id . ' )',
+				'newNonce' => $new_nonce,
+			);
+
+			wp_send_json_error( $response );
+			die;
+		}
+
+		$drip_email = new Scd_Ext_Drip_Email();
+		$drip_email->send_single_email_drip_notifications( $_POST[ 'userId' ], array( $_POST[ 'lessonId' ] ) );
+
+		// Setup the response array and new nonce
+		$response = array(
+			'success' => true,
+			'data'    => array(
+				'notice' => 'Test mail sent',
+				'newNonce' => $new_nonce,
+			),
+		);
+
+		wp_send_json( $response );
+		wp_die();
 	}
 
 	/**
