@@ -13,13 +13,13 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: includes/class-scd-ext-access-control.php:52, includes/class-scd-ext-lesson-frontend.php:53
+#: includes/class-scd-ext-access-control.php:51, includes/class-scd-ext-lesson-frontend.php:51
 msgid "This lesson will become available on [date]."
 msgstr ""
 
-#: includes/class-scd-ext-drip-email.php:253, includes/class-scd-ext-settings.php:57
+#: includes/class-scd-ext-drip-email.php:254, includes/class-scd-ext-settings.php:61
 msgid "Content Drip"
 msgstr ""
 
@@ -27,15 +27,15 @@ msgstr ""
 msgid "Lessons dripping today"
 msgstr ""
 
-#: includes/class-scd-ext-drip-email.php:313
+#: includes/class-scd-ext-drip-email.php:315
 msgid "The following lessons will become available today:"
 msgstr ""
 
-#: includes/class-scd-ext-drip-email.php:317
+#: includes/class-scd-ext-drip-email.php:319
 msgid "Visit the online course today to start taking the lessons: [home_url]"
 msgstr ""
 
-#: includes/class-scd-ext-drip-email.php:330
+#: includes/class-scd-ext-drip-email.php:332
 msgid "Good Day"
 msgstr ""
 
@@ -43,60 +43,60 @@ msgstr ""
 msgid "Sensei Content Drip"
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:86
+#: includes/class-scd-ext-lesson-admin.php:91
 msgctxt "column name"
 msgid "Drip Schedule"
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:159
+#: includes/class-scd-ext-lesson-admin.php:179
 msgid "In order to use the content drip settings, please select a course for this lesson."
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:190
+#: includes/class-scd-ext-lesson-admin.php:210
 msgid "When should this lesson become available?"
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:192
+#: includes/class-scd-ext-lesson-admin.php:212
 msgid "As soon as the course is started"
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:193
+#: includes/class-scd-ext-lesson-admin.php:213
 msgid "On a specific date"
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:198
+#: includes/class-scd-ext-lesson-admin.php:218
 msgid "A specific interval after the course start date"
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:202
+#: includes/class-scd-ext-lesson-admin.php:222
 msgid "Select the date on which this lesson should become available ?"
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:211
+#: includes/class-scd-ext-lesson-admin.php:229
 msgid "Please select a course for this lesson in order to use this drip type."
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:220
+#: includes/class-scd-ext-lesson-admin.php:236
 msgid "Day(s)"
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:221
+#: includes/class-scd-ext-lesson-admin.php:237
 msgid "Week(s)"
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:222
+#: includes/class-scd-ext-lesson-admin.php:238
 msgid "Month(s)"
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:308
+#: includes/class-scd-ext-lesson-admin.php:320
 msgid "Please choose a date under the  \"Absolute\" select box."
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:334
+#: includes/class-scd-ext-lesson-admin.php:346
 msgid "Please select the correct units for your chosen option \"After previous lesson\" ."
 msgstr ""
 
-#: includes/class-scd-ext-lesson-admin.php:339
+#: includes/class-scd-ext-lesson-admin.php:349
 msgid "Please enter a numberic unit number for your chosen option \"After previous lesson\" ."
 msgstr ""
 
@@ -112,39 +112,39 @@ msgstr ""
 msgid "Select learner"
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:109
+#: includes/class-scd-ext-manual-drip.php:108
 msgid "Select a Lesson"
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:123
+#: includes/class-scd-ext-manual-drip.php:122
 msgid "Give Access"
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:226
+#: includes/class-scd-ext-manual-drip.php:215
 msgid "Manual Drip Status Saved"
 msgstr ""
 
-#: includes/class-scd-ext-quiz-frontend.php:54
+#: includes/class-scd-ext-quiz-frontend.php:52
 msgid "This quiz will become available on [date]."
 msgstr ""
 
-#: includes/class-scd-ext-settings.php:58
+#: includes/class-scd-ext-settings.php:62
 msgid "Optional settings for the Content Drip extension"
 msgstr ""
 
-#: includes/class-scd-ext-settings.php:76
+#: includes/class-scd-ext-settings.php:78
 msgid "Drip Message"
 msgstr ""
 
-#: includes/class-scd-ext-settings.php:77
+#: includes/class-scd-ext-settings.php:79
 msgid "The user will see this when the content is not yet available. The [date] shortcode will be replaced by the actual date"
 msgstr ""
 
-#: includes/class-scd-ext-settings.php:84
+#: includes/class-scd-ext-settings.php:86
 msgid "Quiz Drip Message"
 msgstr ""
 
-#: includes/class-scd-ext-settings.php:85
+#: includes/class-scd-ext-settings.php:87
 msgid "The user will see this on the lesson quiz when the lesson is not yet available. The [date] shortcode will be replaced by the actual date"
 msgstr ""
 
