@@ -1,5 +1,13 @@
 *** Sensei Content Drip Changelog ***
 
+2016.11.29 - version 1.0.6
+* Fix - Time Formatting changes Causing Errors
+* Fix - Video and buttons hidden after completing lesson
+* Fix - Errors when loading lesson protected by Content Drip
+* Fix - Restrict access to Quizzes and Media attachments
+* Fix - Prevent multiple content drip emails from being sent
+* Various Fixes and improvements
+
 2016.04.20 - version 1.0.5
 * Fix - Ensure lesson video and meta can still be viewed after completing a lesson.
 * New - Added a .pot file to enable translation.
