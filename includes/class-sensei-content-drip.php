@@ -126,7 +126,6 @@ class Sensei_Content_Drip {
 
 		// Load frontend JS & CSS
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 10 );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10 );
 
 		// Load admin JS & CSS
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
@@ -151,18 +150,6 @@ class Sensei_Content_Drip {
 
 		wp_register_style( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'css/frontend.css', array( $woothemes_sensei->token . '-frontend' ), $this->_version );
 		wp_enqueue_style( $this->_token . '-frontend' );
-	}
-
-	/**
-	 * Load frontend Javascript.
-	 *
-	 * @since  1.0.0
-	 * @return void
-	 */
-	public function enqueue_scripts() {
-		global $woothemes_sensei;
-		// wp_register_script( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'js/frontend' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
-		//wp_enqueue_script( $this->_token . '-frontend' );
 	}
 
 	/**
@@ -364,6 +351,6 @@ class Sensei_Content_Drip {
 		 * @param  string
 		 * @deprecated since 1.0.2
 		 */
-		return apply_filters( 'scd_drip_message_date_format' , $date_format );
+		return esc_html( apply_filters( 'scd_drip_message_date_format' , $date_format ) );
 	}
 }

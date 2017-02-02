@@ -71,7 +71,7 @@ class Scd_Ext_Lesson_Admin {
 	public function add_lesson_content_drip_meta_box() {
 		add_meta_box(
 			'content-drip-lesson',
-			__( 'Sensei Content Drip', 'sensei-content-drip' ),
+			esc_html__( 'Sensei Content Drip', 'sensei-content-drip' ),
 			array( $this, 'content_drip_lesson_meta_content' ),
 			'lesson',
 			'normal',
@@ -88,7 +88,7 @@ class Scd_Ext_Lesson_Admin {
 	 * @return array $columns
 	 */
 	public function add_column_heading( $columns ) {
-		$columns['scd_drip_schedule'] = _x( 'Drip Schedule', 'column name', 'sensei-content-drip' );
+		$columns['scd_drip_schedule'] = esc_html_x( 'Drip Schedule', 'column name', 'sensei-content-drip' );
 		return $columns;
 	}
 
@@ -128,10 +128,10 @@ class Scd_Ext_Lesson_Admin {
 
 		// Generate the messages
 		if ( 'none' === $drip_type ) {
-			echo 'Immediately';
+			echo esc_html__( 'Immediately', 'sensei-content-drip' );
 		} else if ( 'absolute' === $drip_type ) {
 			$lesson_set_date = $this->date_or_datestring_from_lesson( $lesson_id );
-			echo 'On '. $lesson_set_date;
+			printf( esc_html__( 'On %s', 'sensei-content-drip' ), $lesson_set_date );
 		} else if ( 'dynamic' === $drip_type ) {
 			$unit_type   = get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_type', true );
 			$unit_amount = get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_amount', true );
@@ -145,7 +145,7 @@ class Scd_Ext_Lesson_Admin {
 			}
 
 			// Assemble and output
-			echo 'After ' . $time_period;
+			printf( esc_html__( 'After %s', 'sensei-content-drip' ), $time_period );
 		}
 	}
 
@@ -176,7 +176,7 @@ class Scd_Ext_Lesson_Admin {
 
 		// Show nothing if no course is selected
 		if ( empty( $current_lesson_course ) ) {
-			echo '<p>' . __( 'In order to use the content drip settings, please select a course for this lesson.', 'sensei-content-drip' ) . '</p>';
+			echo '<p>' . esc_html__( 'In order to use the content drip settings, please select a course for this lesson.', 'sensei-content-drip' ) . '</p>';
 
 			// Exit without displaying the rest of the settings
 			return;
@@ -207,35 +207,35 @@ class Scd_Ext_Lesson_Admin {
 		// Nonce field
 		wp_nonce_field( -1, 'woo_' . $this->_token . '_noonce');
 		?>
-		<p><?php _e( 'When should this lesson become available?', 'sensei-content-drip' ); ?></p>
+		<p><?php esc_html_e( 'When should this lesson become available?', 'sensei-content-drip' ); ?></p>
 		<p><select name='sdc-lesson-drip-type' class="sdc-lesson-drip-type">
-			<option <?php selected( 'none', $selected_drip_type ); ?> value="none" class="none"> <?php _e( 'As soon as the course is started', 'sensei-content-drip' ); ?></option>
-			<option <?php selected( 'absolute', $selected_drip_type ); ?> value="absolute" class="absolute"> <?php _e( 'On a specific date', 'sensei-content-drip' ); ?>  </option>
+			<option <?php selected( 'none', $selected_drip_type ); ?> value="none" class="none"><?php esc_html_e( 'As soon as the course is started', 'sensei-content-drip' ); ?></option>
+			<option <?php selected( 'absolute', $selected_drip_type ); ?> value="absolute" class="absolute"><?php esc_html_e( 'On a specific date', 'sensei-content-drip' ); ?></option>
 			<?php
 				// Does this lesson have a  pre-requisites lesson ?
 				$has_pre_requisite = empty( $lesson_pre_requisite ) ? 'false'  : 'true' ;
 			?>
-			<option data-has-pre="<?php esc_attr_e( $has_pre_requisite ); ?> " <?php selected( 'dynamic', $selected_drip_type ); ?> value="dynamic"  class="dynamic"> <?php _e( 'A specific interval after the course start date', 'sensei-content-drip' ); ?> </option>
+			<option data-has-pre="<?php esc_attr_e( $has_pre_requisite ); ?>" <?php selected( 'dynamic', $selected_drip_type ); ?> value="dynamic"  class="dynamic"><?php esc_html_e( 'A specific interval after the course start date', 'sensei-content-drip' ); ?></option>
 		</select></p>
 
-		<p><div class="dripTypeOptions absolute <?php esc_attr_e( $absolute_hidden_class ); ?> ">
-			<p><span class='description'><?php _e( 'Select the date on which this lesson should become available ?', 'sensei-content-drip' ); ?></span></p>
-			<input type="text" id="datepicker" name="absolute[datepicker]" value="<?php esc_attr_e( $absolute_date_value ); ?>" class="absolute-datepicker" />
+		<p><div class="dripTypeOptions absolute <?php echo esc_attr( $absolute_hidden_class ); ?> ">
+			<p><span class='description'><?php esc_html_e( 'Select the date on which this lesson should become available ?', 'sensei-content-drip' ); ?></span></p>
+			<input type="text" id="datepicker" name="absolute[datepicker]" value="<?php echo esc_attr( $absolute_date_value ); ?>" class="absolute-datepicker" />
 		</div></p>
 		<p>
-			<div class="dripTypeOptions dynamic <?php esc_attr_e( $dymaic_hidden_class ); ?>">
+			<div class="dripTypeOptions dynamic <?php echo esc_attr( $dymaic_hidden_class ); ?>">
 			<?php if ( empty( $current_lesson_course ) ) : ?>
 				<p>
-					<?php _e( 'Please select a course for this lesson in order to use this drip type.', 'sensei-content-drip' ); ?>
+					<?php esc_html_e( 'Please select a course for this lesson in order to use this drip type.', 'sensei-content-drip' ); ?>
 				</p>
 			<?php else : ?>
 				<div id="dynamic-dripping-1" class='dynamic-dripping'>
-					<input type='number' name='dynamic-unit-amount[1]' class='unit-amount' value="<?php esc_attr_e( $dynamic_unit_amount ); ?>" />
+					<input type='number' name='dynamic-unit-amount[1]' class='unit-amount' value="<?php echo esc_attr( $dynamic_unit_amount ); ?>" />
 
 					<select name='dynamic-time-unit-type[1]' class="dynamic-time-unit">
-						<option <?php selected( 'day', $selected_dynamic_time_unit_type ); ?> value="day"><?php _e( 'Day(s)', 'sensei-content-drip' ); ?></option>
-						<option <?php selected( 'week', $selected_dynamic_time_unit_type ); ?> value="week"><?php _e( 'Week(s)', 'sensei-content-drip' ); ?></option>
-						<option <?php selected( 'month', $selected_dynamic_time_unit_type ); ?> value="month"><?php _e( 'Month(s)', 'sensei-content-drip' ); ?> </option>
+						<option <?php selected( 'day', $selected_dynamic_time_unit_type ); ?> value="day"><?php esc_html_e( 'Day(s)', 'sensei-content-drip' ); ?></option>
+						<option <?php selected( 'week', $selected_dynamic_time_unit_type ); ?> value="week"><?php esc_html_e( 'Week(s)', 'sensei-content-drip' ); ?></option>
+						<option <?php selected( 'month', $selected_dynamic_time_unit_type ); ?> value="month"><?php esc_html_e( 'Month(s)', 'sensei-content-drip' ); ?></option>
 					</select>
 				</div>
 			<?php endif; ?>
@@ -252,22 +252,22 @@ class Scd_Ext_Lesson_Admin {
 	 * @param  string $exclude
 	 * @return array WP_Post
 	 */
-	public function get_course_lessons( $course_id = 0, $exclude = '' ) {
+	public function get_course_lessons( $course_id = 0, $exclude = array() ) {
 		$args = array(
 			'post_type'          => 'lesson',
 			'numberposts'        => -1,
-			'meta_key'           => '_order_' . $course_id,
+			'meta_key'           => '_order_' . absint( $course_id ),
 			'orderby'            => 'meta_value_num date',
 			'order'              => 'ASC',
-			'exclude'            => $exclude,
+			'exclude'            => (array) $exclude,
 			'meta_query'         => array(
 				array(
 					'key'   => '_lesson_course',
-					'value' => intval( $course_id ),
+					'value' => absint( $course_id ),
 				),
 			),
 			'post_status'        => 'public',
-			'suppress_filters' 	 => 0
+			'suppress_filters'   => 0
 		);
 
 		$lessons = get_posts( $args );
@@ -307,17 +307,17 @@ class Scd_Ext_Lesson_Admin {
 		$new_data = array();
 
 		// If none is selected and the previous data was also set to none return
-		if ( 'none' === $_POST['sdc-lesson-drip-type'] ) {
+		if ( 'none' === esc_html( $_POST['sdc-lesson-drip-type'] ) ) {
 			// New data should be that same as default
 			$new_data  = array( '_sensei_content_drip_type' => 'none' );
-		} else if ( 'absolute' === $_POST['sdc-lesson-drip-type'] ) {
+		} else if ( 'absolute' === esc_html( $_POST['sdc-lesson-drip-type'] ) ) {
 			// Convert selected date to a unix time stamp
 			// Incoming Format:  yyyy/mm/dd
-			$date_string = $_POST['absolute']['datepicker'];
+			$date_string = esc_html( $_POST['absolute']['datepicker'] );
 
 			if ( empty( $date_string ) ) {
 				// Create the error message and add it to the database
-				$message = __( 'Please choose a date under the  "Absolute" select box.', 'sensei-content-drip' );
+				$message = esc_html__( 'Please choose a date under the  "Absolute" select box.', 'sensei-content-drip' );
 				update_option( '_sensei_content_drip_lesson_notice' , array( 'error' => $message ) );
 
 				// Set the current user selection
@@ -335,18 +335,18 @@ class Scd_Ext_Lesson_Admin {
 				'_sensei_content_drip_details_date' => $date_string,
 			);
 
-		} else if ( 'dynamic' === $_POST['sdc-lesson-drip-type'] ) {
+		} else if ( 'dynamic' === esc_html( $_POST['sdc-lesson-drip-type'] ) ) {
 			// Get the posted data valudes
-			$date_unit_amount = $_POST['dynamic-unit-amount']['1'];    // number of units
-			$date_unit_type   = $_POST['dynamic-time-unit-type']['1']; // unit type eg: months, weeks, days
+			$date_unit_amount = absint( $_POST['dynamic-unit-amount']['1'] );      // number of units
+			$date_unit_type   = esc_html( $_POST['dynamic-time-unit-type']['1'] ); // unit type eg: months, weeks, days
 
 			// Input validation
 			$dynamic_save_error = false;
 			if ( empty( $date_unit_amount ) || empty( $date_unit_type ) ) {
-				$save_error_notices = array( 'error' => __( 'Please select the correct units for your chosen option "After previous lesson" .', 'sensei-content-drip' ) );
+				$save_error_notices = array( 'error' => esc_html__( 'Please select the correct units for your chosen option "After previous lesson" .', 'sensei-content-drip' ) );
 				$dynamic_save_error = true;
 			} else if ( ! is_numeric( $date_unit_amount ) ) {
-				$save_error_notices = array( 'error' => __( 'Please enter a numberic unit number for your chosen option "After previous lesson" .', 'sensei-content-drip' ) );
+				$save_error_notices = array( 'error' => esc_html__( 'Please enter a numberic unit number for your chosen option "After previous lesson" .', 'sensei-content-drip' ) );
 				$dynamic_save_error = true;
 			}
 
@@ -395,8 +395,10 @@ class Scd_Ext_Lesson_Admin {
 
 		// Print all notices
 		foreach ( $notice as $type => $message ) {
-			$message =  $message . ' The content drip type was reset to "none".';
-			echo '<div class="' . esc_attr( $type ) . ' fade"><p>Sensei Content Drip ' . $type . ': ' . $message . '</p></div>';
+			$message =  $message . ' ' . esc_html__( 'The content drip type was reset to "none".', 'sensei-content-drip' );
+			echo '<div class="' . esc_attr( $type ) . ' fade"><p>';
+			printf( esc_html_x( 'Sensei Content Drip %s: %s', 'type and message', 'sensei-content-drip' ), $type, $message );
+			echo '</p></div>';
 		}
 
 		// Clear all notices
@@ -428,7 +430,7 @@ class Scd_Ext_Lesson_Admin {
 	 * @param  array $drip_form_data
 	 * @return bool
 	 */
-	public function save_lesson_drip_data( $post_id , $drip_form_data ) {
+	public function save_lesson_drip_data( $post_id, $drip_form_data ) {
 		if ( empty( $post_id ) || empty( $drip_form_data ) ) {
 			return false;
 		}
@@ -464,11 +466,11 @@ class Scd_Ext_Lesson_Admin {
 		$lesson_drip_data = array();
 
 		foreach ( $meta_fields as $field_key ) {
-			$value = get_post_meta( $post_id , $field_key , true );
+			$value = get_post_meta( $post_id, $field_key, true );
 
 			// Assign the key if a value exists
 			if ( ! empty( $value ) ) {
-				$lesson_drip_data[ $field_key ] = $value;
+				$lesson_drip_data[ $field_key ] = esc_html( $value );
 			}
 		}
 
@@ -491,7 +493,7 @@ class Scd_Ext_Lesson_Admin {
 		$meta_fields = $this->get_meta_field_keys();
 
 		foreach ( $meta_fields as $field_key ) {
-			delete_post_meta( $post_id , $field_key );
+			delete_post_meta( $post_id, $field_key );
 		}
 	}
 
@@ -528,7 +530,7 @@ class Scd_Ext_Lesson_Admin {
 		// Create the lessons id array
 		if ( ! empty( $wp_lesson_objects ) ) {
 			foreach ( $wp_lesson_objects as $lesson_object ) {
-				$lessons[] = $lesson_object->ID;
+				$lessons[] = absint( $lesson_object->ID );
 			}
 		}
 

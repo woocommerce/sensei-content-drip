@@ -49,9 +49,9 @@ class Scd_Ext_Quiz_Frontend {
 	 */
 	public function __construct() {
 		// Set a formatted  message shown to user when the content has not yet dripped
-		$defaultMessage       = __( 'This quiz will become available on [date].', 'sensei-content-drip' );
-		$settingsMessage      = Sensei_Content_Drip()->settings->get_setting( 'scd_drip_quiz_message' );
-		$this->message_format = empty( $settingsMessage ) ? $defaultMessage : $settingsMessage;
+		$default_message      = esc_html__( 'This quiz will become available on [date].', 'sensei-content-drip' );
+		$settings_message     = Sensei_Content_Drip()->settings->get_setting( 'scd_drip_quiz_message' );
+		$this->message_format = empty( $settings_message ) ? $default_message : $settings_message;
 
 		// Hook int all post of type quiz to determine if they should be
 		add_filter( 'the_posts', array( $this, 'quiz_content_drip_filter' ), 1 );
@@ -159,7 +159,7 @@ class Scd_Ext_Quiz_Frontend {
 		 * @since 1.0.0
 		 * @param string $drip_message the message
 		 */
-		$new_content        = apply_filters( 'sensei_content_drip_quiz_message', $new_content );
+		$new_content        = wp_kses_post( apply_filters( 'sensei_content_drip_quiz_message', $new_content ) );
 	    $quiz->post_content = '<p>' . wp_trim_words( $quiz->post_content, 20 ) . '</p>' . $new_content;
 
 		// Set the excerpt to be a trimmed down version of the full content if it is empty
@@ -190,7 +190,7 @@ class Scd_Ext_Quiz_Frontend {
 	    $message = '';
 
 		// Check that the correct data has been passed
-		if ( empty( $quiz_id) ) {
+		if ( empty( $quiz_id ) ) {
 			// Just return the simple message as the exact message can not be determined without the ID
 			return $message;
 		}
@@ -204,7 +204,7 @@ class Scd_Ext_Quiz_Frontend {
 			$message = $this->generate_dynamic_drip_type_message( $quiz_id );
 		}
 
-		return $message;
+		return esc_html( $message );
 	}
 
 	/**
@@ -223,13 +223,13 @@ class Scd_Ext_Quiz_Frontend {
 		$formatted_date = $quiz_drip_date->format( Sensei_Content_Drip()->get_date_format_string() );
 
 		// Replace the shortcode in the class message_format property set in the constructor
-		if ( strpos( $this->message_format , '[date]') ) {
+		if ( strpos( $this->message_format , '[date]' ) ) {
 			$absolute_drip_type_message = str_replace( '[date]', $formatted_date , $this->message_format );
 		} else {
 			$absolute_drip_type_message = $this->message_format . ' ' . $formatted_date;
 		}
 
-		return $absolute_drip_type_message;
+		return esc_html( $absolute_drip_type_message );
 	}
 
 	/**
@@ -250,7 +250,7 @@ class Scd_Ext_Quiz_Frontend {
 		// Replace string content in the class message_format property set in the constructor
 		$dynamic_drip_type_message = str_replace('[date]' , $formatted_date , $this->message_format );
 
-		return $dynamic_drip_type_message;
+		return esc_html( $dynamic_drip_type_message );
 	}
 
 	/**
@@ -270,7 +270,7 @@ class Scd_Ext_Quiz_Frontend {
 		$drip_type = get_post_meta( $quiz_id , '_sensei_content_drip_type', true );
 
 		// Send back the type string
-		return empty( $drip_type ) ? 'none' : $drip_type;
+		return empty( $drip_type ) ? 'none' : esc_html( $drip_type );
 	}
 
 	/**
@@ -285,7 +285,7 @@ class Scd_Ext_Quiz_Frontend {
 		$query_args = array(
 			'post_type'  => 'lesson',
 			'meta_key'   => '_lesson_quiz',
-			'meta_value' => $quiz_id
+			'meta_value' => absint( $quiz_id ),
 		);
 		$lessons = new WP_Query( $query_args );
 
@@ -295,6 +295,6 @@ class Scd_Ext_Quiz_Frontend {
 
 		$quiz_lesson = $lessons->posts[0];
 
-		return $quiz_lesson->ID;
+		return absint( $quiz_lesson->ID );
 	}
 }
