@@ -240,6 +240,7 @@ class Scd_Ext_Lesson_Admin {
 				</div>
 			<?php endif; ?>
 		</div><!-- end dripTypeOptions -->
+		<a title="Send Test Email" href="#send-test-email" class="send_test_email button button-primary button-highlighted">Send Test Email</a>
 		</p>
 		<?php
 	}
