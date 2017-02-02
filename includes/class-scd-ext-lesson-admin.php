@@ -159,6 +159,7 @@ class Scd_Ext_Lesson_Admin {
 	*/
 	public function content_drip_lesson_meta_content() {
 		global $post;
+		global $current_user;
 
 		// Setup the forms value variable to be empty
 		// this is to avoid php notices
@@ -240,7 +241,8 @@ class Scd_Ext_Lesson_Admin {
 				</div>
 			<?php endif; ?>
 		</div><!-- end dripTypeOptions -->
-		<a title="Send Test Email" href="#send-test-email" class="send_test_email button button-primary button-highlighted">Send Test Email</a>
+		<?php $send_test_email = sprintf( __('Send Test Email to %s', 'sensei-content-drip' ), $current_user->user_email ); ?>
+		<a title="<?php echo esc_attr( $send_test_email ); ?>" href="#send-test-email" class="send_test_email button button-primary button-highlighted"><?php echo esc_html( $send_test_email ); ?></a>
 		</p>
 		<?php
 	}
