@@ -50,7 +50,7 @@ class Scd_Ext_Lesson_Frontend {
 		// Set a formatted  message shown to user when the content has not yet dripped
 		$default_message       = esc_html__( 'This lesson will become available on [date].', 'sensei-content-drip' );
 		$settings_message      = Sensei_Content_Drip()->settings->get_setting( 'scd_drip_message' );
-		$this->message_format = empty( $settings_message ) ? $default_cessage : $settings_message;
+		$this->message_format = empty( $settings_message ) ? $default_message : $settings_message;
 
 		// Hook int all post of type lesson to determine if they should be
 		add_filter('the_posts', array( $this, 'lesson_content_drip_filter' ), 1 );
