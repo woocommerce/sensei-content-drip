@@ -307,21 +307,7 @@ class Scd_Ext_Drip_Email {
 		$wrap_header = $email_wrappers['wrap_header'];
 		$wrap_footer = $email_wrappers['wrap_footer'];
 
-		// Get the settings values
-		$settings['email_body_notice'] = Sensei_Content_Drip()->settings->get_setting( 'scd_email_body_notice_html' );
-		$settings['email_footer']      = Sensei_Content_Drip()->settings->get_setting( 'scd_email_footer_html' );
-
-		// Check for empty settings and setup the defaults
-		if ( empty( $settings['email_body_notice'] ) ) {
-			$settings['email_body_notice'] = __( 'The following lessons will become available today:' , 'sensei-content-drip' );
-		}
-
-		if ( empty( $settings['email_footer'] ) ) {
-			$settings['email_footer'] = __(  'Visit the online course today to start taking the lessons: [home_url]' , 'sensei-content-drip' );
-		}
-
 		// Setup the  the message content
-
 		/**
 		 * Email user greeting filter.
 		 *
@@ -330,12 +316,21 @@ class Scd_Ext_Drip_Email {
 		 * @param string $email_greeting Defaults to "Good Day $first_name"
 		 * @param int $user_id
 		 */
+		$email_body_text = Sensei_Content_Drip()->utils->check_for_translation(
+			'The following lessons will become available today:',
+			'scd_email_body_notice_html'
+		);
+
 		$email_greeting     = sprintf( '<p>%s</p>', esc_html( apply_filters( 'scd_email_greeting', __( 'Good Day', 'sensei-content-drip' ) . ' ' . $first_name ) ) );
-		$email_body_notice  = '<p>' . esc_html( $settings['email_body_notice'] ) . '</p>';
+		$email_body_notice  = '<p>' . esc_html( $email_body_text ) . '</p>';
 		$email_body_lessons = '';
 
 		// Get the footer from the settings and replace the shortcode [home_url] with the actual site url
-		$email_footer = '<p>' . str_ireplace( '[home_url]'  , '<a href="' . esc_attr( home_url() ) . '" >' . esc_html( home_url() ) . '</a>' , esc_html( $settings['email_footer'] ) ) . '</p>';
+		$email_footer_text = Sensei_Content_Drip()->utils->check_for_translation(
+			'Visit the online course today to start taking the lessons: [home_url]',
+			'scd_email_footer_html' );
+
+		$email_footer = '<p>' . str_ireplace( '[home_url]'  , '<a href="' . esc_attr( home_url() ) . '" >' . esc_html( home_url() ) . '</a>' , esc_html( $email_footer_text ) ) . '</p>';
 
 		// Loop through each lesson to get its title and relative url
 		$email_body_lessons .= '<p><ul>';
