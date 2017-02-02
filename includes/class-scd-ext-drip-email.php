@@ -316,19 +316,19 @@ class Scd_Ext_Drip_Email {
 		 * @param string $email_greeting Defaults to "Good Day $first_name"
 		 * @param int $user_id
 		 */
-		$body_default_message = 'The following lessons will become available today:';
-		$body_settings_field =  'scd_email_body_notice_html';
-		$email_body_text = Sensei_Content_Drip()->utils->check_for_translation( $body_default_message, $body_settings_field );
+		$email_body_text = Sensei_Content_Drip()->utils->check_for_translation(
+			'The following lessons will become available today:',
+			'scd_email_body_notice_html'
+		);
 
 		$email_greeting     = sprintf( '<p>%s</p>', esc_html( apply_filters( 'scd_email_greeting', __( 'Good Day', 'sensei-content-drip' ) . ' ' . $first_name ) ) );
 		$email_body_notice  = '<p>' . esc_html( $email_body_text ) . '</p>';
 		$email_body_lessons = '';
 
 		// Get the footer from the settings and replace the shortcode [home_url] with the actual site url
-		// get the footer from the settings and replace the shortcode [home_url] with the actual site url
-		$footer_default_message = 'Visit the online course today to start taking the lessons: [home_url]';
-		$footer_settings_field =  'scd_email_footer_html';
-		$email_footer_text = Sensei_Content_Drip()->utils->check_for_translation( $footer_default_message, $footer_settings_field );
+		$email_footer_text = Sensei_Content_Drip()->utils->check_for_translation(
+			'Visit the online course today to start taking the lessons: [home_url]',
+			'scd_email_footer_html' );
 
 		$email_footer = '<p>' . str_ireplace( '[home_url]'  , '<a href="' . esc_attr( home_url() ) . '" >' . esc_html( home_url() ) . '</a>' , esc_html( $email_footer_text ) ) . '</p>';
 

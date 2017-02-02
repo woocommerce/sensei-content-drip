@@ -114,41 +114,27 @@ class Scd_Ext_Utils {
 	}
 
     /**
-     *  check_for_translation() function
-     *
      *  Handles which message to show users
      *  when the message is both set in a
      *  translation, as well as under Sensei ->
-     *  Settings -> Content Drip.
+     *  Settings -> Content Drip. Translation takes precedence, then setting then default message
      *
      *	@param str $default_message
      *  @param str $settings_field
-     *  @return str $message
+     *  @return str
+	 *  @from 1.0.7
      */
-    public function check_for_translation($default_message, $settings_field) {
+    public function check_for_translation( $default_message, $settings_field ) {
 
-        $possible_translation = __($default_message, 'sensei-content-drip' ) ;
-        $settings_message =  Sensei_Content_Drip()->settings->get_setting( $settings_field ) ;
-
-        // If the $default_message has been translated, return that.
-        if ($possible_translation != $default_message ) {
-
-            $message = $possible_translation;
-
-        // If not, return the string set under Sensei -> Settings -> Content Drip.
-        } elseif ( !empty($settings_message) ) {
-
-            $message = $settings_message;
-
-        // If that is not set either, return the default English string.
-        } else {
-
-            $message = $default_message;
-        }
-
-        return $message;
-
-
+		$possible_translation = __( $default_message, 'sensei-content-drip' ) ;
+		// Return the translation if present
+		if ($possible_translation != $default_message ) {
+			return $possible_translation;
+		}
+		// If not, check if "Sensei -> Settings -> Content Drip" is set and return that
+		// If that is not set either, return the default English string.
+		$settings_message =  Sensei_Content_Drip()->settings->get_setting( $settings_field );
+		return ( empty( $settings_message ) ) ? $default_message : $settings_message;
     } // end check_for_translation()
 
 } // end class Sensei_Scd_Extension_Utils
