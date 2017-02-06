@@ -145,6 +145,12 @@ class Scd_Ext_Drip_Email {
 					continue;
 				}
 
+				$are_notifications_disabled = get_post_meta( absint( $course_id ), 'disable_notification', true );
+				if ( $are_notifications_disabled ) {
+					// don't send any emails if notifications are disabled for a course
+					continue;
+				}
+
 				// Get all users in this course id
 				$course_users = Sensei_Content_Drip()->utils->get_course_users( $course_id );
 
