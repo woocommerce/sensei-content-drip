@@ -31,8 +31,12 @@ class Scd_Ext_Drip_Email {
 	 * Construction function that hooks into the WordPress workflow
 	 */
 	public function __construct() {
-		// Add email sending action to the cron job
-		add_action ( 'woo_scd_daily_cron_hook' , array( $this, 'daily_drip_lesson_email_run' ) );
+		$disable_email = Sensei_Content_Drip()->settings->get_setting( 'scd_disable_email_notifications' );
+
+		if ( ! $disable_email ) {
+			// Add email sending action to the cron job
+			add_action ( 'woo_scd_daily_cron_hook' , array( $this, 'daily_drip_lesson_email_run' ) );
+		}
 	}
 
 	/**
