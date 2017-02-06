@@ -17,12 +17,12 @@
 		 * with a new operator
 		 */
 		initialize: function() {
-			this.$datePicker = this.$('#scd-lesson-datepicker');
+			this.$lessonDatePicker = this.$('#scd-lesson-datepicker');
 			this.setInitialDripType();
 			this.takeControl();
 			this.render();
-			this.$datePicker.datepicker({
-				dateFormat: "yy/mm/dd"
+			this.$lessonDatePicker.datepicker({
+				dateFormat: "yy-mm-dd"
 			})
 		},
 

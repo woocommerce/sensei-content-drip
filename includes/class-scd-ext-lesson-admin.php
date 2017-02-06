@@ -38,6 +38,7 @@ class Scd_Ext_Lesson_Admin {
 	 * @since  1.0.0
 	 */
 	private $_token;
+	const DATE_FORMAT = 'Y-m-d';
 
 	/**
 	 * Constructor function
@@ -103,7 +104,7 @@ class Scd_Ext_Lesson_Admin {
 
 		if ( ctype_digit( $lesson_set_date ) ) {
 			// we are using new data in db, format accordingly
-			$lesson_set_date = date_i18n( 'Y/m/d', $lesson_set_date );
+			$lesson_set_date = date_i18n( self::DATE_FORMAT, $lesson_set_date );
 		}
 
 		return $lesson_set_date;
@@ -220,7 +221,7 @@ class Scd_Ext_Lesson_Admin {
 		</select></p>
 
 		<p><div class="dripTypeOptions absolute <?php echo esc_attr( $absolute_hidden_class ); ?> ">
-			<p><span class='description'><?php esc_html_e( 'Select the date on which this lesson should become available (accepted format is Y/m/d, as in 2017/01/31)', 'sensei-content-drip' ); ?></span></p>
+			<p><span class='description'><?php printf( esc_html__( 'Select the date on which this lesson should become available (accepted date format is %s)', 'sensei-content-drip' ), self::DATE_FORMAT ); ?></span></p>
 			<input type="text" id="scd-lesson-datepicker" name="absolute[datepicker]" value="<?php echo esc_attr( $absolute_date_value ); ?>" class="absolute-datepicker" />
 		</div></p>
 		<p>
@@ -331,17 +332,17 @@ class Scd_Ext_Lesson_Admin {
 
 
 			// we are always expecting a specific time format for this field in the form of
-			// e.g. 1984/12/31
-			$date = DateTime::createFromFormat( 'Y/m/d', $date_string );
+
+			$date = DateTime::createFromFormat( self::DATE_FORMAT, $date_string );
 			if (false === $date) {
-				// legacy, try to match the format from wp settings
+				// possibly legacy, try to match the format from wp settings
 				$date_format = get_option( 'date_format' );
 				$date = DateTime::createFromFormat( $date_format, $date_string );
 				if (false === $date) {
 					// at this point we can't do somthing so we
 					// need to prompt the user to reselect a date from the
-					// datepicker
-					$message = esc_html__( 'The date format you have selected can not be parsed (we expect dates to be formatted like "Y/m/d". We have left that intact for you to reselect it from the datepicker', 'sensei-content-drip' );
+					// datepicker. The old format will still work in the frontend
+					$message = sprintf( esc_html__( 'The date format you selected cannot be parsed (we expect dates to be formatted like "%s")', 'sensei-content-drip' ), self::DATE_FORMAT );
 					update_option( '_sensei_content_drip_lesson_notice' , array( 'error' => $message ) );
 					return $post_id;
 				}
