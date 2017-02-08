@@ -1,13 +1,13 @@
 <?php
 /*
  * Plugin Name: Sensei Content Drip
- * Version: 1.0.6
+ * Version: 1.0.7
  * Plugin URI: http://www.woothemes.com/products/sensei-content-drip/
  * Description:  Control access to Sensei lessons by scheduling them to become available after a determined time.
  * Author: WooThemes
  * Author URI: http://www.woothemes.com/
  * Requires at least: 3.9
- * Tested up to: 4.6.1
+ * Tested up to: 4.7.2
  * Domain path: /lang/
  *
  * @package WordPress
