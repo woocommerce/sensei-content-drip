@@ -1,5 +1,13 @@
 *** Sensei Content Drip Changelog ***
 
+2017.02.08 - version 1.0.7
+* Users can disable Email notifications in Settings.
+* Admin: only accept YYYY-MM-DD drip dates, mitigates certain issues
+  with time formats in non-English languages
+* Users can send test emails to themselves from the lesson edit admin screen
+* Check for translations before defaulting to settings strings for drip messages
+* Various fixes and security improvements
+
 2016.11.29 - version 1.0.6
 * Fix - Time Formatting changes Causing Errors
 * Fix - Video and buttons hidden after completing lesson
