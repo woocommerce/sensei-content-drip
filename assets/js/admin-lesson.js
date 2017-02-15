@@ -74,7 +74,7 @@
 				hasPre = this.$( 'select.sdc-lesson-drip-type option.dynamic' ).data( 'has-pre' );
 
 				// Show the error notice if this doesn't have a pre-requisite
-				if ( 'false' === hasPre.trim() ) {
+				if ( 'false' === hasPre.toString().trim() ) {
 					this.$( '.pre-requisite-notice' ).show();
 				}
 			}
