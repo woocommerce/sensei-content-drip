@@ -69,7 +69,7 @@ class Scd_Ext_Access_Control {
 		$lesson_course_id       = Sensei()->lesson->get_course_id( $lesson_id );
 
 		// Return drip not active for the following conditions.
-		if ( is_super_admin() || empty( $lesson_id ) || 'lesson' !== get_post_type( $lesson_id )
+		if ( $this->is_super_admin() || empty( $lesson_id ) || 'lesson' !== get_post_type( $lesson_id )
 		     || Sensei_Utils::user_completed_lesson( $lesson_id, get_current_user_id() ) ) {
 			return false;
 		}
@@ -311,5 +311,22 @@ class Scd_Ext_Access_Control {
 
 		// Strip out the hours minutes and second before returning the yyyy-mm-dd format
 		return new DateTime( $drip_date->format( 'Y-m-d' ) );
+	}
+
+	/**
+	 * Checks If a User is SuperAdmin, compatible with WP >= 4.8.0
+	 *
+	 * @return bool
+	 */
+	private function is_super_admin() {
+		global $wp_version;
+		if ( version_compare( $wp_version, '4.8', '>=' ) ) {
+			// See https://make.wordpress.org/core/2017/05/22/multisite-focused-changes-in-4-8/.
+			// And https://core.trac.wordpress.org/ticket/39205#comment:13.
+			// `upgrade_netrowk` is the new more granular way to check for super_admins.
+			return current_user_can( 'upgrade_network' );
+		}
+
+		return is_super_admin();
 	}
 }
