@@ -287,6 +287,8 @@ class Scd_Ext_Manual_Drip {
 	 * @return void
 	 */
 	public function send_test_email() {
+		global $woothemes_sensei;
+		
 		// Incoming request security
 		check_ajax_referer( 'get-manual-drip-status', 'nonce' );
 
@@ -328,9 +330,15 @@ class Scd_Ext_Manual_Drip {
 			wp_send_json_error( $response );
 			die;
 		}
+		
+		// Construct the email pieces
+		$email_wrappers = array(
+			'wrap_header' => $woothemes_sensei->emails->load_template( 'header' ),
+			'wrap_footer' => $woothemes_sensei->emails->load_template( 'footer' ),
+		);
 
 		$drip_email = new Scd_Ext_Drip_Email();
-		$drip_email->send_single_email_drip_notifications( $_POST[ 'userId' ], array( $_POST[ 'lessonId' ] ) );
+		$drip_email->send_single_email_drip_notifications( $_POST[ 'userId' ], array( $_POST[ 'lessonId' ] ), $email_wrappers );
 
 		// Setup the response array and new nonce
 		$response = array(
