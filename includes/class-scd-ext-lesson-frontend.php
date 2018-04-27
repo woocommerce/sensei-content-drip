@@ -52,6 +52,9 @@ class Scd_Ext_Lesson_Frontend {
 		$settings_field =  'scd_drip_message';
 		$this->message_format = Sensei_Content_Drip()->utils->check_for_translation($default_message, $settings_field );
 
+		// TODO: add a setting for this.
+		$this->message_without_date = __( 'This lesson is not available before starting the course.', 'sensei-content-drip' );
+
 		// Hook int all post of type lesson to determine if they should be
 		add_filter('the_posts', array( $this, 'lesson_content_drip_filter' ), 1 );
 	}
@@ -156,7 +159,7 @@ class Scd_Ext_Lesson_Frontend {
 
 		// Hide the lesson quiz notice
 		remove_action( 'sensei_single_lesson_content_inside_before', array( 'Sensei_Lesson', 'user_lesson_quiz_status_message' ), 20 );
-		
+
 		// Hide lesson meta (e.g. Media from Sensei-Media-Items.)
 		remove_all_actions( 'sensei_lesson_single_meta' );
 	}
@@ -231,6 +234,11 @@ class Scd_Ext_Lesson_Frontend {
 		$user_id                   = $current_user->ID;
 		$dynamic_drip_type_message = '';
 		$lesson_available_date     = Sensei_Content_Drip()->access_control->get_lesson_drip_date( $lesson_id , $user_id );
+
+		if ( ! $lesson_available_date ) {
+			return esc_html( $this->message_without_date );
+		}
+
 		$formatted_date            = date_i18n( get_option( 'date_format' ), $lesson_available_date->getTimestamp() );
 
 		// Replace string content in the class message_format property set in the constructor

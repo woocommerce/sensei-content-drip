@@ -67,10 +67,12 @@ class Scd_Ext_Access_Control {
 
 		// Return drip not active for the following conditions.
 		if ( is_super_admin() || empty( $lesson_id ) || 'lesson' !== get_post_type( $lesson_id )
-		     || Sensei_Utils::user_completed_lesson( $lesson_id, get_current_user_id() )
-		     || ! Sensei_Utils::user_started_course( $lesson_course_id, get_current_user_id() ) ) {
+		     || Sensei_Utils::user_completed_lesson( $lesson_id, get_current_user_id() ) ) {
 			return false;
 		}
+
+		// Check if user has started the course.
+		$user_started_course = Sensei_Utils::user_started_course( $lesson_course_id, get_current_user_id() );
 
 		// get the lessons drip data if any
 		$drip_type = get_post_meta( $lesson_id , '_sensei_content_drip_type', true );
@@ -81,7 +83,12 @@ class Scd_Ext_Access_Control {
 		} elseif ( 'absolute' === $drip_type  ) {
 			$content_access_blocked = $this->is_absolute_drip_type_content_blocked( $lesson_id  );
 		} elseif ( 'dynamic' === $drip_type ) {
-			$content_access_blocked = $this->is_dynamic_drip_type_content_blocked( $lesson_id  );
+			// If the user is not taking the course, block it.
+			if ( $user_started_course ) {
+				$content_access_blocked = $this->is_dynamic_drip_type_content_blocked( $lesson_id  );
+			} else {
+				$content_access_blocked = true;
+			}
 		}
 
 		/**
