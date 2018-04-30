@@ -54,8 +54,11 @@ class Scd_Ext_Quiz_Frontend {
 			'scd_drip_quiz_message'
 		);
 
-		// TODO: add a setting for this.
-		$this->message_without_date = __( 'This quiz is not available before starting the course.', 'sensei-content-drip' );
+		// Set a message to show to users when the content has not yet dripped and we cannot compute a date for when it will drip.
+		$this->message_without_date = Sensei_Content_Drip()->utils->check_for_translation(
+			'This quiz is not available before starting the course.',
+			'scd_drip_quiz_message_without_date'
+		);
 
 		// Hook int all post of type quiz to determine if they should be
 		add_filter( 'the_posts', array( $this, 'quiz_content_drip_filter' ), 1 );
