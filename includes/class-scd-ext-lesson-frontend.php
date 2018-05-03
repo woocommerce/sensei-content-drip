@@ -52,11 +52,8 @@ class Scd_Ext_Lesson_Frontend {
 		$settings_field =  'scd_drip_message';
 		$this->message_format = Sensei_Content_Drip()->utils->check_for_translation($default_message, $settings_field );
 
-		// Set a message to show to users when the content has not yet dripped and we cannot compute a date for when it will drip.
-		$this->message_without_date = Sensei_Content_Drip()->utils->check_for_translation(
-			'This lesson is not available before starting the course.',
-			'scd_drip_message_without_date'
-		);
+		// TODO: add a setting for this.
+		$this->message_without_date = __( 'This lesson is not available before starting the course.', 'sensei-content-drip' );
 
 		// Hook int all post of type lesson to determine if they should be
 		add_filter('the_posts', array( $this, 'lesson_content_drip_filter' ), 1 );

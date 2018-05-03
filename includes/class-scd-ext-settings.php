@@ -82,27 +82,11 @@ class Scd_Ext_Settings {
 			'section'     => 'sensei-content-drip-settings',
 		);
 
-		$sensei_settings_fields['scd_drip_message_without_date'] = array(
-			'name'        => esc_html__( 'Drip Message Without Date', 'sensei-content-drip' ),
-			'description' => esc_html__( 'The user will see this when the content is not yet available and we cannot compute a date for when it will become available', 'sensei-content-drip' ),
-			'type'        => 'textarea',
-			'default'     => esc_html__( 'This lesson is not available before starting the course.', 'sensei-content-drip' ),
-			'section'     => 'sensei-content-drip-settings',
-		);
-
 		$sensei_settings_fields['scd_drip_quiz_message'] = array(
 			'name'        => esc_html__( 'Quiz Drip Message', 'sensei-content-drip' ),
 			'description' => esc_html__( 'The user will see this on the lesson quiz when the lesson is not yet available. The [date] shortcode will be replaced by the actual date', 'sensei-content-drip' ),
 			'type'        => 'textarea',
 			'default'     => esc_html__( 'This quiz will become available on [date].', 'sensei-content-drip' ),
-			'section'     => 'sensei-content-drip-settings',
-		);
-
-		$sensei_settings_fields['scd_drip_quiz_message_without_date'] = array(
-			'name'        => esc_html__( 'Quiz Drip Message Without Date', 'sensei-content-drip' ),
-			'description' => esc_html__( 'The user will see this on the lesson quiz when the lesson is not yet available and we cannot compute a date for when it will become available', 'sensei-content-drip' ),
-			'type'        => 'textarea',
-			'default'     => esc_html__( 'This quiz is not available before starting the course.', 'sensei-content-drip' ),
 			'section'     => 'sensei-content-drip-settings',
 		);
 
