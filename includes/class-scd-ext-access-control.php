@@ -51,6 +51,9 @@ class Scd_Ext_Access_Control {
 			'This lesson will become available on [date].',
 			'scd_drip_message'
 		);
+
+		// Handle lessons for which to block access through Sensei.
+		add_filter( 'sensei_can_user_view_lesson', array( $this, 'can_user_view_lesson' ), 10, 3 );
 	}// end __construct()
 
 	/**
@@ -103,6 +106,31 @@ class Scd_Ext_Access_Control {
 		$content_access_blocked = apply_filters( 'scd_lesson_content_access_blocked' , $content_access_blocked , $lesson_id );
 
 		return $content_access_blocked;
+	}
+
+	/**
+	 * Tells Sensei whether the user should be allowed to view lesson. This is
+	 * used for the Sensei filter `sensei_can_user_view_lesson`.
+	 *
+	 * This function is for handling the case where a user is not taking a
+	 * course that has lessons with dripped content. If the lesson has not been
+	 * dripped and the user has not started the course, it should be blocked by
+	 * Sensei, rather than by Content Drip.
+	 *
+	 * @since  1.0.9
+	 * @param  bool $can_user_view_lesson
+	 * @param  int  $lesson_id
+	 * @return bool true if the user access should be allowed, false otherwise.
+	 */
+	public function can_user_view_lesson( $can_user_view_lesson, $lesson_id, $user_id ) {
+		$lesson_course_id = Sensei()->lesson->get_course_id( $lesson_id );
+
+		// Block the lesson only if user has not started the course and it
+		// hasn't dripped yet.
+		$blocked = ! Sensei_Utils::user_started_course( $lesson_course_id, $user_id )
+			&& $this->is_lesson_access_blocked( $lesson_id );
+
+		return $can_user_view_lesson && ! $blocked;
 	}
 
 	/**

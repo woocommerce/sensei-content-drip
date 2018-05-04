@@ -52,9 +52,6 @@ class Scd_Ext_Lesson_Frontend {
 		$settings_field =  'scd_drip_message';
 		$this->message_format = Sensei_Content_Drip()->utils->check_for_translation($default_message, $settings_field );
 
-		// TODO: add a setting for this.
-		$this->message_without_date = __( 'This lesson is not available before starting the course.', 'sensei-content-drip' );
-
 		// Hook int all post of type lesson to determine if they should be
 		add_filter('the_posts', array( $this, 'lesson_content_drip_filter' ), 1 );
 	}
@@ -236,7 +233,7 @@ class Scd_Ext_Lesson_Frontend {
 		$lesson_available_date     = Sensei_Content_Drip()->access_control->get_lesson_drip_date( $lesson_id , $user_id );
 
 		if ( ! $lesson_available_date ) {
-			return esc_html( $this->message_without_date );
+			return '';
 		}
 
 		$formatted_date            = date_i18n( get_option( 'date_format' ), $lesson_available_date->getTimestamp() );

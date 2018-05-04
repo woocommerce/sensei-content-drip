@@ -53,10 +53,6 @@ class Scd_Ext_Quiz_Frontend {
 			'This quiz will become available on [date].',
 			'scd_drip_quiz_message'
 		);
-
-		// TODO: add a setting for this.
-		$this->message_without_date = __( 'This quiz is not available before starting the course.', 'sensei-content-drip' );
-
 		// Hook int all post of type quiz to determine if they should be
 		add_filter( 'the_posts', array( $this, 'quiz_content_drip_filter' ), 1 );
 		// Show SCD Message if Quiz lesson is restricted
@@ -251,7 +247,7 @@ class Scd_Ext_Quiz_Frontend {
 		$quiz_available_date       = Sensei_Content_Drip()->access_control->get_lesson_drip_date( $lesson_id , $user_id );
 
 		if ( ! $quiz_available_date ) {
-			return esc_html( $this->message_without_date );
+			return '';
 		}
 
 		$formatted_date            = date_i18n( Sensei_Content_Drip()->get_date_format_string( ), $quiz_available_date->getTimestamp() );
