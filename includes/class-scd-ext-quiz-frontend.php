@@ -116,9 +116,11 @@ class Scd_Ext_Quiz_Frontend {
 			return;
 		}
 
-		$lesson_id =  Sensei()->quiz->get_lesson_id( $quiz_id );
+		$lesson_id = Sensei()->quiz->get_lesson_id( $quiz_id );
+		$user_id   = get_current_user_id();
 
-		if ( Sensei_Content_Drip()->access_control->is_lesson_access_blocked( $lesson_id ) ) {
+		if ( Sensei_Content_Drip()->access_control->is_lesson_access_blocked( $lesson_id ) &&
+			! Sensei_Content_Drip()->access_control->sensei_should_block_lesson( $lesson_id, $user_id ) ) {
 			$drip_message_body = $this->get_drip_type_message( $quiz_id );
 			if ( empty( $drip_message_body ) ) {
 				return;

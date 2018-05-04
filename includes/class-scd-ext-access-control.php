@@ -109,8 +109,9 @@ class Scd_Ext_Access_Control {
 	}
 
 	/**
-	 * Tells Sensei whether the user should be allowed to view lesson. This is
-	 * used for the Sensei filter `sensei_can_user_view_lesson`.
+	 * Indicates whether the lesson should be blocked directly from Sensei.
+	 * This is used for the Sensei filter `sensei_can_user_view_lesson`. See
+	 * method `can_user_view_lesson`.
 	 *
 	 * This function is for handling the case where a user is not taking a
 	 * course that has lessons with dripped content. If the lesson has not been
@@ -118,19 +119,30 @@ class Scd_Ext_Access_Control {
 	 * Sensei, rather than by Content Drip.
 	 *
 	 * @since  1.0.9
-	 * @param  bool $can_user_view_lesson
 	 * @param  int  $lesson_id
-	 * @return bool true if the user access should be allowed, false otherwise.
+	 * @param  int  $user_id
+	 * @return bool true if Sensei should block access, false otherwise.
 	 */
-	public function can_user_view_lesson( $can_user_view_lesson, $lesson_id, $user_id ) {
+	public function sensei_should_block_lesson( $lesson_id, $user_id ) {
 		$lesson_course_id = Sensei()->lesson->get_course_id( $lesson_id );
 
 		// Block the lesson only if user has not started the course and it
 		// hasn't dripped yet.
-		$blocked = ! Sensei_Utils::user_started_course( $lesson_course_id, $user_id )
+		return ! Sensei_Utils::user_started_course( $lesson_course_id, $user_id )
 			&& $this->is_lesson_access_blocked( $lesson_id );
+	}
 
-		return $can_user_view_lesson && ! $blocked;
+	/**
+	 * Used in the sensei filter `sensei_can_user_view_lesson`. See method
+	 * `sensei_should_block_lesson`.
+	 *
+	 * @since  1.0.9
+	 * @param  bool $can_user_view_lesson
+	 * @param  int  $user_id
+	 * @return bool true if the user access should be allowed, false otherwise.
+	 */
+	public function can_user_view_lesson( $can_user_view_lesson, $lesson_id, $user_id ) {
+		return $can_user_view_lesson && ! $this->sensei_should_block_lesson( $lesson_id, $user_id );
 	}
 
 	/**
