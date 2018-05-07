@@ -156,7 +156,7 @@ class Scd_Ext_Lesson_Frontend {
 
 		// Hide the lesson quiz notice
 		remove_action( 'sensei_single_lesson_content_inside_before', array( 'Sensei_Lesson', 'user_lesson_quiz_status_message' ), 20 );
-		
+
 		// Hide lesson meta (e.g. Media from Sensei-Media-Items.)
 		remove_all_actions( 'sensei_lesson_single_meta' );
 	}
@@ -231,6 +231,11 @@ class Scd_Ext_Lesson_Frontend {
 		$user_id                   = $current_user->ID;
 		$dynamic_drip_type_message = '';
 		$lesson_available_date     = Sensei_Content_Drip()->access_control->get_lesson_drip_date( $lesson_id , $user_id );
+
+		if ( ! $lesson_available_date ) {
+			return '';
+		}
+
 		$formatted_date            = date_i18n( get_option( 'date_format' ), $lesson_available_date->getTimestamp() );
 
 		// Replace string content in the class message_format property set in the constructor

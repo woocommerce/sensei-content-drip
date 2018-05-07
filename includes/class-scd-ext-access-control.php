@@ -51,6 +51,9 @@ class Scd_Ext_Access_Control {
 			'This lesson will become available on [date].',
 			'scd_drip_message'
 		);
+
+		// Handle lessons for which to block access through Sensei.
+		add_filter( 'sensei_can_user_view_lesson', array( $this, 'can_user_view_lesson' ), 10, 3 );
 	}// end __construct()
 
 	/**
@@ -67,10 +70,12 @@ class Scd_Ext_Access_Control {
 
 		// Return drip not active for the following conditions.
 		if ( is_super_admin() || empty( $lesson_id ) || 'lesson' !== get_post_type( $lesson_id )
-		     || Sensei_Utils::user_completed_lesson( $lesson_id, get_current_user_id() )
-		     || ! Sensei_Utils::user_started_course( $lesson_course_id, get_current_user_id() ) ) {
+		     || Sensei_Utils::user_completed_lesson( $lesson_id, get_current_user_id() ) ) {
 			return false;
 		}
+
+		// Check if user has started the course.
+		$user_started_course = Sensei_Utils::user_started_course( $lesson_course_id, get_current_user_id() );
 
 		// get the lessons drip data if any
 		$drip_type = get_post_meta( $lesson_id , '_sensei_content_drip_type', true );
@@ -81,7 +86,12 @@ class Scd_Ext_Access_Control {
 		} elseif ( 'absolute' === $drip_type  ) {
 			$content_access_blocked = $this->is_absolute_drip_type_content_blocked( $lesson_id  );
 		} elseif ( 'dynamic' === $drip_type ) {
-			$content_access_blocked = $this->is_dynamic_drip_type_content_blocked( $lesson_id  );
+			// If the user is not taking the course, block it.
+			if ( $user_started_course ) {
+				$content_access_blocked = $this->is_dynamic_drip_type_content_blocked( $lesson_id  );
+			} else {
+				$content_access_blocked = true;
+			}
 		}
 
 		/**
@@ -96,6 +106,43 @@ class Scd_Ext_Access_Control {
 		$content_access_blocked = apply_filters( 'scd_lesson_content_access_blocked' , $content_access_blocked , $lesson_id );
 
 		return $content_access_blocked;
+	}
+
+	/**
+	 * Indicates whether the lesson should be blocked directly from Sensei.
+	 * This is used for the Sensei filter `sensei_can_user_view_lesson`. See
+	 * method `can_user_view_lesson`.
+	 *
+	 * This function is for handling the case where a user is not taking a
+	 * course that has lessons with dripped content. If the lesson has not been
+	 * dripped and the user has not started the course, it should be blocked by
+	 * Sensei, rather than by Content Drip.
+	 *
+	 * @since  1.0.9
+	 * @param  int  $lesson_id
+	 * @param  int  $user_id
+	 * @return bool true if Sensei should block access, false otherwise.
+	 */
+	public function sensei_should_block_lesson( $lesson_id, $user_id ) {
+		$lesson_course_id = Sensei()->lesson->get_course_id( $lesson_id );
+
+		// Block the lesson only if user has not started the course and it
+		// hasn't dripped yet.
+		return ! Sensei_Utils::user_started_course( $lesson_course_id, $user_id )
+			&& $this->is_lesson_access_blocked( $lesson_id );
+	}
+
+	/**
+	 * Used in the sensei filter `sensei_can_user_view_lesson`. See method
+	 * `sensei_should_block_lesson`.
+	 *
+	 * @since  1.0.9
+	 * @param  bool $can_user_view_lesson
+	 * @param  int  $user_id
+	 * @return bool true if the user access should be allowed, false otherwise.
+	 */
+	public function can_user_view_lesson( $can_user_view_lesson, $lesson_id, $user_id ) {
+		return $can_user_view_lesson && ! $this->sensei_should_block_lesson( $lesson_id, $user_id );
 	}
 
 	/**
