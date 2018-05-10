@@ -1,5 +1,9 @@
 *** Sensei Content Drip Changelog ***
 
+2018.05.10 - version 1.0.9
+* Fix access issue for undripped content
+* Add Russian translations
+
 2017.02.15 - version 1.0.8
 * Fix JavaScript error on lesson admin
 
