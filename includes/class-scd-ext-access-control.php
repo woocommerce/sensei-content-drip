@@ -125,11 +125,12 @@ class Scd_Ext_Access_Control {
 	 */
 	public function sensei_should_block_lesson( $lesson_id, $user_id ) {
 		$lesson_course_id = Sensei()->lesson->get_course_id( $lesson_id );
-
+		$user_started_course = Sensei_Utils::user_started_course( $lesson_course_id, $user_id );
+		
 		// Block the lesson only if user has not started the course and it
 		// hasn't dripped yet.
-		return ! Sensei_Utils::user_started_course( $lesson_course_id, $user_id )
-			&& $this->is_lesson_access_blocked( $lesson_id );
+		return $user_started_course === false ||
+			($user_started_course !== false && $this->is_lesson_access_blocked( $lesson_id ));
 	}
 
 	/**
