@@ -2,10 +2,10 @@
 /*
  * Plugin Name: Sensei Content Drip
  * Version: 1.0.9
- * Plugin URI: http://www.woothemes.com/products/sensei-content-drip/
+ * Plugin URI: https://woocommerce.com/products/sensei-content-drip/
  * Description:  Control access to Sensei lessons by scheduling them to become available after a determined time.
- * Author: WooThemes
- * Author URI: http://www.woothemes.com/
+ * Author: Automattic
+ * Author URI: https://woocommerce.com/
  * Requires at least: 3.9
  * Tested up to: 4.7.2
  * Domain path: /lang/
