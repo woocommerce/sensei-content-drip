@@ -6,12 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Sensei Content Drip Extension Dependencies Check
  *
- * Common functions used by the Content drip extension
- *
- * @package WordPress
- * @subpackage Sensei Content Drip
- * @category Utilities
- * @author Automattic
  * @since 1.1.0
  */
 class Scd_Ext_Dependencies {
