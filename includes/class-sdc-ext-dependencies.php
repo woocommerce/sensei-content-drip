@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.1.0
  */
 class Scd_Ext_Dependencies {
-	const MINIMUM_PHP_VERSION    = '5.6.0';
+	const MINIMUM_PHP_VERSION    = '5.6';
 	const MINIMUM_SENSEI_VERSION = '1.11.0';
 
 	/**
@@ -59,10 +59,7 @@ class Scd_Ext_Dependencies {
 	 * @return bool
 	 */
 	private static function check_php() {
-		if ( version_compare( phpversion(), self::MINIMUM_PHP_VERSION, '<' ) ) {
-			return false;
-		}
-		return true;
+		return version_compare( phpversion(), self::MINIMUM_PHP_VERSION, '>=' );
 	}
 
 	/**
