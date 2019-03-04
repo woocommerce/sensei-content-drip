@@ -1,0 +1,142 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Sensei Content Drip Extension Dependencies Check
+ *
+ * Common functions used by the Content drip extension
+ *
+ * @package WordPress
+ * @subpackage Sensei Content Drip
+ * @category Utilities
+ * @author Automattic
+ * @since 1.1.0
+ */
+class Scd_Ext_Dependencies {
+	const MINIMUM_PHP_VERSION    = '5.6.0';
+	const MINIMUM_SENSEI_VERSION = '1.11.0';
+
+	/**
+	 * The list of active plugins.
+	 *
+	 * @var array
+	 */
+	private static $active_plugins;
+
+	/**
+	 * Get active plugins.
+	 *
+	 * @return string[]
+	 */
+	private static function get_active_plugins() {
+		if ( ! isset( self::$active_plugins ) ) {
+			self::$active_plugins = (array) get_option( 'active_plugins', array() );
+
+			if ( is_multisite() ) {
+				self::$active_plugins = array_merge( self::$active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
+			}
+		}
+		return self::$active_plugins;
+	}
+
+	/**
+	 * Checks if all dependencies are met.
+	 *
+	 * @return bool
+	 */
+	public static function are_dependencies_met() {
+		$are_met = true;
+		if ( ! self::check_php() ) {
+			add_action( 'admin_notices', array( __CLASS__, 'add_php_notice' ) );
+			$are_met = false;
+		}
+		if ( ! self::check_sensei() ) {
+			add_action( 'admin_notices', array( __CLASS__, 'add_sensei_notice' ) );
+			$are_met = false;
+		}
+		return $are_met;
+	}
+
+	/**
+	 * Checks for our PHP version requirement.
+	 *
+	 * @return bool
+	 */
+	private static function check_php() {
+		if ( version_compare( phpversion(), self::MINIMUM_PHP_VERSION, '<' ) ) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Checks for our Sensei dependency.
+	 *
+	 * @return bool
+	 */
+	private static function check_sensei() {
+		$active_plugins = self::get_active_plugins();
+
+		$search_sensei = array(
+			'sensei/sensei.php', // Sensei 2.x from WordPress.org.
+			'sensei/woothemes-sensei.php', // Sensei 1.x or Sensei 2.x Compatibility Plugin
+			'woothemes-sensei/woothemes-sensei.php', // Sensei 1.x or Sensei 2.x Compatibility Plugin
+		);
+
+		$found_sensei = false;
+		foreach ( $search_sensei as $basename ) {
+			if ( in_array( $basename, $active_plugins, true ) || array_key_exists( $basename, $active_plugins ) ) {
+				$found_sensei = true;
+				break;
+			}
+		}
+
+		if ( ! $found_sensei && ! class_exists( 'Sensei_Main' ) ) {
+			return false;
+		}
+
+		return version_compare( self::MINIMUM_SENSEI_VERSION, get_option( 'sensei-version' ), '<=' );
+	}
+
+	/**
+	 * Adds notice in WP Admin that minimum version of PHP is not met.
+	 *
+	 * @access private
+	 */
+	public static function add_php_notice() {
+		$screen        = get_current_screen();
+		$valid_screens = array( 'dashboard', 'plugins' );
+
+		if ( ! current_user_can( 'activate_plugins' )|| ! in_array( $screen->id, $valid_screens, true ) ) {
+			return;
+		}
+
+		// translators: %1$s is version of PHP that SCD requires; %2$s is the version of PHP WordPress is running on.
+		$message = sprintf( __( '<strong>Sensei Content Drip</strong> requires PHP version %1$s but you are running %2$s.', 'sensei-content-drop' ), self::MINIMUM_PHP_VERSION, phpversion() );
+		echo '<div class="error"><p>';
+		echo wp_kses( $message, array( 'strong' => array() ) );
+		echo '</p></div>';
+	}
+
+	/**
+	 * Adds the notice in WP Admin that Sensei is required.
+	 *
+	 * @access private
+	 */
+	public static function add_sensei_notice() {
+		$screen        = get_current_screen();
+		$valid_screens = array( 'dashboard', 'plugins' );
+
+		if ( ! current_user_can( 'activate_plugins' )|| ! in_array( $screen->id, $valid_screens, true ) ) {
+			return;
+		}
+
+		// translators: %1$s is the minimum version number of Sensei that is required.
+		$message = sprintf( __( '<strong>Sensei Content Drip</strong> requires the plugin <strong>Sensei</strong> (minimum version: <strong>%1$s</strong>) to be installed and activated.', 'sensei-content-drop' ), self::MINIMUM_SENSEI_VERSION );
+		echo '<div class="error"><p>';
+		echo wp_kses( $message, array( 'strong' => array() ) );
+		echo '</p></div>';
+	}
+}
