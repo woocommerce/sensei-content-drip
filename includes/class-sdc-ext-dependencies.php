@@ -74,9 +74,9 @@ class Scd_Ext_Dependencies {
 		$active_plugins = self::get_active_plugins();
 
 		$search_sensei = array(
-			'sensei/sensei.php', // Sensei 2.x from WordPress.org.
-			'sensei/woothemes-sensei.php', // Sensei 1.x or Sensei 2.x Compatibility Plugin
-			'woothemes-sensei/woothemes-sensei.php', // Sensei 1.x or Sensei 2.x Compatibility Plugin
+			'sensei/sensei.php',                     // Sensei 2.x from WordPress.org.
+			'sensei/woothemes-sensei.php',           // Sensei 1.x or Sensei 2.x Compatibility Plugin.
+			'woothemes-sensei/woothemes-sensei.php', // Sensei 1.x or Sensei 2.x Compatibility Plugin.
 		);
 
 		$found_sensei = false;
