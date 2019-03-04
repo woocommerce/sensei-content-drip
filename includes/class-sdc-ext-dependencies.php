@@ -91,7 +91,9 @@ class Scd_Ext_Dependencies {
 			return false;
 		}
 
-		return version_compare( self::MINIMUM_SENSEI_VERSION, get_option( 'sensei-version' ), '<=' );
+		// As long as we support 1.x, we need to also check this option.
+		$legacy_version = get_option( 'woothemes-sensei-version' );
+		return version_compare( self::MINIMUM_SENSEI_VERSION, get_option( 'sensei-version', $legacy_version ), '<=' );
 	}
 
 	/**
