@@ -102,7 +102,7 @@ class Scd_Ext_Dependency_Checker {
 		$screen        = get_current_screen();
 		$valid_screens = array( 'dashboard', 'plugins' );
 
-		if ( ! current_user_can( 'activate_plugins' )|| ! in_array( $screen->id, $valid_screens, true ) ) {
+		if ( ! current_user_can( 'activate_plugins' ) || ! in_array( $screen->id, $valid_screens, true ) ) {
 			return;
 		}
 
@@ -122,7 +122,7 @@ class Scd_Ext_Dependency_Checker {
 		$screen        = get_current_screen();
 		$valid_screens = array( 'dashboard', 'plugins' );
 
-		if ( ! current_user_can( 'activate_plugins' )|| ! in_array( $screen->id, $valid_screens, true ) ) {
+		if ( ! current_user_can( 'activate_plugins' ) || ! in_array( $screen->id, $valid_screens, true ) ) {
 			return;
 		}
 
