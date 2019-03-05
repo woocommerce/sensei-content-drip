@@ -110,6 +110,7 @@ class Scd_Ext_Dependency_Checker {
 		$message = sprintf( __( '<strong>Sensei Content Drip</strong> requires PHP version %1$s but you are running %2$s.', 'sensei-content-drop' ), self::MINIMUM_PHP_VERSION, phpversion() );
 		echo '<div class="error"><p>';
 		echo wp_kses( $message, array( 'strong' => array() ) );
+		echo '<p><a class="button button-primary" href="https://wordpress.org/support/update-php/" rel="noopener">' . esc_html__( 'Learn more about updating PHP', 'sensei-content-drip' ) . '</a></p>';
 		echo '</p></div>';
 	}
 
