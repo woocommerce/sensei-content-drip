@@ -19,9 +19,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/includes/class-sdc-ext-dependencies.php';
+require_once __DIR__ . '/includes/class-sdc-ext-dependency-checker.php';
 
-if ( ! Scd_Ext_Dependencies::are_dependencies_met() ) {
+if ( ! Scd_Ext_Dependency_Checker::are_dependencies_met() ) {
 	return;
 }
 
