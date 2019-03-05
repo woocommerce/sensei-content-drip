@@ -131,6 +131,17 @@ class Scd_Ext_Dependency_Checker {
 		$message = sprintf( __( '<strong>Sensei Content Drip</strong> requires the plugin <strong>Sensei</strong> (minimum version: <strong>%1$s</strong>) to be installed and activated.', 'sensei-content-drop' ), self::MINIMUM_SENSEI_VERSION );
 		echo '<div class="error"><p>';
 		echo wp_kses( $message, array( 'strong' => array() ) );
+		$php_update_url = 'https://wordpress.org/support/update-php/';
+		if ( function_exists( 'wp_get_update_php_url' ) ) {
+			$php_update_url = wp_get_update_php_url();
+		}
+		printf(
+			'<p><a class="button button-primary" href="%1$s" target="_blank" rel="noopener noreferrer">%2$s <span class="screen-reader-text">%3$s</span><span aria-hidden="true" class="dashicons dashicons-external"></span></a></p>',
+			esc_url( $php_update_url ),
+			esc_html__( 'Learn more about updating PHP', 'sensei-content-drip' ),
+			/* translators: accessibility text */
+			esc_html__( '(opens in a new tab)', 'sensei-content-drip' )
+		);
 		echo '</p></div>';
 	}
 }
