@@ -491,7 +491,11 @@ class Scd_Ext_Lesson_Admin {
 
 			// Assign the key if a value exists
 			if ( ! empty( $value ) ) {
-				$lesson_drip_data[ $field_key ] = esc_html( $value );
+				// Ensure strings are HTML escaped.
+				if ( is_string( $value ) ) {
+					$value = esc_html( $value );
+				}
+				$lesson_drip_data[ $field_key ] = $value;
 			}
 		}
 
