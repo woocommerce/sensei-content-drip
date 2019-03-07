@@ -64,7 +64,11 @@ function sensei_content_drip_activation() {
 		wp_clear_scheduled_hook( $hook );
 	}
 
-	wp_schedule_event( time(), 'daily', $hook );
+	$today_start         = strtotime( date_i18n( 'Y-m-d' ) );
+	$tomorrow_start      = $today_start + 24 * HOUR_IN_SECONDS;
+	$scheduled_time      = $tomorrow_start + 30 * MINUTE_IN_SECONDS;
+	$scheduled_time_unix = $scheduled_time - get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+	wp_schedule_event( $scheduled_time_unix, 'daily', $hook );
 }
 
 
