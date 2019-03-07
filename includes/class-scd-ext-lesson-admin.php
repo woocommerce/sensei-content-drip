@@ -104,7 +104,7 @@ class Scd_Ext_Lesson_Admin {
 
 		if ( ctype_digit( $lesson_set_date ) ) {
 			// we are using new data in db, format accordingly
-			$lesson_set_date = date_i18n( self::DATE_FORMAT, $lesson_set_date );
+			$lesson_set_date = date_i18n( get_option( 'date_format', self::DATE_FORMAT ), $lesson_set_date );
 		}
 
 		return $lesson_set_date;
