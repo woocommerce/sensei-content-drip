@@ -249,7 +249,7 @@ class Scd_Ext_Drip_Email {
 	 * @return void
 	 */
 	public function send_bulk_drip_notifications( $users_lessons ) {
-		global $woothemes_sensei, $sensei_email_data;
+		global $sensei_email_data;
 
 		if ( ! empty( $users_lessons ) ) {
 
@@ -271,8 +271,8 @@ class Scd_Ext_Drip_Email {
 
 			// Construct the email pieces
 			$email_wrappers = array(
-				'wrap_header' => $woothemes_sensei->emails->load_template( 'header' ),
-				'wrap_footer' => $woothemes_sensei->emails->load_template( 'footer' ),
+				'wrap_header' => Sensei()->emails->load_template( 'header' ),
+				'wrap_footer' => Sensei()->emails->load_template( 'footer' ),
 			);
 
 			foreach ( $users_lessons as $user_id => $lessons ) {

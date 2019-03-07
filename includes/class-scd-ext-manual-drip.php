@@ -287,8 +287,8 @@ class Scd_Ext_Manual_Drip {
 	 * @return void
 	 */
 	public function send_test_email() {
-		global $woothemes_sensei;
-		
+	    global $sensei_email_data;
+
 		// Incoming request security
 		check_ajax_referer( 'get-manual-drip-status', 'nonce' );
 
@@ -330,11 +330,21 @@ class Scd_Ext_Manual_Drip {
 			wp_send_json_error( $response );
 			die;
 		}
-		
+
+		// Construct data array sensei needs before it can send an email
+		$sensei_email_data = array(
+			'template'  => 'sensei-content-drip',
+			/** This filter is documented in includes/class-scd-ext-drip-email.php. */
+			'heading'   => apply_filters( 'scd_email_heading', __( 'Content Drip', 'sensei-content-drip' ) ),
+			'user_id'   => '',
+			'course_id' => '',
+			'passed'    => '',
+		);
+
 		// Construct the email pieces
 		$email_wrappers = array(
-			'wrap_header' => $woothemes_sensei->emails->load_template( 'header' ),
-			'wrap_footer' => $woothemes_sensei->emails->load_template( 'footer' ),
+			'wrap_header' => Sensei()->emails->load_template( 'header' ),
+			'wrap_footer' => Sensei()->emails->load_template( 'footer' ),
 		);
 
 		$drip_email = new Scd_Ext_Drip_Email();
