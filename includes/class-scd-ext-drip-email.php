@@ -359,7 +359,7 @@ class Scd_Ext_Drip_Email {
 			$lesson_line_item = '<li>' . $lesson_link . '</li>';
 
 			// Add it to the list that will be ordered later
-			if ( is_array( $courses_and_lessons[ $course_id ] ) ) {
+			if ( isset( $courses_and_lessons[ $course_id ] ) && is_array( $courses_and_lessons[ $course_id ] ) ) {
 				$courses_and_lessons[ $course_id ][ $lesson_id ] = $lesson_line_item;
 			} else {
 				$courses_and_lessons[ $course_id ] = array( $lesson_id => $lesson_line_item );
