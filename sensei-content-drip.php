@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/includes/class-sdc-ext-dependency-checker.php';
+require_once __DIR__ . '/includes/class-scd-ext-dependency-checker.php';
 
 if ( ! Scd_Ext_Dependency_Checker::are_dependencies_met() ) {
 	return;
