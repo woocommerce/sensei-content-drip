@@ -99,12 +99,18 @@ class Scd_Ext_Lesson_Admin {
 	 * @param  string $lesson_id
 	 * @return DateTime|string
 	 */
-	private function date_or_datestring_from_lesson( $lesson_id ) {
+	private function date_or_datestring_from_lesson( $lesson_id, $use_wp_format = false ) {
 		$lesson_set_date = get_post_meta( $lesson_id, '_sensei_content_drip_details_date', true );
 
 		if ( ctype_digit( $lesson_set_date ) ) {
+			$format = self::DATE_FORMAT;
+
+			if ( $use_wp_format ) {
+				$format = get_option( 'date_format', self::DATE_FORMAT );
+			}
+
 			// we are using new data in db, format accordingly
-			$lesson_set_date = date_i18n( self::DATE_FORMAT, $lesson_set_date );
+			$lesson_set_date = date_i18n( $format, $lesson_set_date );
 		}
 
 		return $lesson_set_date;
@@ -131,7 +137,7 @@ class Scd_Ext_Lesson_Admin {
 		if ( 'none' === $drip_type ) {
 			echo esc_html__( 'Immediately', 'sensei-content-drip' );
 		} else if ( 'absolute' === $drip_type ) {
-			$lesson_set_date = $this->date_or_datestring_from_lesson( $lesson_id );
+			$lesson_set_date = $this->date_or_datestring_from_lesson( $lesson_id, true );
 			printf( esc_html__( 'On %s', 'sensei-content-drip' ), $lesson_set_date );
 		} else if ( 'dynamic' === $drip_type ) {
 			$unit_type   = get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_type', true );
