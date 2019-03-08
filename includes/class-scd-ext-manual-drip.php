@@ -287,6 +287,8 @@ class Scd_Ext_Manual_Drip {
 	 * @return void
 	 */
 	public function send_test_email() {
+	    global $sensei_email_data;
+
 		// Incoming request security
 		check_ajax_referer( 'get-manual-drip-status', 'nonce' );
 
@@ -329,8 +331,24 @@ class Scd_Ext_Manual_Drip {
 			die;
 		}
 
+		// Construct data array sensei needs before it can send an email
+		$sensei_email_data = array(
+			'template'  => 'sensei-content-drip',
+			/** This filter is documented in includes/class-scd-ext-drip-email.php. */
+			'heading'   => apply_filters( 'scd_email_heading', __( 'Content Drip', 'sensei-content-drip' ) ),
+			'user_id'   => '',
+			'course_id' => '',
+			'passed'    => '',
+		);
+
+		// Construct the email pieces
+		$email_wrappers = array(
+			'wrap_header' => Sensei()->emails->load_template( 'header' ),
+			'wrap_footer' => Sensei()->emails->load_template( 'footer' ),
+		);
+
 		$drip_email = new Scd_Ext_Drip_Email();
-		$drip_email->send_single_email_drip_notifications( $_POST[ 'userId' ], array( $_POST[ 'lessonId' ] ) );
+		$drip_email->send_single_email_drip_notifications( $_POST[ 'userId' ], array( $_POST[ 'lessonId' ] ), $email_wrappers );
 
 		// Setup the response array and new nonce
 		$response = array(
