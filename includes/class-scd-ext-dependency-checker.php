@@ -107,7 +107,7 @@ class Scd_Ext_Dependency_Checker {
 		}
 
 		// translators: %1$s is version of PHP that SCD requires; %2$s is the version of PHP WordPress is running on.
-		$message = sprintf( __( '<strong>Sensei Content Drip</strong> requires PHP version %1$s but you are running %2$s.', 'sensei-content-drop' ), self::MINIMUM_PHP_VERSION, phpversion() );
+		$message = sprintf( __( '<strong>Sensei Content Drip</strong> requires PHP version %1$s but you are running %2$s.', 'sensei-content-drip' ), self::MINIMUM_PHP_VERSION, phpversion() );
 		echo '<div class="error"><p>';
 		echo wp_kses( $message, array( 'strong' => array() ) );
 		$php_update_url = 'https://wordpress.org/support/update-php/';
@@ -138,7 +138,7 @@ class Scd_Ext_Dependency_Checker {
 		}
 
 		// translators: %1$s is the minimum version number of Sensei that is required.
-		$message = sprintf( __( '<strong>Sensei Content Drip</strong> requires the plugin <strong>Sensei</strong> (minimum version: <strong>%1$s</strong>) to be installed and activated.', 'sensei-content-drop' ), self::MINIMUM_SENSEI_VERSION );
+		$message = sprintf( __( '<strong>Sensei Content Drip</strong> requires the plugin <strong>Sensei</strong> (minimum version: <strong>%1$s</strong>) to be installed and activated.', 'sensei-content-drip' ), self::MINIMUM_SENSEI_VERSION );
 		echo '<div class="error"><p>';
 		echo wp_kses( $message, array( 'strong' => array() ) );
 		echo '</p></div>';
