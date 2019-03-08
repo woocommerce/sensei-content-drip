@@ -353,4 +353,22 @@ class Sensei_Content_Drip {
 		 */
 		return esc_html( apply_filters( 'scd_drip_message_date_format' , $date_format ) );
 	}
+
+	/**
+	 * Load a template from the `templates` directory. This function outputs the
+	 * rendered HTML from the template.
+	 *
+	 * The template may be overridden by the theme by putting a file with the
+	 * same name in the `sensei-content-drip` directory of the theme root.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $name The template file name.
+	 * @param array  $args The arguments to pass to the template file.
+	 */
+	public function load_template( $name, $args = array() ) {
+		$default_path = realpath( $this->dir . '/templates' ) . '/';
+		$theme_path   = 'sensei-content-drip/';
+		Sensei_Templates::get_template( $name, $args, $theme_path, $default_path );
+	}
 }
