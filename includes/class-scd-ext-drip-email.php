@@ -282,7 +282,7 @@ class Scd_Ext_Drip_Email {
 	}
 
 	/**
-	 *Go through all lesson and send and email for each user
+	 * Go through all lesson and send and email for each user
 	 *
 	 * @param  string $user_id
 	 * @param  string $lessons
@@ -317,7 +317,6 @@ class Scd_Ext_Drip_Email {
 		$wrap_header = $email_wrappers['wrap_header'];
 		$wrap_footer = $email_wrappers['wrap_footer'];
 
-		// Setup the  the message content
 		/**
 		 * Email user greeting filter.
 		 *
@@ -326,72 +325,91 @@ class Scd_Ext_Drip_Email {
 		 * @param string $email_greeting Defaults to "Good Day $first_name"
 		 * @param int $user_id
 		 */
-		$email_body_text = Sensei_Content_Drip()->utils->check_for_translation(
+		$email_greeting = apply_filters( 'scd_email_greeting', __( 'Good Day', 'sensei-content-drip' ) . ' ' . $first_name );
+
+		// Get email body text.
+		$email_body = Sensei_Content_Drip()->utils->check_for_translation(
 			'The following lessons will become available today:',
 			'scd_email_body_notice_html'
 		);
 
-		$email_greeting     = sprintf( '<p>%s</p>', esc_html( apply_filters( 'scd_email_greeting', __( 'Good Day', 'sensei-content-drip' ) . ' ' . $first_name ) ) );
-		$email_body_notice  = '<p>' . esc_html( $email_body_text ) . '</p>';
-		$email_body_lessons = '';
-
-		// Get the footer from the settings and replace the shortcode [home_url] with the actual site url
-		$email_footer_text = Sensei_Content_Drip()->utils->check_for_translation(
+		// Get email footer text.
+		$footer_text = Sensei_Content_Drip()->utils->check_for_translation(
 			'Visit the online course today to start taking the lessons: [home_url]',
-			'scd_email_footer_html' );
+			'scd_email_footer_html'
+		);
+		$email_footer = str_ireplace(
+			'[home_url]' ,
+			'<a href="' . esc_url( home_url() ) . '" >' . esc_url( home_url() ) . '</a>' ,
+			esc_html( $footer_text )
+		);
 
-		$email_footer = '<p>' . str_ireplace( '[home_url]'  , '<a href="' . esc_attr( home_url() ) . '" >' . esc_html( home_url() ) . '</a>' , esc_html( $email_footer_text ) ) . '</p>';
+		// Get grouped and ordered lesson data.
+		$courses_and_lessons = $this->get_ordered_courses_and_lessons( $lessons );
 
-		// Loop through each lesson to get its title and relative url
-		$email_body_lessons .= '<p><ul>';
+		// Render the email template.
+		ob_start();
+		echo $wrap_header;
+		Sensei_Content_Drip()->load_template(
+			'single-email-drip-notification.php',
+			array(
+				'email_greeting'      => $email_greeting,
+				'email_body'          => $email_body,
+				'email_footer'        => $email_footer,
+				'courses_and_lessons' => $courses_and_lessons,
+			)
+		);
+		echo $wrap_footer;
+		$formatted_email_html = ob_get_clean();
 
-		// Group lessons by course and order them according their order within the course
+		// Send email.
+		$woothemes_sensei->emails->send( $user_email, $email_subject, $formatted_email_html );
+	}
+
+	/**
+	 * Get lesson data for each lesson grouped by course ID and ordered based on
+	 * the course ordering.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $lessons The Lesson ID's for the lessons that are dripping today.
+	 * @return array
+	 */
+	private function get_ordered_courses_and_lessons( $lessons ) {
 		$courses_and_lessons = array();
+
+		// Group lesson data by course ID.
 		foreach ( $lessons as $lesson_id ) {
-			// Get the post type object for this post id
+			// Get the post type object for this post id.
 			$lesson    = get_post( $lesson_id );
 			$course_id = absint( Sensei()->lesson->get_course_id( $lesson_id ) );
 
-			// Setup the lesson line item
-			$lesson_title     = $lesson->post_title;
-			$lesson_url       = get_permalink( $lesson_id );
-			$lesson_link      = '<a href="' . esc_attr( $lesson_url ) . '">' . esc_html( $lesson_title ) . '</a>';
-			$lesson_line_item = '<li>' . $lesson_link . '</li>';
+			// Setup the lesson data.
+			$lesson_data          = array();
+			$lesson_data['title'] = $lesson->post_title;
+			$lesson_data['url']   = get_permalink( $lesson_id );
 
-			// Add it to the list that will be ordered later
+			// Add it to the list that will be ordered later.
 			if ( isset( $courses_and_lessons[ $course_id ] ) && is_array( $courses_and_lessons[ $course_id ] ) ) {
-				$courses_and_lessons[ $course_id ][ $lesson_id ] = $lesson_line_item;
+				$courses_and_lessons[ $course_id ][ $lesson_id ] = $lesson_data;
 			} else {
-				$courses_and_lessons[ $course_id ] = array( $lesson_id => $lesson_line_item );
+				$courses_and_lessons[ $course_id ] = array( $lesson_id => $lesson_data );
 			}
 		}
 
-		// Loop through and ordered list of lessons for each course
-		foreach ( $courses_and_lessons as $course_id => $lesson_line_items ) {
-
+		// Sort list of lessons for each course.
+		foreach ( $courses_and_lessons as $course_id => $lesson_data_items ) {
 			// Set the current order as the default just in case the course lesson order is not set
-			$ordered_lesson_line_items = $lesson_line_items;
-			$course_lesson_order       = get_post_meta( $course_id, '_lesson_order', true );
+			$ordered_lesson_data = $lesson_data_items;
+			$course_lesson_order = get_post_meta( $course_id, '_lesson_order', true );
 
 			if ( ! empty( $course_lesson_order ) ) {
-				$ordered_lesson_line_items         = $this->order_course_lesson_items( $lesson_line_items , $course_lesson_order );
-				$courses_and_lessons[ $course_id ] = $ordered_lesson_line_items;
-			}
-
-			foreach ( $ordered_lesson_line_items as $lesson_id => $lesson_line_item ) {
-				// Add the li HTML element to the email body in between the ul element
-				$email_body_lessons .= $lesson_line_item;
+				$ordered_lesson_data               = $this->order_course_lesson_items( $lesson_data_items, $course_lesson_order );
+				$courses_and_lessons[ $course_id ] = $ordered_lesson_data;
 			}
 		}
 
-		$email_body_lessons .= '</ul></p>';
-
-		// Assemble the message content
-		// $wrap_header and $wrap_footer is extracted above from $email_wrappers
-		$formatted_email_html = $wrap_header . $email_greeting . $email_body_notice . $email_body_lessons . $email_footer .  $wrap_footer ;
-
-		// Send
-		$woothemes_sensei->emails->send( $user_email, $email_subject, $formatted_email_html );
+		return $courses_and_lessons;
 	}
 
 	/**
