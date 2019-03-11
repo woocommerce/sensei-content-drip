@@ -9,6 +9,7 @@
  * Requires at least: 3.9
  * Tested up to: 4.7.2
  * Domain path: /lang/
+ * Woo: 543363:8ee2cdf89f55727f57733133ccbbfbb0
  *
  * @package WordPress
  * @author Automattic
@@ -24,18 +25,6 @@ require_once __DIR__ . '/includes/class-scd-ext-dependency-checker.php';
 if ( ! Scd_Ext_Dependency_Checker::are_dependencies_met() ) {
 	return;
 }
-
-/**
- * Required functions
- */
-if ( ! function_exists( 'woothemes_queue_update' ) ) {
-	require_once __DIR__ . '/woo-includes/woo-functions.php';
-}
-
-/**
- * Plugin updates
- */
-woothemes_queue_update( plugin_basename( __FILE__ ), '8ee2cdf89f55727f57733133ccbbfbb0', '543363' );
 
 require_once __DIR__ . '/includes/class-sensei-content-drip.php';
 
