@@ -21,7 +21,7 @@
 			<?php foreach ( $lesson_data_items as $lesson_id => $lesson_data ) { ?>
 
 			<li>
-				<a href="<?php echo esc_attr( $lesson_data['url'] ); ?>">
+				<a href="<?php echo esc_url( $lesson_data['url'] ); ?>">
 					<?php echo esc_html( $lesson_data['title'] ); ?>
 				</a>
 			</li>

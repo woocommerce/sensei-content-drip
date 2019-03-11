@@ -340,7 +340,7 @@ class Scd_Ext_Drip_Email {
 		);
 		$email_footer = str_ireplace(
 			'[home_url]' ,
-			'<a href="' . esc_attr( home_url() ) . '" >' . esc_html( home_url() ) . '</a>' ,
+			'<a href="' . esc_url( home_url() ) . '" >' . esc_url( home_url() ) . '</a>' ,
 			esc_html( $footer_text )
 		);
 
