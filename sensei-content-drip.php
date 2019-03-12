@@ -20,13 +20,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/includes/class-scd-ext-dependency-checker.php';
+require_once dirname( __FILE__ ) . '/includes/class-scd-ext-dependency-checker.php';
 
 if ( ! Scd_Ext_Dependency_Checker::are_dependencies_met() ) {
 	return;
 }
 
-require_once __DIR__ . '/includes/class-sensei-content-drip.php';
+require_once dirname( __FILE__ ) . '/includes/class-sensei-content-drip.php';
 
 /**
  * Returns the main instance of Sensei_Content_Drip to prevent the need to use globals.
