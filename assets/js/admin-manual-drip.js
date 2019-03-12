@@ -121,11 +121,11 @@
 			if ( ! _.isUndefined( this.manualDripState ) && ! _.isEmpty( this.selectedLessonID + '' ) ) {
 				// Change button value to remove access and change button class
 				if ( this.manualDripState ) {
-					this.button.attr( 'value', 'Remove Access' );
+					this.button.attr( 'value', scdManualDrip.removeAccess );
 					this.button.removeClass( 'button-primary' );
 					this.button.addClass( 'button-secondary' );
 				} else {
-					this.button.attr( 'value', 'Give Access' );
+					this.button.attr( 'value', scdManualDrip.giveAccess );
 					this.button.removeClass( 'button-secondary' );
 					this.button.addClass( 'button-primary' );
 				}

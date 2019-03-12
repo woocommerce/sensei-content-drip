@@ -180,7 +180,7 @@ class Scd_Ext_Manual_Drip {
 			'action'     => 'update'
 		);
 
-		if ( 'Give Access' === $_POST[ 'scd_log_learner_lesson_manual_drip_submit' ] ) {
+		if ( __( 'Give Access', 'sensei-content-drip' ) === $_POST['scd_log_learner_lesson_manual_drip_submit'] ) {
 			// Log the users activity on the lesson drip
 			$activity_updated = Sensei_Utils::sensei_log_activity( $args );
 		} else {
@@ -199,7 +199,9 @@ class Scd_Ext_Manual_Drip {
 	public function localize_data() {
 		// Setup the data to be localized
 		$data =  array(
-			'nonce' => wp_create_nonce( 'get-manual-drip-status' ),
+			'nonce'        => wp_create_nonce( 'get-manual-drip-status' ),
+			'removeAccess' => __( 'Remove Access', 'sensei-content-drip' ),
+			'giveAccess'   => __( 'Give Access', 'sensei-content-drip' ),
 		);
 
 		wp_localize_script( $this->_token . '-admin-manual-drip-script', 'scdManualDrip', $data );
