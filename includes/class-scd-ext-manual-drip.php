@@ -36,12 +36,30 @@ class Scd_Ext_Manual_Drip {
 	private $_token;
 
 	/**
+	 * HTML string value to indicate the learner should be given access.
+	 *
+	 * @access private
+	 * @var    string
+	 */
+	private $give_access_value;
+
+	/**
+	 * HTML string value to indicate the learner's access should be removed.
+	 *
+	 * @access private
+	 * @var    string
+	 */
+	private $remove_access_value;
+
+	/**
 	 * Constructor
 	 *
 	 * @param string $scd_token
 	 */
 	public function __construct( $scd_token = 'sensei_content_drip' ) {
-		$this->_token = $scd_token;
+		$this->_token              = $scd_token;
+		$this->give_access_value   = 'give-access';
+		$this->remove_access_value = 'remove-access';
 
 		add_filter( 'scd_is_drip_active', array( $this, 'manipulate_drip_status' ), 1 ,2 );
 
@@ -120,7 +138,11 @@ class Scd_Ext_Manual_Drip {
 							</select>
 							<img src="<?php echo esc_url( admin_url() . 'images/wpspin_light.gif' ); ?>" class="loading hidden" style="margin-left: 0.5em;" />
 						</p>
-						<p><?php submit_button( esc_html__( 'Give Access', 'sensei-content-drip' ), 'primary', 'scd_log_learner_lesson_manual_drip_submit', false, array() ); ?></p>
+						<p>
+							<button type="submit" name="scd_log_learner_lesson_manual_drip_submit" id="scd_log_learner_lesson_manual_drip_submit" class="button button-primary" value="<?php echo esc_attr( $this->give_access_value ); ?>">
+								<?php echo esc_html__( 'Give Access', 'sensei-content-drip' ); ?>
+							</button>
+						</p>
 						<?php echo wp_nonce_field( 'scd_log_learner_lesson_manual_drip', 'scd_learner_lesson_manual_drip' ); ?>
 					</form>
 				</div>
@@ -180,7 +202,7 @@ class Scd_Ext_Manual_Drip {
 			'action'     => 'update'
 		);
 
-		if ( 'Give Access' === $_POST[ 'scd_log_learner_lesson_manual_drip_submit' ] ) {
+		if ( $this->give_access_value === $_POST['scd_log_learner_lesson_manual_drip_submit'] ) {
 			// Log the users activity on the lesson drip
 			$activity_updated = Sensei_Utils::sensei_log_activity( $args );
 		} else {
@@ -198,8 +220,12 @@ class Scd_Ext_Manual_Drip {
 	 */
 	public function localize_data() {
 		// Setup the data to be localized
-		$data =  array(
-			'nonce' => wp_create_nonce( 'get-manual-drip-status' ),
+		$data = array(
+			'nonce'             => wp_create_nonce( 'get-manual-drip-status' ),
+			'removeAccessText'  => __( 'Remove Access', 'sensei-content-drip' ),
+			'giveAccessText'    => __( 'Give Access', 'sensei-content-drip' ),
+			'removeAccessValue' => $this->remove_access_value,
+			'giveAccessValue'   => $this->give_access_value,
 		);
 
 		wp_localize_script( $this->_token . '-admin-manual-drip-script', 'scdManualDrip', $data );
