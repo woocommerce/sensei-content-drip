@@ -13,10 +13,11 @@ const paths = {
 	css: [ 'assets/css/*.css' ],
 	buildDir: 'build/sensei-content-drip',
 	packageZip: 'build/sensei-content-drip.zip',
+	docs: [ 'changelog.txt', 'README.md', 'LICENSE' ],
 };
 
 gulp.task( 'clean', function() {
-	del( [ 'assets/js/*.min.js', 'assets/css/*.min.css', 'build' ] );
+	del.sync( [ 'assets/js/*.min.js', 'assets/css/*.min.css', 'build' ] );
 });
 
 gulp.task( 'default', [ 'clean' ] , function () {
@@ -24,9 +25,28 @@ gulp.task( 'default', [ 'clean' ] , function () {
 	gulp.run( 'javascript' );
 });
 
-gulp.task( 'copy', function() {
-	return gulp.src( [ '**/*.php', 'assets', '!node_modules/**', '!build/**', '!vendor/**' ] )
+gulp.task( 'copy-php', function() {
+	return gulp.src( [ '**/*.php', '!node_modules/**', '!build/**', '!vendor/**', '!tests/**' ] )
 		.pipe( gulp.dest( paths.buildDir ) );
+} );
+
+gulp.task( 'copy-assets', function() {
+	return gulp.src( [ 'assets/**/*' ] )
+		.pipe( gulp.dest( paths.buildDir + '/assets' ) );
+} );
+
+gulp.task( 'copy-docs', function() {
+	return gulp.src( paths.docs )
+		.pipe( gulp.dest( paths.buildDir ) );
+} );
+
+gulp.task( 'copy-lang', function() {
+	return gulp.src( [ 'lang/*.*' ] )
+		.pipe( gulp.dest( paths.buildDir + '/lang' ) );
+} );
+
+gulp.task( 'copy', function( cb ) {
+	runSequence( [ 'copy-php', 'copy-assets', 'copy-docs', 'copy-lang' ], cb );
 } );
 
 gulp.task( 'css', function () {
