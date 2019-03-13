@@ -28,10 +28,10 @@ msgid "(opens in a new tab)"
 msgstr ""
 
 #: includes/class-scd-ext-dependency-checker.php:141
-msgid "<strong>Sensei Content Drip</strong> requires the plugin <strong>Sensei</strong> (minimum version: <strong>%1$s</strong>) to be installed and activated."
+msgid "<strong>Sensei Content Drip</strong> requires that the plugin <strong>Sensei</strong> (minimum version: <strong>%1$s</strong>) is installed and activated."
 msgstr ""
 
-#: includes/class-scd-ext-drip-email.php:266, includes/class-scd-ext-manual-drip.php:340, includes/class-scd-ext-settings.php:61
+#: includes/class-scd-ext-drip-email.php:266, includes/class-scd-ext-manual-drip.php:364, includes/class-scd-ext-settings.php:61
 msgid "Content Drip"
 msgstr ""
 
@@ -133,39 +133,39 @@ msgctxt "type and message"
 msgid "Sensei Content Drip %s: %s"
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:81
+#: includes/class-scd-ext-manual-drip.php:99
 msgid "Manual Content Drip"
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:85
+#: includes/class-scd-ext-manual-drip.php:103
 msgid "Use this to give a learner access to any lesson (or remove existing access), overriding the content drip schedule."
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:89
+#: includes/class-scd-ext-manual-drip.php:107
 msgid "Select learner"
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:109
+#: includes/class-scd-ext-manual-drip.php:127
 msgid "Select a Lesson"
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:123, includes/class-scd-ext-manual-drip.php:183, includes/class-scd-ext-manual-drip.php:204
+#: includes/class-scd-ext-manual-drip.php:143, includes/class-scd-ext-manual-drip.php:226
 msgid "Give Access"
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:203
+#: includes/class-scd-ext-manual-drip.php:225
 msgid "Remove Access"
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:219
+#: includes/class-scd-ext-manual-drip.php:243
 msgid "Manual Drip Status Saved"
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:393
+#: includes/class-scd-ext-manual-drip.php:417
 msgid "The userID( %d ) is invalid, there is no user that matches this ID "
 msgstr ""
 
-#: includes/class-scd-ext-manual-drip.php:408
+#: includes/class-scd-ext-manual-drip.php:432
 msgid "The lessonId( %d ) is invalid, there is no lesson that matches this ID "
 msgstr ""
 
