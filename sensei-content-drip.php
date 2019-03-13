@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Sensei Content Drip
- * Version: 1.0.9
+ * Version: 2.0.0
  * Plugin URI: https://woocommerce.com/products/sensei-content-drip/
  * Description:  Control access to Sensei lessons by scheduling them to become available after a determined time.
  * Author: Automattic
@@ -35,7 +35,7 @@ require_once dirname( __FILE__ ) . '/includes/class-sensei-content-drip.php';
  * @return object Sensei_Content_Drip
  */
 function Sensei_Content_Drip() {
-	return Sensei_Content_Drip::instance( __FILE__, '1.0.9' );
+	return Sensei_Content_Drip::instance( __FILE__, '2.0.0' );
 }
 
 // load this plugin only after sensei becomes available globaly
