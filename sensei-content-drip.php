@@ -20,26 +20,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+define( 'SENSEI_CONTENT_DRIP_VERSION', '2.0.0' );
+define( 'SENSEI_CONTENT_DRIP_PLUGIN_FILE', __FILE__ );
+define( 'SENSEI_CONTENT_DRIP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+
 require_once dirname( __FILE__ ) . '/includes/class-scd-ext-dependency-checker.php';
 
-if ( ! Scd_Ext_Dependency_Checker::are_dependencies_met() ) {
+if ( ! Scd_Ext_Dependency_Checker::are_system_dependencies_met() ) {
 	return;
 }
 
 require_once dirname( __FILE__ ) . '/includes/class-sensei-content-drip.php';
 
-/**
- * Returns the main instance of Sensei_Content_Drip to prevent the need to use globals.
- *
- * @since  1.0.0
- * @return object Sensei_Content_Drip
- */
-function Sensei_Content_Drip() {
-	return Sensei_Content_Drip::instance( __FILE__, '2.0.0' );
-}
 
-// load this plugin only after sensei becomes available globaly
-add_action( 'plugins_loaded', 'Sensei_Content_Drip' ) ;
+// Load the plugin after all the other plugins have loaded.
+add_action( 'plugins_loaded', array( 'Sensei_Content_Drip', 'init' ), 5 ) ;
 
 /**
  * Plugin Activation
