@@ -113,6 +113,8 @@ class Sensei_Content_Drip {
 		$this->script_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		register_activation_hook( SENSEI_CONTENT_DRIP_PLUGIN_FILE, array( $this, 'install' ) );
+		register_deactivation_hook( SENSEI_CONTENT_DRIP_PLUGIN_FILE, array( $this, 'on_deactivation' ) );
+
 	}
 
 	/**
@@ -274,10 +276,34 @@ class Sensei_Content_Drip {
 	 * Installation. Runs on activation.
 	 *
 	 * @since  1.0.0
+	 * @access private
 	 * @return void
 	 */
 	public function install() {
 		$this->_log_version_number();
+
+		$hook = 'woo_scd_daily_cron_hook';
+
+		if ( false !== wp_next_scheduled( $hook ) ) {
+			wp_clear_scheduled_hook( $hook );
+		}
+
+		$today_start         = strtotime( date_i18n( 'Y-m-d' ) );
+		$tomorrow_start      = $today_start + 24 * HOUR_IN_SECONDS;
+		$scheduled_time      = $tomorrow_start + 30 * MINUTE_IN_SECONDS;
+		$scheduled_time_unix = $scheduled_time - get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+		wp_schedule_event( $scheduled_time_unix, 'daily', $hook );
+	}
+
+	/**
+	 * Runs on deactivation.
+	 *
+	 * @since 2.0.0
+	 * @access private
+	 */
+	public function on_deactivation() {
+		$hook = 'woo_scd_daily_cron_hook';
+		wp_clear_scheduled_hook( $hook );
 	}
 
 	/**
