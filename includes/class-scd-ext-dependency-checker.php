@@ -50,6 +50,13 @@ class Scd_Ext_Dependency_Checker {
 	}
 
 	/**
+	 * Deactivate self.
+	 */
+	public static function deactivate_self() {
+		deactivate_plugins( SENSEI_CONTENT_DRIP_PLUGIN_BASENAME );
+	}
+
+	/**
 	 * Checks for our Sensei dependency.
 	 *
 	 * @return bool
