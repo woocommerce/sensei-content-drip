@@ -7,7 +7,8 @@
  * Author: Automattic
  * Author URI: https://automattic.com/
  * Requires at least: 3.9
- * Tested up to: 4.7.2
+ * Tested up to: 5.1
+ * Requires PHP: 5.6
  * Domain path: /lang/
  * Woo: 543363:8ee2cdf89f55727f57733133ccbbfbb0
  *
