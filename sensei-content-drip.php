@@ -32,7 +32,6 @@ if ( ! Scd_Ext_Dependency_Checker::are_system_dependencies_met() ) {
 
 require_once dirname( __FILE__ ) . '/includes/class-sensei-content-drip.php';
 
-
 // Load the plugin after all the other plugins have loaded.
 add_action( 'plugins_loaded', array( 'Sensei_Content_Drip', 'init' ), 5 ) ;
 
