@@ -20,6 +20,7 @@ class Scd_Ext_Dependency_Checker {
 	public static function are_system_dependencies_met() {
 		$are_met = true;
 		if ( ! self::check_php() ) {
+			add_action( 'admin_init', array( __CLASS__, 'deactivate_self' ) );
 			add_action( 'admin_notices', array( __CLASS__, 'add_php_notice' ) );
 			$are_met = false;
 		}

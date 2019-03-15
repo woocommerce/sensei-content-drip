@@ -28,7 +28,6 @@ define( 'SENSEI_CONTENT_DRIP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 require_once dirname( __FILE__ ) . '/includes/class-scd-ext-dependency-checker.php';
 
 if ( ! Scd_Ext_Dependency_Checker::are_system_dependencies_met() ) {
-	add_action( 'admin_init', array( 'Scd_Ext_Dependency_Checker', 'deactivate_self' ) );
 	return;
 }
 
