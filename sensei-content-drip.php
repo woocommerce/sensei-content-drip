@@ -37,3 +37,4 @@ require_once dirname( __FILE__ ) . '/includes/class-sensei-content-drip.php';
 // Load the plugin after all the other plugins have loaded.
 add_action( 'plugins_loaded', array( 'Sensei_Content_Drip', 'init' ), 5 ) ;
 
+Sensei_Content_Drip::instance();
