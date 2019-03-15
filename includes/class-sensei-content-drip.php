@@ -112,9 +112,8 @@ class Sensei_Content_Drip {
 		$this->assets_url    = esc_url( trailingslashit( plugins_url( '/assets/', SENSEI_CONTENT_DRIP_PLUGIN_FILE ) ) );
 		$this->script_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		register_activation_hook( SENSEI_CONTENT_DRIP_PLUGIN_FILE, array( $this, 'install' ) );
-		register_deactivation_hook( SENSEI_CONTENT_DRIP_PLUGIN_FILE, array( $this, 'on_deactivation' ) );
-
+		register_activation_hook( SENSEI_CONTENT_DRIP_PLUGIN_FILE, array( $this, 'activate' ) );
+		register_deactivation_hook( SENSEI_CONTENT_DRIP_PLUGIN_FILE, array( $this, 'deactivate' ) );
 	}
 
 	/**
@@ -279,7 +278,7 @@ class Sensei_Content_Drip {
 	 * @access private
 	 * @return void
 	 */
-	public function install() {
+	public function activate() {
 		$this->_log_version_number();
 
 		$hook = 'woo_scd_daily_cron_hook';
@@ -301,7 +300,7 @@ class Sensei_Content_Drip {
 	 * @since 2.0.0
 	 * @access private
 	 */
-	public function on_deactivation() {
+	public function deactivate() {
 		$hook = 'woo_scd_daily_cron_hook';
 		wp_clear_scheduled_hook( $hook );
 	}
