@@ -436,11 +436,10 @@ class Scd_Ext_Drip_Email {
 
 		/**
 		 * Swap keys and values so we can use the order given
-		 * as the index for the values that should be returned
-		 * fill t
+		 * as the index for the values that should be returned.
 		 */
 		$ordered_lessons = array_flip( $ordered_lessons );
-		$ordered_lessons = array_map( create_function( '$n', 'return false;' ), $ordered_lessons );
+		$ordered_lessons = array_map( '__return_false', $ordered_lessons );
 
 		foreach ( $lessons as $lesson_id => $lesson_line_item ) {
 			$ordered_lessons[ $lesson_id ] = $lesson_line_item;
