@@ -61,15 +61,6 @@ class Sensei_Content_Drip {
 	private $_token;
 
 	/**
-	 * The main plugin file.
-	 *
-	 * @var    string
-	 * @access private
-	 * @since  1.0.0
-	 */
-	private $file;
-
-	/**
 	 * The main plugin directory.
 	 *
 	 * @var    string
@@ -113,30 +104,51 @@ class Sensei_Content_Drip {
 	 * @param  string $file
 	 * @param  string $version
 	 */
-	public function __construct( $file, $version = '1.0.1' ) {
-		$this->_version      = $version;
+	public function __construct() {
+		$this->_version      = SENSEI_CONTENT_DRIP_VERSION;
 		$this->_token        = 'sensei_content_drip';
-		$this->file          = $file;
-		$this->dir           = dirname( $this->file );
+		$this->dir           = dirname( SENSEI_CONTENT_DRIP_PLUGIN_FILE );
 		$this->assets_dir    = trailingslashit( $this->dir ) . 'assets';
-		$this->assets_url    = esc_url( trailingslashit( plugins_url( '/assets/', $this->file ) ) );
+		$this->assets_url    = esc_url( trailingslashit( plugins_url( '/assets/', SENSEI_CONTENT_DRIP_PLUGIN_FILE ) ) );
 		$this->script_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-		register_activation_hook( $this->file, array( $this, 'install' ) );
+		register_activation_hook( SENSEI_CONTENT_DRIP_PLUGIN_FILE, array( $this, 'activate' ) );
+		register_deactivation_hook( SENSEI_CONTENT_DRIP_PLUGIN_FILE, array( $this, 'deactivate' ) );
+	}
+
+	/**
+	 * Set up all hooks and filters.
+	 */
+	public static function init() {
+		if ( ! Scd_Ext_Dependency_Checker::are_plugin_dependencies_met() ) {
+			return;
+		}
+
+		/**
+		 * Returns the main instance of Sensei_Content_Drip to prevent the need to use globals.
+		 *
+		 * @since  1.0.0
+		 * @return object Sensei_Content_Drip
+		 */
+		function Sensei_Content_Drip() {
+			return Sensei_Content_Drip::instance();
+		}
+
+		$instance = Sensei_Content_Drip();
 
 		// Load frontend JS & CSS
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 10 );
+		add_action( 'wp_enqueue_scripts', array( $instance, 'enqueue_styles' ), 10 );
 
 		// Load admin JS & CSS
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_styles' ), 10, 1 );
+		add_action( 'admin_enqueue_scripts', array( $instance, 'admin_enqueue_scripts' ), 10, 1 );
+		add_action( 'admin_enqueue_scripts', array( $instance, 'admin_enqueue_styles' ), 10, 1 );
 
 		// Handle localisation
-		$this->load_plugin_textdomain ();
-		add_action( 'init', array( $this, 'load_localisation' ), 0 );
+		$instance->load_plugin_textdomain();
+		add_action( 'init', array( $instance, 'load_localisation' ), 0 );
 
 		// Load and initialize classes
-		add_action( 'init', array( $this, 'initialize_classes' ), 0 );
+		add_action( 'init', array( $instance, 'initialize_classes' ), 0 );
 	}
 
 	/**
@@ -201,7 +213,7 @@ class Sensei_Content_Drip {
 	 * @return void
 	 */
 	public function load_localisation() {
-		load_plugin_textdomain( 'sensei-content-drip', false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
+		load_plugin_textdomain( 'sensei-content-drip', false, dirname( SENSEI_CONTENT_DRIP_PLUGIN_BASENAME ) . '/lang/' );
 	}
 
 	/**
@@ -220,7 +232,7 @@ class Sensei_Content_Drip {
 		$locale = apply_filters( 'plugin_locale', get_locale(), $domain );
 
 		load_textdomain( $domain, WP_LANG_DIR . '/' . $domain . '/' . $domain . '-' . $locale . '.mo' );
-		load_plugin_textdomain( $domain, false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
+		load_plugin_textdomain( $domain, false, dirname( SENSEI_CONTENT_DRIP_PLUGIN_BASENAME ) . '/lang/' );
 	}
 
 	/**
@@ -233,9 +245,9 @@ class Sensei_Content_Drip {
 	 * @see    Sensei_Content_Drip()
 	 * @return Sensei_Content_Drip
 	 */
-	public static function instance( $file, $version = '1.0.1' ) {
+	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $file, $version );
+			self::$_instance = new self();
 		}
 
 		return self::$_instance;
@@ -263,10 +275,34 @@ class Sensei_Content_Drip {
 	 * Installation. Runs on activation.
 	 *
 	 * @since  1.0.0
+	 * @access private
 	 * @return void
 	 */
-	public function install() {
+	public function activate() {
 		$this->_log_version_number();
+
+		$hook = 'woo_scd_daily_cron_hook';
+
+		if ( false !== wp_next_scheduled( $hook ) ) {
+			wp_clear_scheduled_hook( $hook );
+		}
+
+		$today_start         = strtotime( date_i18n( 'Y-m-d' ) );
+		$tomorrow_start      = $today_start + 24 * HOUR_IN_SECONDS;
+		$scheduled_time      = $tomorrow_start + 30 * MINUTE_IN_SECONDS;
+		$scheduled_time_unix = $scheduled_time - get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+		wp_schedule_event( $scheduled_time_unix, 'daily', $hook );
+	}
+
+	/**
+	 * Runs on deactivation.
+	 *
+	 * @since 2.0.0
+	 * @access private
+	 */
+	public function deactivate() {
+		$hook = 'woo_scd_daily_cron_hook';
+		wp_clear_scheduled_hook( $hook );
 	}
 
 	/**
