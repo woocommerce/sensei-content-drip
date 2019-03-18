@@ -1,10 +1,10 @@
 *** Sensei Content Drip Changelog ***
 
-2019.03.13 - version 2.0.0
+2019.03.18 - version 2.0.0
 * New: Extract email template to a customizable file
 * New: Bump minimum required PHP version to 5.6
 * New: Add Russian translations
-* New: Add dependency check for minimum Sensei and PHP versions
+* New: Add dependency check for minimum Sensei (1.11.0) and PHP (5.6) versions
 * New: Add support for WP 4.8 multisite capabilities
 * Tweak: Use date format from WordPress settings for the displayed drip date
 * Tweak: Schedule emails to be sent at 00:30 in the server's timezone
@@ -12,6 +12,7 @@
 * Fix: PHP notice when drip emails are sent
 * Fix: PHP notice when test emails are sent
 * Fix: HTML escaping for non-string values
+* Fix: Replace call to deprecated `create_function` function
 
 2018.05.10 - version 1.0.9
 * Fix access issue for undripped content
