@@ -15,19 +15,19 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: includes/class-scd-ext-dependency-checker.php:110
+#: includes/class-scd-ext-dependency-checker.php:91
 msgid "<strong>Sensei Content Drip</strong> requires PHP version %1$s but you are running %2$s."
 msgstr ""
 
-#: includes/class-scd-ext-dependency-checker.php:120
+#: includes/class-scd-ext-dependency-checker.php:101
 msgid "Learn more about updating PHP"
 msgstr ""
 
-#: includes/class-scd-ext-dependency-checker.php:122
+#: includes/class-scd-ext-dependency-checker.php:103
 msgid "(opens in a new tab)"
 msgstr ""
 
-#: includes/class-scd-ext-dependency-checker.php:141
+#: includes/class-scd-ext-dependency-checker.php:122
 msgid "<strong>Sensei Content Drip</strong> requires that the plugin <strong>Sensei</strong> (minimum version: <strong>%1$s</strong>) is installed and activated."
 msgstr ""
 
