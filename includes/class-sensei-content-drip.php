@@ -112,6 +112,8 @@ class Sensei_Content_Drip {
 		$this->assets_url    = esc_url( trailingslashit( plugins_url( '/assets/', SENSEI_CONTENT_DRIP_PLUGIN_FILE ) ) );
 		$this->script_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
+		$this->load_plugin_textdomain();
+
 		register_activation_hook( SENSEI_CONTENT_DRIP_PLUGIN_FILE, array( $this, 'activate' ) );
 		register_deactivation_hook( SENSEI_CONTENT_DRIP_PLUGIN_FILE, array( $this, 'deactivate' ) );
 	}
@@ -120,6 +122,9 @@ class Sensei_Content_Drip {
 	 * Set up all hooks and filters.
 	 */
 	public static function init() {
+		$instance = self::instance();
+		add_action( 'init', array( $instance, 'load_localisation' ), 0 );
+
 		if ( ! Scd_Ext_Dependency_Checker::are_plugin_dependencies_met() ) {
 			return;
 		}
@@ -134,18 +139,12 @@ class Sensei_Content_Drip {
 			return Sensei_Content_Drip::instance();
 		}
 
-		$instance = Sensei_Content_Drip();
-
 		// Load frontend JS & CSS
 		add_action( 'wp_enqueue_scripts', array( $instance, 'enqueue_styles' ), 10 );
 
 		// Load admin JS & CSS
 		add_action( 'admin_enqueue_scripts', array( $instance, 'admin_enqueue_scripts' ), 10, 1 );
 		add_action( 'admin_enqueue_scripts', array( $instance, 'admin_enqueue_styles' ), 10, 1 );
-
-		// Handle localisation
-		$instance->load_plugin_textdomain();
-		add_action( 'init', array( $instance, 'load_localisation' ), 0 );
 
 		// Load and initialize classes
 		add_action( 'init', array( $instance, 'initialize_classes' ), 0 );
