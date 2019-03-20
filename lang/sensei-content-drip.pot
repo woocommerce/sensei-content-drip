@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: includes/class-scd-ext-dependency-checker.php:91
-msgid "<strong>Sensei Content Drip</strong> requires PHP version %1$s but you are running %2$s."
+msgid "<strong>Sensei Content Drip</strong> requires a minimum PHP version of %1$s, but you are running %2$s."
 msgstr ""
 
 #: includes/class-scd-ext-dependency-checker.php:101
