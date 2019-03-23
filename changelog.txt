@@ -1,18 +1,20 @@
 *** Sensei Content Drip Changelog ***
 
-2019.03.18 - version 2.0.0
-* New: Extract email template to a customizable file
-* New: Bump minimum required PHP version to 5.6
-* New: Add Russian translations
-* New: Add dependency check for minimum Sensei (1.11.0) and PHP (5.6) versions
-* New: Add support for WP 4.8 multisite capabilities
-* Tweak: Use date format from WordPress settings for the displayed drip date
-* Tweak: Schedule emails to be sent at 00:30 in the server's timezone
-* Fix: i18n for "Remove Access" text
-* Fix: PHP notice when drip emails are sent
-* Fix: PHP notice when test emails are sent
-* Fix: HTML escaping for non-string values
-* Fix: Replace call to deprecated `create_function` function
+2019.03.25 - version 2.0.0
+* New: Add dependency check for minimum Sensei (1.11.0) and PHP (5.6) versions - #146, #151, #156
+* New: Extract drip email to a template file - #155
+* New: Add support for WP 4.8 multisite capabilities - #127
+* New: Update Russian translation (@AiratHalitov) - #141
+* Tweak: Use date format from WordPress settings for the displayed drip date - #150
+* Tweak: Schedule emails to be sent at 00:30 in the server's timezone - #149
+* Tweak: Check dependencies and perform the majority of plugin loading tasks after other plugins have loaded - #160
+* Tweak: Update plugin header - #143
+* Tweak: Use Woo header for plugin updates - #147
+* Fix: Enable translating "Give Access" and "Remove Access" button text - #157
+* Fix: Replace call to deprecated `create_function` function - #161
+* Fix: PHP notice when drip emails are sent - #153
+* Fix: PHP notice when test emails are sent - #132
+* Fix: HTML escaping non-string values - #148
 
 2018.05.10 - version 1.0.9
 * Fix access issue for undripped content
