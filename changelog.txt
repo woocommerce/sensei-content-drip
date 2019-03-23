@@ -1,7 +1,7 @@
 *** Sensei Content Drip Changelog ***
 
 2019.03.25 - version 2.0.0
-* New: Add dependency check for minimum Sensei (1.11.0) and PHP (5.6) versions - #146, #151, #156
+* New: Add dependency check for minimum Sensei (1.11.0) and PHP (5.6) versions - #146, #151, #156, #163
 * New: Extract drip email to a template file - #155
 * New: Add support for WP 4.8 multisite capabilities - #127
 * New: Update Russian translation (@AiratHalitov) - #141
