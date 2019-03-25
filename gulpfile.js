@@ -65,7 +65,7 @@ gulp.task( 'javascript', function () {
 });
 
 gulp.task( 'pot', function () {
-	return gulp.src( [ '**/**.php', '!node_modules/**'] )
+	return gulp.src( [ '**/**.php', '!node_modules/**', '!build/**' ] )
 		.pipe( sort() )
 		.pipe( wpPot( {
 			domain:    'sensei-content-drip',
