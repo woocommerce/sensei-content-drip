@@ -399,14 +399,27 @@ class Scd_Ext_Drip_Email {
 
 		// Sort list of lessons for each course.
 		foreach ( $courses_and_lessons as $course_id => $lesson_data_items ) {
-			// Set the current order as the default just in case the course lesson order is not set
-			$ordered_lesson_data = $lesson_data_items;
-			$course_lesson_order = get_post_meta( $course_id, '_lesson_order', true );
 
-			if ( ! empty( $course_lesson_order ) ) {
-				$ordered_lesson_data               = $this->order_course_lesson_items( $lesson_data_items, $course_lesson_order );
-				$courses_and_lessons[ $course_id ] = $ordered_lesson_data;
+			// Set the current order as the default just in case the course lesson order is not set.
+			$ordered_lesson_data = $lesson_data_items;
+
+			// First check if the lessons are ordered my module.
+			$course_module_order = get_post_meta( $course_id, '_module_order', true );
+
+			if ( ! empty( $course_module_order ) ) {
+
+				$ordered_lesson_data = $this->order_lessons_by_module( $lesson_data_items, $course_module_order );
+
+			} else {
+				// Secondly check if there is lesson order defined.
+				$course_lesson_order = get_post_meta( $course_id, '_lesson_order', true );
+
+				if ( ! empty( $course_lesson_order ) ) {
+					$ordered_lesson_data = $this->order_course_lesson_items( $lesson_data_items, $course_lesson_order );
+				}
 			}
+
+			$courses_and_lessons[ $course_id ] = $ordered_lesson_data;
 		}
 
 		return $courses_and_lessons;
@@ -416,14 +429,13 @@ class Scd_Ext_Drip_Email {
 	 * Order the lesson items according to courses and course order given.
 	 * This function will remove the lesson ids from the order that do not matched the lessons array.
 	 *
-	 *
 	 * @since 1.0.3
 	 *
-	 * @param array $lessons {
+	 * @param array  $lessons {
 	 *   type string $lesson_id => $lesson_line_item
-	 * }
+	 * }.
 	 *
-	 * @param string $course_order csv list
+	 * @param string $course_order csv list.
 	 *
 	 * @return array $course_lessons {
 	 *    array $course_id => $course_lessons{
@@ -431,7 +443,7 @@ class Scd_Ext_Drip_Email {
 	 *    }
 	 * }
 	 */
-	public function order_course_lesson_items( $lessons = array(), $course_order ) {
+	public function order_course_lesson_items( $lessons, $course_order ) {
 		$ordered_lessons = explode( ',', $course_order );
 
 		/**
@@ -445,7 +457,59 @@ class Scd_Ext_Drip_Email {
 			$ordered_lessons[ $lesson_id ] = $lesson_line_item;
 		}
 
-		// Remove all false values before returning
+		// Remove all false values before returning.
 		return array_filter( $ordered_lessons );
+	}
+
+	/**
+	 * Helper method to order modules-based lessons that belong to a single course.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param array $lessons The unsorted lessons of a course.
+	 * @param array $module_order The ordered modules.
+	 * @return array The sorted array of lessons.
+	 */
+	private function order_lessons_by_module( array $lessons, array $module_order ) {
+		$ordered_lessons = array();
+
+		foreach ( $module_order as $module ) {
+			/*
+			 * Each lesson that belongs to a module has a meta key which has the format _order_module_$module_id. The
+			 * value of this meta key is the actual order within the module.
+			 */
+			$args = array(
+				'post__in'       => array_keys( $lessons ),
+				'post_type'      => 'lesson',
+				'posts_per_page' => - 1,
+				'post_status'    => array( 'publish', 'draft', 'future', 'private' ),
+				'meta_key'       => '_order_module_' . $module, // WPCS: slow query ok.
+				'orderby'        => 'meta_value_num date',
+				'order'          => 'ASC',
+				'fields'         => 'ids',
+				'tax_query'      => array( // WPCS: slow query ok.
+					array(
+						'taxonomy' => Sensei()->modules->taxonomy,
+						'field'    => 'id',
+						'terms'    => intval( $module ),
+					),
+				),
+			);
+
+			$lesson_ids = get_posts( $args );
+
+			foreach ( $lesson_ids as $lesson_id ) {
+				if ( array_key_exists( $lesson_id, $lessons ) ) {
+					$ordered_lessons[ $lesson_id ] = $lessons[ $lesson_id ];
+				}
+			}
+		}
+
+		// Lessons not belonging to a module will not be returned by the previous query and are appended to the end.
+		if ( count( $ordered_lessons ) !== count( $lessons ) ) {
+			$ordered_lessons = $ordered_lessons + array_diff_key( $lessons, $ordered_lessons );
+		}
+
+		return $ordered_lessons;
 	}
 }
