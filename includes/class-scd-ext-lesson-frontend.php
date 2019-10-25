@@ -47,13 +47,16 @@ class Scd_Ext_Lesson_Frontend {
 	 * Constructor function
 	 */
 	public function __construct() {
-		// Set a formatted  message shown to user when the content has not yet dripped
-		$default_message = 'This lesson will become available on [date].';
-		$settings_field =  'scd_drip_message';
-		$this->message_format = Sensei_Content_Drip()->utils->check_for_translation($default_message, $settings_field );
+		// Set a formatted  message shown to user when the content has not yet dripped.
+		$default_message      = 'This lesson will become available on [date].';
+		$settings_field       = 'scd_drip_message';
+		$this->message_format = Sensei_Content_Drip()->utils->check_for_translation( $default_message, $settings_field );
 
-		// Hook int all post of type lesson to determine if they should be
-		add_filter('the_posts', array( $this, 'lesson_content_drip_filter' ), 1 );
+		// Hook int all post of type lesson to determine if they should be.
+		add_filter( 'the_posts', array( $this, 'lesson_content_drip_filter' ), 1 );
+
+		// Add action to not display comments if the lesson is blocked.
+		add_action( 'sensei_pagination', array( $this, 'hide_comments' ) );
 	}
 
 	/**
@@ -95,6 +98,23 @@ class Scd_Ext_Lesson_Frontend {
 		}
 
 		return $lessons;
+	}
+
+	/**
+	 * Hides the comments if the lesson is blocked by content drip.
+	 *
+	 * @since  2.0.1
+	 * @access private
+	 */
+	public function hide_comments() {
+
+		if ( 'lesson' !== get_post_type() ) {
+			return;
+		}
+
+		if ( Sensei_Content_Drip::instance()->access_control->is_lesson_access_blocked( get_the_ID() ) ) {
+			remove_action( 'sensei_pagination', array( 'Sensei_Lesson', 'output_comments' ), 90 );
+		}
 	}
 
 	/**

@@ -14,6 +14,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @author WooThemes
  * @since 1.0.0
  *
+ * @property Scd_Ext_Settings $settings
+ * @property Scd_Ext_Utils $utils
+ * @property Scd_Ext_Access_Control $access_control
+ * @property Scd_Ext_Lesson_Frontend $lesson_frontend
+ * @property Scd_Ext_Lesson_Admin $lesson_admin
+ * @property Scd_Ext_Quiz_Frontend $quiz_frontend
+ * @property Scd_Ext_Drip_Email $drip_email
+ * @property Scd_Ext_Manual_Drip $manual_drip
+ *
  * Table Of Contents:
  * - __construct
  * - enqueue_styles
