@@ -11,7 +11,7 @@
   "main": "gulpfile.js",
   "devDependencies": {
     "del": "2.2.2",
-    "gulp": "3.9.1",
+    "gulp": "4.0.2",
     "gulp-chmod": "1.3.0",
     "gulp-minify-css": "1.2.4",
     "gulp-rename": "1.4.0",
