@@ -263,7 +263,7 @@ class Scd_Ext_Drip_Email {
 				 *
 				 * @param string $email_heading
 				 */
-				'heading'   => apply_filters( 'scd_email_heading', __( 'New Content Available', 'sensei-content-drip' ) ),
+				'heading'   => apply_filters( 'scd_email_heading', __( 'New Lessons Available', 'sensei-content-drip' ) ),
 				'user_id'   => '',
 				'course_id' => '',
 				'passed'    => '',
