@@ -263,7 +263,7 @@ class Scd_Ext_Drip_Email {
 				 *
 				 * @param string $email_heading
 				 */
-				'heading'   => apply_filters( 'scd_email_heading', __( 'Content Drip', 'sensei-content-drip' ) ),
+				'heading'   => apply_filters( 'scd_email_heading', __( 'New Lessons Available', 'sensei-content-drip' ) ),
 				'user_id'   => '',
 				'course_id' => '',
 				'passed'    => '',
@@ -302,7 +302,7 @@ class Scd_Ext_Drip_Email {
 		 * @param string $email_subject
 		 * @since 1.3.0
 		 */
-		$email_subject = apply_filters( 'scd_email_subject', __( 'Lessons dripping today', 'sensei-content-drip' ) );
+		$email_subject = apply_filters( 'scd_email_subject', __( 'Lessons available today', 'sensei-content-drip' ) );
 
 		// Get the users details
 		$user       = get_user_by( 'id', absint( $user_id ) );
