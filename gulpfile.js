@@ -5,7 +5,6 @@ var cleanCSS    = require( 'gulp-clean-css' );
 var wpPot       = require( 'gulp-wp-pot' );
 var sort        = require( 'gulp-sort' );
 var zip         = require( 'gulp-zip' );
-var runSequence = require( 'run-sequence' );
 var del         = require( 'del' );
 
 const paths = {
