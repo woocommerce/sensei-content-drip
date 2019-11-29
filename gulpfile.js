@@ -16,14 +16,9 @@ const paths = {
 	docs: [ 'changelog.txt', 'README.md', 'LICENSE' ],
 };
 
-gulp.task( 'clean', function() {
-	del.sync( [ 'assets/js/*.min.js', 'assets/css/*.min.css', 'build' ] );
-});
-
-gulp.task( 'default', [ 'clean' ] , function () {
-	gulp.run( 'css' ) ;
-	gulp.run( 'javascript' );
-});
+gulp.task( 'clean', gulp.series( function() {
+	return del( [ 'assets/js/*.min.js', 'assets/css/*.min.css', 'build' ] );
+} ) );
 
 gulp.task( 'copy-php', function() {
 	return gulp.src( [ '**/*.php', '!node_modules/**', '!build/**', '!vendor/**', '!tests/**' ] )
@@ -45,9 +40,7 @@ gulp.task( 'copy-lang', function() {
 		.pipe( gulp.dest( paths.buildDir + '/lang' ) );
 } );
 
-gulp.task( 'copy', function( cb ) {
-	runSequence( [ 'copy-php', 'copy-assets', 'copy-docs', 'copy-lang' ], cb );
-} );
+gulp.task( 'copy', gulp.series( 'copy-php', 'copy-assets', 'copy-docs', 'copy-lang' ) );
 
 gulp.task( 'css', function () {
 	return gulp.src( paths.css )
@@ -64,19 +57,17 @@ gulp.task( 'javascript', function () {
 		.pipe( gulp.dest( 'assets/js' ) );
 });
 
-gulp.task( 'pot', function () {
+gulp.task( 'pot', gulp.series( function() {
 	return gulp.src( [ '**/**.php', '!node_modules/**', '!build/**' ] )
 		.pipe( sort() )
 		.pipe( wpPot( {
-			domain:    'sensei-content-drip',
+			domain: 'sensei-content-drip',
 			bugReport: 'https://www.transifex.com/woothemes/sensei-by-woothemes/'
 		} ) )
-		.pipe( gulp.dest( 'lang' ) );
-});
+		.pipe( gulp.dest( 'lang/sensei-content-drip.pot' ) );
+} ) );
 
-gulp.task( 'build', function( cb ) {
-	runSequence( 'clean', [ 'css', 'javascript' ], 'pot', 'copy', cb );
-} );
+gulp.task( 'build', gulp.series( 'clean', 'css', 'javascript', 'pot', 'copy' ) );
 
 gulp.task( 'zip-package', function() {
 	return gulp.src( paths.buildDir + '/**/*', { base: paths.buildDir + '/..' } )
@@ -84,6 +75,6 @@ gulp.task( 'zip-package', function() {
 		.pipe( gulp.dest( '.' ) );
 } );
 
-gulp.task( 'package', function( cb ) {
-	runSequence( 'build', 'zip-package', cb );
-} );
+gulp.task( 'package', gulp.series( 'build', 'zip-package' ) );
+
+gulp.task( 'default', gulp.series( 'build' ) );
