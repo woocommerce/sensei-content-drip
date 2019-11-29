@@ -1,7 +1,7 @@
 var gulp        = require( 'gulp' );
 var rename      = require( 'gulp-rename' );
 var uglify      = require( 'gulp-uglify' );
-var minifyCSS   = require( 'gulp-minify-css' );
+var cleanCSS    = require( 'gulp-clean-css' );
 var wpPot       = require( 'gulp-wp-pot' );
 var sort        = require( 'gulp-sort' );
 var zip         = require( 'gulp-zip' );
@@ -51,7 +51,7 @@ gulp.task( 'copy', function( cb ) {
 
 gulp.task( 'css', function () {
 	return gulp.src( paths.css )
-		.pipe( minifyCSS( { keepBreaks: false } ) )
+		.pipe( cleanCSS() )
 		.pipe( rename( { extname: '.min.css' } ) )
 		.pipe( gulp.dest( 'assets/css' ) );
 });
