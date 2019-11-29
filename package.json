@@ -12,15 +12,12 @@
   "devDependencies": {
     "del": "5.1.0",
     "gulp": "4.0.2",
-    "gulp-chmod": "3.0.0",
     "gulp-clean-css": "4.2.0",
     "gulp-rename": "1.4.0",
-    "gulp-sass": "4.0.2",
     "gulp-sort": "2.0.0",
     "gulp-uglify": "3.0.2",
     "gulp-wp-pot": "2.3.5",
-    "gulp-zip": "5.0.1",
-    "orchestrator": "0.3.8"
+    "gulp-zip": "5.0.1"
   },
   "engines": {
     "node": ">=0.8.0",
