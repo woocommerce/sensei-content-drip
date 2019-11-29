@@ -399,14 +399,26 @@ class Scd_Ext_Drip_Email {
 
 		// Sort list of lessons for each course.
 		foreach ( $courses_and_lessons as $course_id => $lesson_data_items ) {
-			// Set the current order as the default just in case the course lesson order is not set
+			// Set the current order as the default just in case the course lesson order is not set.
 			$ordered_lesson_data = $lesson_data_items;
-			$course_lesson_order = get_post_meta( $course_id, '_lesson_order', true );
 
-			if ( ! empty( $course_lesson_order ) ) {
-				$ordered_lesson_data               = $this->order_course_lesson_items( $lesson_data_items, $course_lesson_order );
-				$courses_and_lessons[ $course_id ] = $ordered_lesson_data;
+			// First check if the lessons are ordered my module.
+			$course_module_order = get_post_meta( $course_id, '_module_order', true );
+
+			if ( ! empty( $course_module_order ) ) {
+
+				$ordered_lesson_data = $this->order_lessons_by_module( $lesson_data_items, $course_module_order, $course_id );
+
+			} else {
+				// Secondly check if there is lesson order defined.
+				$course_lesson_order = get_post_meta( $course_id, '_lesson_order', true );
+
+				if ( ! empty( $course_lesson_order ) ) {
+					$ordered_lesson_data = $this->order_course_lesson_items( $lesson_data_items, $course_lesson_order );
+				}
 			}
+
+			$courses_and_lessons[ $course_id ] = $ordered_lesson_data;
 		}
 
 		return $courses_and_lessons;
@@ -416,14 +428,13 @@ class Scd_Ext_Drip_Email {
 	 * Order the lesson items according to courses and course order given.
 	 * This function will remove the lesson ids from the order that do not matched the lessons array.
 	 *
-	 *
 	 * @since 1.0.3
 	 *
-	 * @param array $lessons {
+	 * @param array  $lessons {
 	 *   type string $lesson_id => $lesson_line_item
-	 * }
+	 * }.
 	 *
-	 * @param string $course_order csv list
+	 * @param string $course_order csv list.
 	 *
 	 * @return array $course_lessons {
 	 *    array $course_id => $course_lessons{
@@ -431,7 +442,7 @@ class Scd_Ext_Drip_Email {
 	 *    }
 	 * }
 	 */
-	public function order_course_lesson_items( $lessons = array(), $course_order ) {
+	public function order_course_lesson_items( $lessons, $course_order ) {
 		$ordered_lessons = explode( ',', $course_order );
 
 		/**
@@ -445,7 +456,99 @@ class Scd_Ext_Drip_Email {
 			$ordered_lessons[ $lesson_id ] = $lesson_line_item;
 		}
 
-		// Remove all false values before returning
+		// Remove all false values before returning.
 		return array_filter( $ordered_lessons );
+	}
+
+	/**
+	 * Helper method to order modules-based lessons that belong to a single course.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param array $lessons The unsorted lessons of a course.
+	 * @param array $module_order The ordered modules.
+	 * @param int   $course_id The course id.
+	 * @return array The sorted array of lessons.
+	 */
+	private function order_lessons_by_module( array $lessons, array $module_order, $course_id ) {
+		$ordered_lessons = array();
+
+		foreach ( $module_order as $module ) {
+			/*
+			 * Each lesson that belongs to a module has a meta key which has the format _order_module_$module_id. The
+			 * value of this meta key is the actual order within the module.
+			 */
+			$args = array(
+				'post__in'       => array_keys( $lessons ),
+				'post_type'      => 'lesson',
+				'posts_per_page' => - 1,
+				'post_status'    => array( 'publish', 'draft', 'future', 'private' ),
+				'meta_key'       => '_order_module_' . $module, // WPCS: slow query ok.
+				'orderby'        => 'meta_value_num date',
+				'order'          => 'ASC',
+				'fields'         => 'ids',
+				'tax_query'      => array( // WPCS: slow query ok.
+					array(
+						'taxonomy' => Sensei()->modules->taxonomy,
+						'field'    => 'id',
+						'terms'    => intval( $module ),
+					),
+				),
+			);
+
+			$ordered_lesson_ids = get_posts( $args );
+
+			foreach ( $ordered_lesson_ids as $lesson_id ) {
+				$ordered_lessons[ $lesson_id ] = $lessons[ $lesson_id ];
+			}
+		}
+
+		// Lessons not belonging to a module should be ordered by _order_$course_id meta.
+		if ( count( $ordered_lessons ) !== count( $lessons ) ) {
+			$unordered_lessons = array_diff_key( $lessons, $ordered_lessons );
+			$ordered_lessons   = $ordered_lessons + $this->order_lessons_by_course( $unordered_lessons, $course_id );
+		}
+
+		return $ordered_lessons;
+	}
+
+	/**
+	 * Helper method to order lessons by the _order_$course_id meta.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param array $unordered_lessons The unsorted lessons of a course.
+	 * @param int   $course_id The course id.
+	 * @return array The sorted array of lessons.
+	 */
+	private function order_lessons_by_course( array $unordered_lessons, $course_id ) {
+
+		if ( count( $unordered_lessons ) < 2 ) {
+			return $unordered_lessons;
+		}
+
+		$args = array(
+			'post__in'       => array_keys( $unordered_lessons ),
+			'post_type'      => 'lesson',
+			'posts_per_page' => - 1,
+			'post_status'    => array( 'publish', 'draft', 'future', 'private' ),
+			'meta_key'       => '_order_' . $course_id, // WPCS: slow query ok.
+			'orderby'        => 'meta_value_num date',
+			'order'          => 'ASC',
+			'fields'         => 'ids',
+		);
+
+		$ordered_lesson_ids = get_posts( $args );
+
+		foreach ( $ordered_lesson_ids as $lesson_id ) {
+			$ordered_lessons[ $lesson_id ] = $unordered_lessons[ $lesson_id ];
+		}
+
+		// Append the lessons that don't have the _order_$course_id meta in the end.
+		if ( count( $unordered_lessons ) !== count( $ordered_lessons ) ) {
+			$ordered_lessons = $ordered_lessons + array_diff_key( $unordered_lessons, $ordered_lessons );
+		}
+
+		return $ordered_lessons;
 	}
 }
