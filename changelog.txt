@@ -1,5 +1,10 @@
 *** Sensei Content Drip Changelog ***
 
+2019.12.04 - version 2.0.1
+* Tweak: Update verbiage in drip email - #170
+* Fix: Lesson order in drip email - #172
+* Fix: Hide comments when lesson has not dripped - #173
+
 2019.03.25 - version 2.0.0
 * New: Add dependency check for minimum Sensei (1.11.0) and PHP (5.6) versions - #146, #151, #156, #163
 * New: Extract drip email to a template file - #155
