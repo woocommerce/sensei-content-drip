@@ -320,7 +320,7 @@ class Scd_Ext_Access_Control {
 	 */
 	private function is_super_admin() {
 		global $wp_version;
-		if ( version_compare( $wp_version, '4.8', '>=' ) ) {
+		if ( is_multisite() && version_compare( $wp_version, '4.8', '>=' ) ) {
 			// See https://make.wordpress.org/core/2017/05/22/multisite-focused-changes-in-4-8/.
 			// And https://core.trac.wordpress.org/ticket/39205#comment:13.
 			// `upgrade_netrowk` is the new more granular way to check for super_admins.
