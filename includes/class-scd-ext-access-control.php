@@ -67,9 +67,10 @@ class Scd_Ext_Access_Control {
 	public function is_lesson_access_blocked( $lesson_id ) {
 		$content_access_blocked = false;
 		$lesson_course_id       = Sensei()->lesson->get_course_id( $lesson_id );
+		$is_course_teacher      = $this->is_course_teacher( $lesson_course_id );
 
 		// Return drip not active for the following conditions.
-		if ( $this->is_super_admin() || empty( $lesson_id ) || 'lesson' !== get_post_type( $lesson_id )
+		if ( $this->is_super_admin() || $is_course_teacher || empty( $lesson_id ) || 'lesson' !== get_post_type( $lesson_id )
 		     || Sensei_Utils::user_completed_lesson( $lesson_id, get_current_user_id() ) ) {
 			return false;
 		}
@@ -320,7 +321,7 @@ class Scd_Ext_Access_Control {
 	 */
 	private function is_super_admin() {
 		global $wp_version;
-		if ( version_compare( $wp_version, '4.8', '>=' ) ) {
+		if ( is_multisite() && version_compare( $wp_version, '4.8', '>=' ) ) {
 			// See https://make.wordpress.org/core/2017/05/22/multisite-focused-changes-in-4-8/.
 			// And https://core.trac.wordpress.org/ticket/39205#comment:13.
 			// `upgrade_netrowk` is the new more granular way to check for super_admins.
@@ -328,5 +329,27 @@ class Scd_Ext_Access_Control {
 		}
 
 		return is_super_admin();
+	}
+
+	/**
+	 * Checks If a User is teacher of a course
+	 *
+	 * @param  string $course_id
+	 * @return bool
+	 */
+	private function is_course_teacher( $course_id ) {
+		if ( ! class_exists( 'Sensei_Teacher' ) ) {
+			return false;
+		}
+
+		$user_id = get_current_user_id();
+
+		if ( ! Sensei_Teacher::is_a_teacher( $user_id ) ) {
+			return false;
+		}
+
+		$teacher_courses_id = Sensei()->teacher->get_teacher_courses( $user_id, true );
+
+		return in_array( $course_id, $teacher_courses_id );
 	}
 }
