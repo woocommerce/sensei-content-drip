@@ -150,7 +150,7 @@ class Scd_Ext_Drip_Email {
 			}
 
 			// Get all users in this course id.
-			if ( Sensei_Content_Drip::instance()->is_legancy_enrolment() ) {
+			if ( Sensei_Content_Drip::instance()->is_legacy_enrolment() ) {
 				$course_users = Sensei_Content_Drip()->utils->get_course_users( $course_id );
 			} else {
 				$course_users = Sensei_Course_Enrolment::get_course_instance( $course_id )->get_enrolled_user_ids();

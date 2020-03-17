@@ -421,7 +421,7 @@ class Sensei_Content_Drip {
 	 *
 	 * @since 2.0.2
 	 */
-	public function is_legancy_enrolment() {
+	public function is_legacy_enrolment() {
 		if ( ! interface_exists( '\Sensei_Course_Enrolment_Provider_Interface' ) ) {
 			return true;
 		}
