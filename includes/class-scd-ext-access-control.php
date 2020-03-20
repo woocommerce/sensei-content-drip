@@ -76,7 +76,11 @@ class Scd_Ext_Access_Control {
 		}
 
 		// Check if user has started the course.
-		$user_started_course = Sensei_Utils::user_started_course( $lesson_course_id, get_current_user_id() );
+		if ( Sensei_Content_Drip::instance()->is_legacy_enrolment() ) {
+			$user_started_course = Sensei_Utils::user_started_course( $lesson_course_id, get_current_user_id() );
+		} else {
+			$user_started_course = Sensei_Course::is_user_enrolled( $lesson_course_id );
+		}
 
 		// get the lessons drip data if any
 		$drip_type = get_post_meta( $lesson_id , '_sensei_content_drip_type', true );
@@ -127,10 +131,15 @@ class Scd_Ext_Access_Control {
 	public function sensei_should_block_lesson( $lesson_id, $user_id ) {
 		$lesson_course_id = Sensei()->lesson->get_course_id( $lesson_id );
 
+		if ( Sensei_Content_Drip::instance()->is_legacy_enrolment() ) {
+			$user_started_course = Sensei_Utils::user_started_course( $lesson_course_id, get_current_user_id() );
+		} else {
+			$user_started_course = Sensei_Course::is_user_enrolled( $lesson_course_id );
+		}
+
 		// Block the lesson only if user has not started the course and it
 		// hasn't dripped yet.
-		return ! Sensei_Utils::user_started_course( $lesson_course_id, $user_id )
-			&& $this->is_lesson_access_blocked( $lesson_id );
+		return ! $user_started_course && $this->is_lesson_access_blocked( $lesson_id );
 	}
 
 	/**
