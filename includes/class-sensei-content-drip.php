@@ -415,4 +415,17 @@ class Sensei_Content_Drip {
 		$theme_path   = 'sensei-content-drip/';
 		Sensei_Templates::get_template( $name, $args, $theme_path, $default_path );
 	}
+
+	/**
+	 * Check if course enrolment is handled by the legacy method.
+	 *
+	 * @since 2.0.2
+	 */
+	public function is_legacy_enrolment() {
+		if ( ! interface_exists( '\Sensei_Course_Enrolment_Provider_Interface' ) ) {
+			return true;
+		}
+
+		return false;
+	}
 }

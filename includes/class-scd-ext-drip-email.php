@@ -34,8 +34,8 @@ class Scd_Ext_Drip_Email {
 		$disable_email = Sensei_Content_Drip()->settings->get_setting( 'scd_disable_email_notifications' );
 
 		if ( ! $disable_email ) {
-			// Add email sending action to the cron job
-			add_action ( 'woo_scd_daily_cron_hook' , array( $this, 'daily_drip_lesson_email_run' ) );
+			// Add email sending action to the cron job.
+			add_action( 'woo_scd_daily_cron_hook', array( $this, 'daily_drip_lesson_email_run' ) );
 		}
 	}
 
@@ -45,14 +45,14 @@ class Scd_Ext_Drip_Email {
 	 * @return void
 	 */
 	public function daily_drip_lesson_email_run() {
-		// Get all the users with their lessons dripping today
+		// Get all the users with their lessons dripping today.
 		$users_lessons_dripping_today = $this->get_users_lessons_dripping_today();
 
 		if ( ! array( $users_lessons_dripping_today ) || empty( $users_lessons_dripping_today ) ) {
 			return;
 		}
 
-		// Generate the email markup and send the notifications
+		// Generate the email markup and send the notifications.
 		$this->send_bulk_drip_notifications( $users_lessons_dripping_today );
 	}
 
@@ -62,18 +62,18 @@ class Scd_Ext_Drip_Email {
 	 * @return array $users a list of users with a sub array of lessons
 	 */
 	public function get_users_lessons_dripping_today() {
-		// Get the lesson by the type of drip content
+		// Get the lesson by the type of drip content.
 		$all_dynamic_lessons  = Sensei_Content_Drip()->utils->get_dripping_lessons_by_type( 'dynamic' );
 		$all_absolute_lessons = Sensei_Content_Drip()->utils->get_dripping_lessons_by_type( 'absolute' );
 
-		// From each list get the lesson users and attache the lesson to the users
+		// From each list get the lesson users and attache the lesson to the users.
 		$dynamic_users_lessons  = $this->attach_users( $all_dynamic_lessons );
 		$absolute_users_lessons = $this->attach_users( $all_absolute_lessons );
 
-		// Merge two users_lessons lists
-		$all_users_lessons  = $this->combine_users_lessons( $dynamic_users_lessons , $absolute_users_lessons );
+		// Merge two users_lessons lists.
+		$all_users_lessons = $this->combine_users_lessons( $dynamic_users_lessons, $absolute_users_lessons );
 
-		// Remove all lessons not dripping today
+		// Remove all lessons not dripping today.
 		$users_lessons_dripping_today = $this->filter_lessons_dripping_today( $all_users_lessons );
 
 		return $users_lessons_dripping_today;
@@ -87,20 +87,20 @@ class Scd_Ext_Drip_Email {
 	public function combine_users_lessons( $users_lessons_1, $users_lessons_2 ) {
 		$combined = array();
 
-		// When both are emty exit, if only one is empty continue
-		if (  empty( $users_lessons_1 ) && empty( $users_lessons_2 ) ) {
+		// When both are emty exit, if only one is empty continue.
+		if ( empty( $users_lessons_1 ) && empty( $users_lessons_2 ) ) {
 			return $combined;
 		}
 
-		// Create a master loop for easier loop function
+		// Create a master loop for easier loop function.
 
 		$multi_users_lessons    = array();
 		$multi_users_lessons[0] = (array) $users_lessons_1;
 		$multi_users_lessons[1] = (array) $users_lessons_2;
 
-		// Loop through each of the inputs
+		// Loop through each of the inputs.
 		foreach ( $multi_users_lessons as $users_lessons ) {
-			// Skip empty inputs
+			// Skip empty inputs.
 			if ( ! empty( $users_lessons ) ) {
 				foreach ( $users_lessons as $user_id => $lessons ) {
 					if ( ! isset( $combined[ $user_id ] ) && ! empty( $lessons ) ) {
@@ -108,10 +108,9 @@ class Scd_Ext_Drip_Email {
 					}
 					$unique_lesson_ids = array_unique( $lessons );
 					foreach ( $unique_lesson_ids as $lesson_id ) {
-						if ( false === array_search( $lesson_id, $combined[ $user_id ] ) ) {
+						if ( false === in_array( $lesson_id, $combined[ $user_id ], true ) ) {
 							$combined[ $user_id ][] = $lesson_id;
 						}
-
 					}
 				}
 			}
@@ -129,38 +128,40 @@ class Scd_Ext_Drip_Email {
 	 */
 	public function attach_users( $lessons ) {
 		$users_lessons = array();
-		$courses_users = array();
 
-		// Exit if not lessons are passed in
+		// Exit if not lessons are passed in.
 		if ( empty( $lessons ) ) {
 			return array();
 		}
 
 		foreach ( $lessons as $lesson_id ) {
-				// Get the lessons course
-				$course_id = absint( get_post_meta( absint( $lesson_id ), '_lesson_course', true ) );
+			// Get the lessons course.
+			$course_id = absint( get_post_meta( absint( $lesson_id ), '_lesson_course', true ) );
 
-				// A lesson must have a course for the rest to work
-				if ( empty( $course_id ) ) {
-					continue;
-				}
+			// A lesson must have a course for the rest to work.
+			if ( empty( $course_id ) ) {
+				continue;
+			}
 
-				$are_notifications_disabled = get_post_meta( absint( $course_id ), 'disable_notification', true );
-				if ( $are_notifications_disabled ) {
-					// don't send any emails if notifications are disabled for a course
-					continue;
-				}
+			$are_notifications_disabled = get_post_meta( absint( $course_id ), 'disable_notification', true );
+			if ( $are_notifications_disabled ) {
+				// don't send any emails if notifications are disabled for a course.
+				continue;
+			}
 
-				// Get all users in this course id
+			// Get all users in this course id.
+			if ( Sensei_Content_Drip::instance()->is_legacy_enrolment() ) {
 				$course_users = Sensei_Content_Drip()->utils->get_course_users( $course_id );
+			} else {
+				$course_users = Sensei_Course_Enrolment::get_course_instance( $course_id )->get_enrolled_user_ids();
+			}
 
-				if ( ! empty( $course_users ) ) {
-					// Loop through each of the users for this course and append the lesson id to the user
-					foreach ( $course_users as $user_id ) {
-						$users_lessons[ $user_id ][] = $lesson_id;
-					}
+			if ( ! empty( $course_users ) ) {
+				// Loop through each of the users for this course and append the lesson id to the user.
+				foreach ( $course_users as $user_id ) {
+					$users_lessons[ $user_id ][] = $lesson_id;
 				}
-
+			}
 		}
 
 		return $users_lessons;
@@ -173,16 +174,16 @@ class Scd_Ext_Drip_Email {
 	 * @return array
 	 */
 	function filter_lessons_dripping_today( $users_lessons ) {
-		// Setup return array
+		// Setup return array.
 		$users_dripping_lessons = array();
 
 		foreach ( $users_lessons as $user_id => $lessons ) {
 			foreach ( $lessons as $lesson_id ) {
-					// If the lesson is dripping today add the details to
-					if ( $this->is_dripping_today( $lesson_id , $user_id ) ) {
-						$users_dripping_lessons[ $user_id ][] = $lesson_id;
-					}
+				// If the lesson is dripping today add the details to.
+				if ( $this->is_dripping_today( $lesson_id, $user_id ) ) {
+					$users_dripping_lessons[ $user_id ][] = $lesson_id;
 				}
+			}
 		}
 
 		return $users_dripping_lessons;
@@ -196,19 +197,19 @@ class Scd_Ext_Drip_Email {
 	 * @return bool
 	 */
 	function is_dripping_today( $lesson_id, $user_id = '' ) {
-		// Setup variables needed
+		// Setup variables needed.
 		$dripping_today = false;
-		$today          = new DateTime( date( 'Y-m-d' ) ); // Get the date ignoring H:M:S
+		$today          = new DateTime( date( 'Y-m-d' ) ); // Get the date ignoring H:M:S.
 
-		// Get the lesson drip date
+		// Get the lesson drip date.
 		$lesson_drip_date = Sensei_Content_Drip()->access_control->get_lesson_drip_date( absint( $lesson_id ), absint( $user_id ) );
 
-		// If no lesson drip date could be found exit
+		// If no lesson drip date could be found exit.
 		if ( empty( $lesson_drip_date ) ) {
 			return false;
 		}
 
-		// Compare the lesson date with today
+		// Compare the lesson date with today.
 		$offset = $today->diff( $lesson_drip_date );
 
 		/**
@@ -234,7 +235,7 @@ class Scd_Ext_Drip_Email {
 			}
 		}
 
-		// If the flag was not triggered to be false
+		// If the flag was not triggered to be false.
 		if ( $dripping_today_flag ) {
 			$dripping_today = true;
 		}
@@ -253,7 +254,7 @@ class Scd_Ext_Drip_Email {
 
 		if ( ! empty( $users_lessons ) ) {
 
-			// Construct data array sensei needs before it can send an email
+			// Construct data array sensei needs before it can send an email.
 			$sensei_email_data = array(
 				'template'  => 'sensei-content-drip',
 				/**
@@ -269,7 +270,7 @@ class Scd_Ext_Drip_Email {
 				'passed'    => '',
 			);
 
-			// Construct the email pieces
+			// Construct the email pieces.
 			$email_wrappers = array(
 				'wrap_header' => Sensei()->emails->load_template( 'header' ),
 				'wrap_footer' => Sensei()->emails->load_template( 'footer' ),
@@ -304,16 +305,16 @@ class Scd_Ext_Drip_Email {
 		 */
 		$email_subject = apply_filters( 'scd_email_subject', __( 'Lessons available today', 'sensei-content-drip' ) );
 
-		// Get the users details
+		// Get the users details.
 		$user       = get_user_by( 'id', absint( $user_id ) );
-		$first_name = $user->first_name ;
+		$first_name = $user->first_name;
 		$user_email = $user->user_email;
 
 		if ( empty( $user_email ) ) {
 			return;
 		}
 
-		// Load all the array keys from email pieces into variables
+		// Load all the array keys from email pieces into variables.
 		$wrap_header = $email_wrappers['wrap_header'];
 		$wrap_footer = $email_wrappers['wrap_footer'];
 
@@ -339,8 +340,8 @@ class Scd_Ext_Drip_Email {
 			'scd_email_footer_html'
 		);
 		$email_footer = str_ireplace(
-			'[home_url]' ,
-			'<a href="' . esc_url( home_url() ) . '" >' . esc_url( home_url() ) . '</a>' ,
+			'[home_url]',
+			'<a href="' . esc_url( home_url() ) . '" >' . esc_url( home_url() ) . '</a>',
 			esc_html( $footer_text )
 		);
 
