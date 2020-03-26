@@ -1,4 +1,4 @@
-# Copyright (C) 2019 sensei-content-drip
+# Copyright (C) 2020 sensei-content-drip
 # This file is distributed under the same license as the sensei-content-drip package.
 msgid ""
 msgstr ""
@@ -33,15 +33,15 @@ msgstr ""
 msgid "<strong>Sensei Content Drip</strong> requires that the plugin <strong>Sensei</strong> (minimum version: <strong>%1$s</strong>) is installed and activated."
 msgstr ""
 
-#: includes/class-scd-ext-drip-email.php:266
+#: includes/class-scd-ext-drip-email.php:267
 msgid "New Lessons Available"
 msgstr ""
 
-#: includes/class-scd-ext-drip-email.php:305
+#: includes/class-scd-ext-drip-email.php:306
 msgid "Lessons available today"
 msgstr ""
 
-#: includes/class-scd-ext-drip-email.php:328
+#: includes/class-scd-ext-drip-email.php:329
 msgid "Good Day"
 msgstr ""
 
