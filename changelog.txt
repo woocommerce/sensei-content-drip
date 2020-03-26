@@ -1,5 +1,9 @@
 *** Sensei Content Drip Changelog ***
 
+2020.03.26 - version 2.0.2
+* Tweak: Switch to new methods to check enrolment when possible - #193, #192
+* Fix: Bug causing admin users to be unable to view courses - #187
+
 2019.12.04 - version 2.0.1
 * Tweak: Update verbiage in drip email - #170
 * Fix: Lesson order in drip email - #172
