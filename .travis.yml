@@ -8,6 +8,7 @@ notifications:
 before_script:
   - export PLUGIN_BASE_DIR=$(basename $(pwd))
   - export PLUGIN_SLUG=$(basename $(pwd) | tr '[:upper:]' '[:lower:]')
+  - export PATH="$HOME/.composer/vendor/bin:$HOME/.config/composer/vendor/bin:$PATH"
   - |
     if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
       phpenv config-rm xdebug.ini
