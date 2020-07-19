@@ -1,25 +1,70 @@
+sudo: false
 dist: trusty
-
 language: php
-
+notifications:
+  email:
+    on_success: never
+    on_failure: never
 branches:
   only:
   - master
-
-php:
-    - 5.6
-    - 7.0
-    - 7.1
-    - 7.2
-    - 7.4
-
-env:
-    - WP_VERSION=latest WP_MULTISITE=0
-    - WP_VERSION=latest WP_MULTISITE=1
-    - WP_VERSION=5.0 WP_MULTISITE=0
-    - WP_VERSION=5.0 WP_MULTISITE=1
-
+  - /^release\//
 before_script:
-    - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-
-script: phpunit
+- |
+  if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
+    phpenv config-rm xdebug.ini
+  else
+    echo "xdebug.ini does not exist"
+  fi
+- |
+  if [[ ! -z "$WP_VERSION" ]] ; then
+    bash tests/bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+    composer global require "phpunit/phpunit=4.8.*|5.7.*"
+  fi
+jobs:
+  include:
+    - stage: test
+      php: 5.6
+      env: WP_VERSION=5.0
+      script:
+        - ./tests/bin/run-wp-unit-tests.sh
+    - stage: test
+      php: 5.6
+      env: WP_VERSION=latest
+      script:
+        - ./tests/bin/run-wp-unit-tests.sh
+    - stage: test
+      php: 5.6
+      env: WP_VERSION=trunk
+      script:
+        - ./tests/bin/run-wp-unit-tests.sh
+    - stage: test
+      php: 5.6
+      env: WP_VERSION=latest WP_MULTISITE=1
+      script:
+      - ./tests/bin/run-wp-unit-tests.sh
+    - stage: test
+      php: 7.0
+      env: WP_VERSION=latest
+      script:
+        - ./tests/bin/run-wp-unit-tests.sh
+    - stage: test
+      php: 7.1
+      env: WP_VERSION=latest
+      script:
+        - ./tests/bin/run-wp-unit-tests.sh
+    - stage: test
+      php: 7.2
+      env: WP_VERSION=latest
+      script:
+        - ./tests/bin/run-wp-unit-tests.sh
+    - stage: test
+      php: 7.3
+      env: WP_VERSION=latest
+      script:
+        - ./tests/bin/run-wp-unit-tests.sh
+    - stage: test
+      php: 7.4
+      env: WP_VERSION=latest
+      script:
+        - ./tests/bin/run-wp-unit-tests.sh
