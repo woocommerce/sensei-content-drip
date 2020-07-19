@@ -134,7 +134,9 @@ class Sensei_Content_Drip {
 		$instance = self::instance();
 		add_action( 'init', array( $instance, 'load_localisation' ), 0 );
 
-		if ( ! Scd_Ext_Dependency_Checker::are_plugin_dependencies_met() ) {
+		$skip_plugin_deps_check = defined( 'SENSEI_CONTENT_DRIP_SKIP_DEPS_CHECK' ) && SENSEI_CONTENT_DRIP_SKIP_DEPS_CHECK;
+
+		if ( ! $skip_plugin_deps_check && ! \Scd_Ext_Dependency_Checker::are_plugin_dependencies_met() ) {
 			return;
 		}
 

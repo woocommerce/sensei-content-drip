@@ -95,6 +95,7 @@ class Sensei_Content_Drip_Unit_Tests_Bootstrap {
 	 * @since 1.0.0
 	 */
 	public function load_plugin() {
+		define( 'SENSEI_CONTENT_DRIP_SKIP_DEPS_CHECK', true );
 		require_once $this->plugin_dir . '/sensei-content-drip.php';
 	}
 
