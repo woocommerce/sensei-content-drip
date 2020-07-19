@@ -34,11 +34,6 @@ for SENSEI_SLUG in "${SENSEI_SLUGS[@]}"; do
 			echo "Version: $SENSEI_VERSION"
 		git clone --depth=1 --branch version/$SENSEI_VERSION https://github.com/Automattic/Sensei.git /tmp/sensei-latest
 		;;
-	latest-v2)
-			SENSEI_VERSION=`php $SCRIPT_DIR/get-sensei-version.php --latest-v2`
-			echo "Version: $SENSEI_VERSION"
-		git clone --depth=1 --branch version/$SENSEI_VERSION https://github.com/Automattic/Sensei.git /tmp/sensei-latest-v2
-		;;
 	previous)
 		SENSEI_VERSION=`php $SCRIPT_DIR/get-sensei-version.php --previous`
 			echo "Version: $SENSEI_VERSION"
