@@ -1,17 +1,17 @@
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
-const path          = require( 'path' );
+const path = require( 'path' );
 
 const files = {
 	'js/admin-lesson': 'js/admin-lesson.js',
 	'js/admin-manual-drip': 'js/admin-manual-drip.js',
 	'css/admin-lesson': 'css/admin-lesson.scss',
-	'css/jquery-ui': 'css/jquery-ui.scss'
+	'css/jquery-ui': 'css/jquery-ui.scss',
 };
 
 const baseDist = 'assets/dist/';
 
-Object.keys(files).map( function( key, index) {
-	files[key] = path.resolve( './assets', files[key] );
+Object.keys( files ).forEach( function ( key ) {
+	files[ key ] = path.resolve( './assets', files[ key ] );
 } );
 
 const FileLoader = {
