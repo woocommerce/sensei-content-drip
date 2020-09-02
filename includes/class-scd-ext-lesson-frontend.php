@@ -171,16 +171,13 @@ class Scd_Ext_Lesson_Frontend {
 		// Hide the lesson quiz notice and quiz buttons
 		remove_all_actions( 'sensei_lesson_quiz_meta' );
 
-		// Hide buttons from sensei version 1.9 onwards
-		remove_action( 'sensei_single_lesson_content_inside_after', array( 'Sensei_Lesson', 'footer_quiz_call_to_action' ) );
-
-		// Hide the lesson quiz notice
-		remove_action( 'sensei_single_lesson_content_inside_before', array( 'Sensei_Lesson', 'user_lesson_quiz_status_message' ), 20 );
+		// Disable lesson content hooks.
+		remove_all_actions( 'sensei_single_lesson_content_inside_after' );
+		remove_all_actions( 'sensei_single_lesson_content_inside_before' );
 
 		// Hide lesson meta (e.g. Media from Sensei-Media-Items.)
 		remove_all_actions( 'sensei_lesson_single_meta' );
 	}
-
 
 	/**
 	 * Check if the lesson can be made available to the the user at this point
