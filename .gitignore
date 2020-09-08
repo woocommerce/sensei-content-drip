@@ -1,6 +1,6 @@
-.sass-cache
-.idea
 .DS_Store
-*/.DS_Store
 node_modules
+vendor
 build
+assets/dist
+/*.zip

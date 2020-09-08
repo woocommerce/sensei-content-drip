@@ -226,12 +226,11 @@ class Scd_Ext_Lesson_Admin {
 			<option data-has-pre="<?php esc_attr_e( $has_pre_requisite ); ?>" <?php selected( 'dynamic', $selected_drip_type ); ?> value="dynamic"  class="dynamic"><?php esc_html_e( 'A specific interval after the course start date', 'sensei-content-drip' ); ?></option>
 		</select></p>
 
-		<p><div class="dripTypeOptions absolute <?php echo esc_attr( $absolute_hidden_class ); ?> ">
+		<div class="dripTypeOptions absolute <?php echo esc_attr( $absolute_hidden_class ); ?> ">
 			<p><span class='description'><?php printf( esc_html__( 'Select the date on which this lesson should become available (accepted date format is %s)', 'sensei-content-drip' ), self::DATE_FORMAT ); ?></span></p>
 			<input type="text" id="scd-lesson-datepicker" name="absolute[datepicker]" value="<?php echo esc_attr( $absolute_date_value ); ?>" class="absolute-datepicker" />
-		</div></p>
-		<p>
-			<div class="dripTypeOptions dynamic <?php echo esc_attr( $dymaic_hidden_class ); ?>">
+		</div>
+		<div class="dripTypeOptions dynamic <?php echo esc_attr( $dymaic_hidden_class ); ?>">
 			<?php if ( empty( $current_lesson_course ) ) : ?>
 				<p>
 					<?php esc_html_e( 'Please select a course for this lesson in order to use this drip type.', 'sensei-content-drip' ); ?>
@@ -249,8 +248,9 @@ class Scd_Ext_Lesson_Admin {
 			<?php endif; ?>
 		</div><!-- end dripTypeOptions -->
 		<?php $send_test_email = sprintf( __('Send Test Email to %s', 'sensei-content-drip' ), $current_user->user_email ); ?>
+
 		<a title="<?php echo esc_attr( $send_test_email ); ?>" href="#send-test-email" class="send_test_email button button-primary button-highlighted"><?php echo esc_html( $send_test_email ); ?></a>
-		</p>
+
 		<?php
 	}
 

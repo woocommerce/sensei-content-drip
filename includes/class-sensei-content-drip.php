@@ -97,15 +97,6 @@ class Sensei_Content_Drip {
 	private $assets_url;
 
 	/**
-	 * Suffix for Javascript files.
-	 *
-	 * @var    string
-	 * @access private
-	 * @since  1.0.0
-	 */
-	private $script_suffix;
-
-	/**
 	 * Constructor function.
 	 *
 	 * @access public
@@ -118,8 +109,7 @@ class Sensei_Content_Drip {
 		$this->_token        = 'sensei_content_drip';
 		$this->dir           = dirname( SENSEI_CONTENT_DRIP_PLUGIN_FILE );
 		$this->assets_dir    = trailingslashit( $this->dir ) . 'assets';
-		$this->assets_url    = esc_url( trailingslashit( plugins_url( '/assets/', SENSEI_CONTENT_DRIP_PLUGIN_FILE ) ) );
-		$this->script_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$this->assets_url    = esc_url( trailingslashit( plugins_url( '/assets/dist/', SENSEI_CONTENT_DRIP_PLUGIN_FILE ) ) );
 
 		$this->load_plugin_textdomain();
 
@@ -150,28 +140,12 @@ class Sensei_Content_Drip {
 			return Sensei_Content_Drip::instance();
 		}
 
-		// Load frontend JS & CSS
-		add_action( 'wp_enqueue_scripts', array( $instance, 'enqueue_styles' ), 10 );
-
 		// Load admin JS & CSS
 		add_action( 'admin_enqueue_scripts', array( $instance, 'admin_enqueue_scripts' ), 10, 1 );
 		add_action( 'admin_enqueue_scripts', array( $instance, 'admin_enqueue_styles' ), 10, 1 );
 
 		// Load and initialize classes
 		add_action( 'init', array( $instance, 'initialize_classes' ), 0 );
-	}
-
-	/**
-	 * Load frontend CSS.
-	 *
-	 * @since  1.0.0
-	 * @return void
-	 */
-	public function enqueue_styles() {
-		global $woothemes_sensei;
-
-		wp_register_style( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'css/frontend.css', array( $woothemes_sensei->token . '-frontend' ), $this->_version );
-		wp_enqueue_style( $this->_token . '-frontend' );
 	}
 
 	/**
@@ -205,13 +179,13 @@ class Sensei_Content_Drip {
 
 		// Load the lesson idit/new screen script
 		if ( ( 'post.php' === $hook || 'post-new.php' === $hook ) && ( ! empty( $post ) && 'lesson' === $post->post_type ) ) {
-			wp_register_script( $this->_token . '-lesson-admin-script', esc_url( $this->assets_url ) . 'js/admin-lesson' . $this->script_suffix  . '.js', array( 'underscore', 'jquery', 'jquery-ui-datepicker', 'backbone' ), $this->_version, true );
+			wp_register_script( $this->_token . '-lesson-admin-script', esc_url( $this->assets_url ) . 'js/admin-lesson.js', array( 'underscore', 'jquery', 'jquery-ui-datepicker', 'backbone' ), $this->_version, true );
 			wp_enqueue_script( $this->_token . '-lesson-admin-script' );
 		}
 
 		// Load the learner management functionality script
 		if ( 'sensei_page_sensei_learners' === $hook &&  isset( $_GET['course_id'] ) && isset( $_GET['view'] ) && 'learners' === $_GET['view'] ) {
-			wp_register_script( $this->_token . '-admin-manual-drip-script', esc_url( $this->assets_url ) . 'js/admin-manual-drip' . $this->script_suffix . '.js', array( 'underscore','jquery', 'backbone' ), $this->_version, true );
+			wp_register_script( $this->_token . '-admin-manual-drip-script', esc_url( $this->assets_url ) . 'js/admin-manual-drip.js', array( 'underscore','jquery', 'backbone' ), $this->_version, true );
 			wp_enqueue_script( $this->_token . '-admin-manual-drip-script' );
 		}
 	}
