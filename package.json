@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@wordpress/scripts": "12.2.0",
-    "file-loader": "6.0.0"
+    "file-loader": "6.1.0"
   },
   "scripts": {
     "build": "npm run build:assets && npm run archive",
