@@ -138,6 +138,7 @@ class Scd_Ext_Lesson_Admin {
 			echo esc_html__( 'Immediately', 'sensei-content-drip' );
 		} else if ( 'absolute' === $drip_type ) {
 			$lesson_set_date = $this->date_or_datestring_from_lesson( $lesson_id, true );
+			/* translators: %s is replaced with the date on which the lesson becomes available */
 			printf( esc_html__( 'On %s', 'sensei-content-drip' ), $lesson_set_date );
 		} else if ( 'dynamic' === $drip_type ) {
 			$unit_type   = get_post_meta( $lesson_id , '_sensei_content_drip_details_date_unit_type', true );
@@ -151,7 +152,7 @@ class Scd_Ext_Lesson_Admin {
 				$time_period .= 's';
 			}
 
-			// Assemble and output
+			/* translators: %s is replaced with the interval after which the lesson becomes available (e.g. 2 days) */
 			printf( esc_html__( 'After %s', 'sensei-content-drip' ), $time_period );
 		}
 	}
@@ -227,6 +228,7 @@ class Scd_Ext_Lesson_Admin {
 		</select></p>
 
 		<div class="dripTypeOptions absolute <?php echo esc_attr( $absolute_hidden_class ); ?> ">
+			<?php /* translators: %s is replaced with Y-m-d */ ?>
 			<p><span class='description'><?php printf( esc_html__( 'Select the date on which this lesson should become available (accepted date format is %s)', 'sensei-content-drip' ), self::DATE_FORMAT ); ?></span></p>
 			<input type="text" id="scd-lesson-datepicker" name="absolute[datepicker]" value="<?php echo esc_attr( $absolute_date_value ); ?>" class="absolute-datepicker" />
 		</div>
@@ -246,8 +248,12 @@ class Scd_Ext_Lesson_Admin {
 					</select>
 				</div>
 			<?php endif; ?>
-		</div><!-- end dripTypeOptions -->
-		<?php $send_test_email = sprintf( __('Send Test Email to %s', 'sensei-content-drip' ), $current_user->user_email ); ?>
+		</div>
+
+		<?php
+			/* translators: %s is replaced with the current user's email address */
+			$send_test_email = sprintf( __('Send Test Email to %s', 'sensei-content-drip' ), $current_user->user_email );
+		?>
 
 		<a title="<?php echo esc_attr( $send_test_email ); ?>" href="#send-test-email" class="send_test_email button button-primary button-highlighted"><?php echo esc_html( $send_test_email ); ?></a>
 
@@ -348,6 +354,7 @@ class Scd_Ext_Lesson_Admin {
 					// at this point we can't do somthing so we
 					// need to prompt the user to reselect a date from the
 					// datepicker. The old format will still work in the frontend
+					/* translators: %s is replaced with Y-m-d */
 					$message = sprintf( esc_html__( 'The date format you selected cannot be parsed (we expect dates to be formatted like "%s")', 'sensei-content-drip' ), self::DATE_FORMAT );
 					update_option( '_sensei_content_drip_lesson_notice' , array( 'error' => $message ) );
 					return $post_id;
@@ -424,7 +431,8 @@ class Scd_Ext_Lesson_Admin {
 		foreach ( $notice as $type => $message ) {
 			$message =  $message . ' ' . esc_html__( 'The content drip type was reset to "none".', 'sensei-content-drip' );
 			echo '<div class="' . esc_attr( $type ) . ' fade"><p>';
-			printf( esc_html_x( 'Sensei Content Drip %s: %s', 'type and message', 'sensei-content-drip' ), $type, $message );
+			/* translators: %1$s is replaced with the notice type and %2$s is replaced with the message */
+			printf( esc_html_x( 'Sensei Content Drip %1$s: %2$s', 'type and message', 'sensei-content-drip' ), $type, $message );
 			echo '</p></div>';
 		}
 

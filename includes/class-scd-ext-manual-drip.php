@@ -414,6 +414,7 @@ class Scd_Ext_Manual_Drip {
 		if ( ! $user ) {
 			// Create the error response array
 			$response = array(
+				/* translators: %d is replaced with the invalid user ID */
 				'notice'   => sprintf( esc_html__( 'The userID( %d ) is invalid, there is no user that matches this ID ', 'sensei-content-drip' ), $user_id ),
 				'newNonce' => $new_nonce,
 			);
@@ -429,6 +430,7 @@ class Scd_Ext_Manual_Drip {
 		if ( is_null( $lesson ) || empty( $lesson ) ) {
 			// Create the error response array
 			$response = array(
+				/* translators: %d is replaced with the invalid lesson ID */
 				'notice'   => sprintf( esc_html__( 'The lessonId( %d ) is invalid, there is no lesson that matches this ID ', 'sensei-content-drip' ), $lesson_id ),
 				'newNonce' => $new_nonce,
 			);
