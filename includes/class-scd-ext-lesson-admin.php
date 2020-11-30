@@ -383,7 +383,7 @@ class Scd_Ext_Lesson_Admin {
 				$save_error_notices = array( 'error' => esc_html__( 'Please select the correct units for your chosen option "After previous lesson" .', 'sensei-content-drip' ) );
 				$dynamic_save_error = true;
 			} else if ( ! is_numeric( $date_unit_amount ) ) {
-				$save_error_notices = array( 'error' => esc_html__( 'Please enter a numberic unit number for your chosen option "After previous lesson" .', 'sensei-content-drip' ) );
+				$save_error_notices = array( 'error' => esc_html__( 'Please enter a unit number for your chosen option "After previous lesson" .', 'sensei-content-drip' ) );
 				$dynamic_save_error = true;
 			}
 
