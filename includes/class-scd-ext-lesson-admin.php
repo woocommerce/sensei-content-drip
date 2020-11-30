@@ -110,7 +110,7 @@ class Scd_Ext_Lesson_Admin {
 			}
 
 			// we are using new data in db, format accordingly
-			$lesson_set_date = DateTimeImmutable::createFromFormat( 'U', $lesson_set_date )->setTimezone( wp_timezone() );
+			$lesson_set_date = DateTimeImmutable::createFromFormat( 'U', $lesson_set_date )->setTimezone( Sensei_Content_Drip()->utils->wp_timezone() );
 
 			$lesson_set_date = $lesson_set_date->format( $format );
 		}
@@ -346,12 +346,12 @@ class Scd_Ext_Lesson_Admin {
 
 
 			// we are always expecting a specific time format for this field in the form of
-
-			$date = DateTimeImmutable::createFromFormat( self::DATE_FORMAT, $date_string, wp_timezone() );
+			$timezone = Sensei_Content_Drip()->utils->wp_timezone();
+			$date     = DateTimeImmutable::createFromFormat( self::DATE_FORMAT, $date_string, $timezone );
 			if (false === $date) {
 				// possibly legacy, try to match the format from wp settings
 				$date_format = get_option( 'date_format' );
-				$date = DateTimeImmutable::createFromFormat( $date_format, $date_string, wp_timezone() );
+				$date = DateTimeImmutable::createFromFormat( $date_format, $date_string, $timezone );
 				if (false === $date) {
 					// at this point we can't do somthing so we
 					// need to prompt the user to reselect a date from the

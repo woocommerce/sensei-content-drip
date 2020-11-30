@@ -26,9 +26,9 @@ class Scd_Ext_Dependency_Checker {
 			$are_met = false;
 		}
 
+		// WordPress check is soft requirement for now.
 		if ( ! self::check_wp() ) {
 			add_action( 'admin_notices', array( __CLASS__, 'add_wp_notice' ) );
-			$are_met = false;
 		}
 
 		if ( ! $are_met ) {

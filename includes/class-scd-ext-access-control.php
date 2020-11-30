@@ -172,7 +172,7 @@ class Scd_Ext_Access_Control {
 
 		// Convert string dates to date object.
 		$lesson_drip_date = $this->get_lesson_drip_date( $lesson_id , $user_id );
-		$today            = current_datetime()->setTime( 0, 0, 0 );
+		$today            = Sensei_Content_Drip()->utils->current_datetime()->setTime( 0, 0, 0 );
 
 		if ( ! $lesson_drip_date ) {
 			return $access_blocked;
@@ -233,7 +233,7 @@ class Scd_Ext_Access_Control {
 		}
 
 		$lesson_becomes_available_date = $this->get_lesson_drip_date( $lesson_id , $user_id );
-		$today                         = current_datetime()->setTime( 0, 0, 0 );
+		$today                         = Sensei_Content_Drip()->utils->current_datetime()->setTime( 0, 0, 0 );
 
 		if ( ! $lesson_becomes_available_date ) {
 			return $access_blocked;
@@ -318,7 +318,7 @@ class Scd_Ext_Access_Control {
 			$user_course_start_date = new DateTimeImmutable( $user_course_start_date_string, $timezone );
 
 			// Standardize this to the WP timezone.
-			$user_course_start_date = $user_course_start_date->setTimezone( wp_timezone() );
+			$user_course_start_date = $user_course_start_date->setTimezone( Sensei_Content_Drip()->utils->wp_timezone() );
 
 			// Create a date interval object to determine when the lesson should become available
 			$unit_type_first_letter_uppercase = strtoupper( substr( $unit_type, 0, 1 ) ) ;
@@ -370,4 +370,5 @@ class Scd_Ext_Access_Control {
 
 		return in_array( $course_id, $teacher_courses_id );
 	}
+
 }

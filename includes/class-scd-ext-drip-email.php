@@ -199,7 +199,7 @@ class Scd_Ext_Drip_Email {
 	function is_dripping_today( $lesson_id, $user_id = '' ) {
 		// Setup variables needed.
 		$dripping_today = false;
-		$today          = current_datetime()->setTime( 0, 0, 0 );
+		$today          = Sensei_Content_Drip()->utils->current_datetime()->setTime( 0, 0, 0 );
 
 		// Get the lesson drip date.
 		$lesson_drip_date = Sensei_Content_Drip()->access_control->get_lesson_drip_date( absint( $lesson_id ), absint( $user_id ) );
