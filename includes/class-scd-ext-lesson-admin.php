@@ -97,7 +97,7 @@ class Scd_Ext_Lesson_Admin {
 	 * Attempts to retrieve the date in localized format (if using new format), otherwise return plain format
 	 *
 	 * @param  string $lesson_id
-	 * @return DateTime|string
+	 * @return string
 	 */
 	private function date_or_datestring_from_lesson( $lesson_id, $use_wp_format = false ) {
 		$lesson_set_date = get_post_meta( $lesson_id, '_sensei_content_drip_details_date', true );
@@ -110,7 +110,9 @@ class Scd_Ext_Lesson_Admin {
 			}
 
 			// we are using new data in db, format accordingly
-			$lesson_set_date = date_i18n( $format, $lesson_set_date );
+			$lesson_set_date = DateTimeImmutable::createFromFormat( 'U', $lesson_set_date )->setTimezone( wp_timezone() );
+
+			$lesson_set_date = $lesson_set_date->format( $format );
 		}
 
 		return $lesson_set_date;
@@ -345,11 +347,11 @@ class Scd_Ext_Lesson_Admin {
 
 			// we are always expecting a specific time format for this field in the form of
 
-			$date = DateTime::createFromFormat( self::DATE_FORMAT, $date_string );
+			$date = DateTimeImmutable::createFromFormat( self::DATE_FORMAT, $date_string, wp_timezone() );
 			if (false === $date) {
 				// possibly legacy, try to match the format from wp settings
 				$date_format = get_option( 'date_format' );
-				$date = DateTime::createFromFormat( $date_format, $date_string );
+				$date = DateTimeImmutable::createFromFormat( $date_format, $date_string, wp_timezone() );
 				if (false === $date) {
 					// at this point we can't do somthing so we
 					// need to prompt the user to reselect a date from the
@@ -360,7 +362,8 @@ class Scd_Ext_Lesson_Admin {
 					return $post_id;
 				}
 			}
-			$date_string = $date->getTimestamp();
+
+			$date_string = $date->setTime( 0, 0, 0 )->getTimestamp();
 
 			// Set the meta data to be saves later
 			// Set the mets data to ready to pass it onto saving

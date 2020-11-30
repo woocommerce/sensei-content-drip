@@ -220,15 +220,11 @@ class Scd_Ext_Lesson_Frontend {
 	 * @return bool
 	 */
 	public function generate_absolute_drip_type_message( $lesson_id ) {
-		$absolute_drip_type_message = '';
-
-		// Get this lessons drip data
+		// Get this lessons drip data.
 		$lesson_drip_date = Scd_Ext_Utils::date_from_datestring_or_timestamp( $lesson_id );
-		$lesson_drip_timestamp = $lesson_drip_date->getTimestamp();
+		$formatted_date   = $lesson_drip_date->format( get_option( 'date_format' ) );
 
-		$formatted_date = date_i18n( get_option( 'date_format' ), $lesson_drip_timestamp );
-
-		// Replace the shortcode in the class message_format property set in the constructor
+		// Replace the shortcode in the class message_format property set in the constructor.
 		if ( strpos( $this->message_format , '[date]' ) ) {
 			$absolute_drip_type_message = str_replace( '[date]', $formatted_date, $this->message_format );
 		} else {
@@ -247,16 +243,15 @@ class Scd_Ext_Lesson_Frontend {
 	 * @return bool $dripped
 	 */
 	public function generate_dynamic_drip_type_message( $lesson_id ) {
-		$current_user              = wp_get_current_user();
-		$user_id                   = $current_user->ID;
-		$dynamic_drip_type_message = '';
-		$lesson_available_date     = Sensei_Content_Drip()->access_control->get_lesson_drip_date( $lesson_id , $user_id );
+		$current_user          = wp_get_current_user();
+		$user_id               = $current_user->ID;
+		$lesson_available_date = Sensei_Content_Drip()->access_control->get_lesson_drip_date( $lesson_id , $user_id );
 
 		if ( ! $lesson_available_date ) {
 			return '';
 		}
 
-		$formatted_date            = date_i18n( get_option( 'date_format' ), $lesson_available_date->getTimestamp() );
+		$formatted_date = $lesson_available_date->format( get_option( 'date_format' ) );
 
 		// Replace string content in the class message_format property set in the constructor
 		$dynamic_drip_type_message = str_replace( '[date]', $formatted_date, $this->message_format );

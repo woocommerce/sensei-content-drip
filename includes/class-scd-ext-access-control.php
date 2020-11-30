@@ -170,9 +170,13 @@ class Scd_Ext_Access_Control {
 		$current_user = wp_get_current_user();
 		$user_id      = $current_user->ID;
 
-		// Convert string dates to date ojbect
+		// Convert string dates to date object.
 		$lesson_drip_date = $this->get_lesson_drip_date( $lesson_id , $user_id );
-		$today            = new DateTime();
+		$today            = current_datetime()->setTime( 0, 0, 0 );
+
+		if ( ! $lesson_drip_date ) {
+			return $access_blocked;
+		}
 
 		/**
 		 * Compare dates
@@ -180,7 +184,7 @@ class Scd_Ext_Access_Control {
 		 * If lesson drip date is greater than the today
 		 * the drip date ist still active and lesson content should be hidden
 		 */
-		if ( $lesson_drip_date > $today ) {
+		if ( $lesson_drip_date->getTimestamp() > $today->getTimestamp() ) {
 			$access_blocked  = true;
 		}
 
@@ -229,7 +233,11 @@ class Scd_Ext_Access_Control {
 		}
 
 		$lesson_becomes_available_date = $this->get_lesson_drip_date( $lesson_id , $user_id );
-		$today                         = new DateTime(); // Get today's date
+		$today                         = current_datetime()->setTime( 0, 0, 0 );
+
+		if ( ! $lesson_becomes_available_date ) {
+			return $access_blocked;
+		}
 
 		/**
 		 * Compare dates
@@ -237,7 +245,7 @@ class Scd_Ext_Access_Control {
 		 * If lesson_becomes_available_date is greater than the today
 		 * the drip date ist still active and lesson content should be hidden
 		 */
-		if ( $lesson_becomes_available_date > $today ) {
+		if ( $lesson_becomes_available_date->getTimestamp() > $today->getTimestamp() ) {
 			$access_blocked  = true;
 		}
 
@@ -249,7 +257,7 @@ class Scd_Ext_Access_Control {
 	 *
 	 * @param  string $lesson_id
 	 * @param  string $user_id
-	 * @return DateTime drip_date format yyyy-mm-dd
+	 * @return DateTimeImmutable|false drip_date format yyyy-mm-dd
 	 */
 	public function get_lesson_drip_date( $lesson_id , $user_id = '' ) {
 		// Setup the basics, drip date default return will be false on error
@@ -282,13 +290,6 @@ class Scd_Ext_Access_Control {
 				return false;
 			}
 
-			// Get the previous lessons completion date
-			$activity_query_args = array(
-				'post_id' => $course_id,
-				'user_id' => $user_id,
-				'type'    => 'sensei_course_status'
-			);
-
 			// Get the activity/comment data
 			$activity = Sensei_Utils::user_course_status( $course_id , $user_id );
 
@@ -299,16 +300,25 @@ class Scd_Ext_Access_Control {
 			// Make sure there is a start date attached the users sensei_course_status comment data on the course
 			if ( ! empty( $course_start_date ) ) {
 				$user_course_start_date_string = $course_start_date;
+
+				// Sensei LMS stores course start date in PHP's timezone.
+				$timezone = ( new DateTime() )->getTimezone();
 			} else if ( isset( $activity->comment_date_gmt ) && ! empty( $activity->comment_date_gmt ) ) {
 				// This is for backwards compatibility for users who have not yet
 				// updated to the new course status data format since sensei version 1.7.0
 				$user_course_start_date_string = $activity->comment_date_gmt;
+
+				// We're using the UTC timezone from the course status comment record.
+				$timezone = new DateTimeZone( 'UTC' );
 			} else {
 				return false;
 			}
 
 			// Create an object which the interval will be added to and add the interval
-			$user_course_start_date = new DateTime( $user_course_start_date_string );
+			$user_course_start_date = new DateTimeImmutable( $user_course_start_date_string, $timezone );
+
+			// Standardize this to the WP timezone.
+			$user_course_start_date = $user_course_start_date->setTimezone( wp_timezone() );
 
 			// Create a date interval object to determine when the lesson should become available
 			$unit_type_first_letter_uppercase = strtoupper( substr( $unit_type, 0, 1 ) ) ;
@@ -318,8 +328,8 @@ class Scd_Ext_Access_Control {
 			$drip_date = $user_course_start_date->add( $interval_to_lesson_availability );
 		}
 
-		// Strip out the hours minutes and second before returning the yyyy-mm-dd format
-		return new DateTime( $drip_date->format( 'Y-m-d' ) );
+		// Reset time to the beginning of the day in WP timezone.
+		return $drip_date->setTime( 0, 0, 0 );
 	}
 
 	/**
