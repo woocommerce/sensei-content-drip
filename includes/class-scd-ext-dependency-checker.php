@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Scd_Ext_Dependency_Checker {
 	const MINIMUM_PHP_VERSION    = '5.6';
 	const MINIMUM_SENSEI_VERSION = '1.11.0';
+	const MINIMUM_WP_VERSION     = '5.3';
 
 	/**
 	 * Checks if system dependencies are met.
@@ -19,13 +20,21 @@ class Scd_Ext_Dependency_Checker {
 	 */
 	public static function are_system_dependencies_met() {
 		$are_met = true;
+
 		if ( ! self::check_php() ) {
 			add_action( 'admin_notices', array( __CLASS__, 'add_php_notice' ) );
 			$are_met = false;
 		}
+
+		if ( ! self::check_wp() ) {
+			add_action( 'admin_notices', array( __CLASS__, 'add_wp_notice' ) );
+			$are_met = false;
+		}
+
 		if ( ! $are_met ) {
 			add_action( 'admin_init', array( __CLASS__, 'deactivate_self' ) );
 		}
+
 		return $are_met;
 	}
 
@@ -50,6 +59,17 @@ class Scd_Ext_Dependency_Checker {
 	 */
 	private static function check_php() {
 		return version_compare( phpversion(), self::MINIMUM_PHP_VERSION, '>=' );
+	}
+
+	/**
+	 * Checks for our WordPress version requirement.
+	 *
+	 * @return bool
+	 */
+	private static function check_wp() {
+		global $wp_version;
+
+		return version_compare( $wp_version, self::MINIMUM_WP_VERSION, '>=' );
 	}
 
 	/**
@@ -102,6 +122,28 @@ class Scd_Ext_Dependency_Checker {
 			/* translators: accessibility text */
 			esc_html__( '(opens in a new tab)', 'sensei-content-drip' )
 		);
+		echo '</p></div>';
+	}
+
+	/**
+	 * Adds notice in WP Admin that minimum version of WordPress is not met.
+	 *
+	 * @access private
+	 */
+	public static function add_wp_notice() {
+		global $wp_version;
+
+		$screen        = get_current_screen();
+		$valid_screens = array( 'dashboard', 'plugins' );
+
+		if ( ! current_user_can( 'activate_plugins' ) || ! in_array( $screen->id, $valid_screens, true ) ) {
+			return;
+		}
+
+		// translators: %1$s is version of WordPress that SCD requires; %2$s is the current version of WordPress installed.
+		$message = sprintf( __( '<strong>Sensei Content Drip</strong> requires a minimum WordPress version of %1$s, but you are running %2$s.', 'sensei-content-drip' ), self::MINIMUM_WP_VERSION, $wp_version );
+		echo '<div class="error"><p>';
+		echo wp_kses( $message, array( 'strong' => array() ) );
 		echo '</p></div>';
 	}
 
