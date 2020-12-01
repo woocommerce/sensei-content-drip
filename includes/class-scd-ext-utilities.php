@@ -146,7 +146,7 @@ class Scd_Ext_Utils {
 	public function current_datetime() {
 		// Provide light compatibility pre-WP 5.3. This won't be smart about timezones.
 		if ( ! function_exists( 'current_datetime' ) ) {
-			return new DateTimeImmutable();
+			return new DateTimeImmutable( 'now', $this->wp_timezone() );
 		}
 
 		return current_datetime();
