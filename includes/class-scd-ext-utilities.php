@@ -97,18 +97,19 @@ class Scd_Ext_Utils {
 	 * Return a DateTime object for the given lesson ID (bwc support)
 	 *
 	 * @param  string $lesson_id
-	 * @return DateTime|bool
+	 * @return DateTimeImmutable|bool
 	 */
 	public static function date_from_datestring_or_timestamp( $lesson_id ) {
 		$lesson_set_date = get_post_meta( $lesson_id, '_sensei_content_drip_details_date', true );
+		$timezone        = Sensei_Content_Drip()->utils->wp_timezone();
 
 		if ( ! ctype_digit( $lesson_set_date ) ) {
 			// backwards compatibility for data that's still using the old format
-			$drip_date = new DateTime( $lesson_set_date );
+			$drip_date = new DateTimeImmutable( $lesson_set_date, $timezone );
 		} else {
-			$drip_date = DateTime::createFromFormat( 'U', $lesson_set_date );
+			$drip_date = DateTimeImmutable::createFromFormat( 'U', $lesson_set_date );
+			$drip_date = $drip_date->setTimezone( $timezone );
 		}
-
 
 		return $drip_date;
 	}
@@ -137,5 +138,31 @@ class Scd_Ext_Utils {
 		return ( empty( $settings_message ) ) ? $default_message : $settings_message;
     } // end check_for_translation()
 
+	/**
+	 * Get the current datetime as a DateTimeImmutable object.
+	 *
+	 * @return DateTimeImmutable
+	 */
+	public function current_datetime() {
+		// Provide light compatibility pre-WP 5.3. This won't be smart about timezones.
+		if ( ! function_exists( 'current_datetime' ) ) {
+			return new DateTimeImmutable( 'now', $this->wp_timezone() );
+		}
+
+		return current_datetime();
+	}
+
+	/**
+	 * Get the current WP Timezone.
+	 * @return DateTimeZone
+	 */
+	public function wp_timezone() {
+		// Provide light compatibility pre-WP 5.3. This won't be smart about timezones.
+		if ( ! function_exists( 'wp_timezone' ) ) {
+			return new DateTimeZone( 'UTC' );
+		}
+
+		return wp_timezone();
+	}
 } // end class Sensei_Scd_Extension_Utils
 

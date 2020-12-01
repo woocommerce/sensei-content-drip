@@ -1,10 +1,12 @@
 <?php
 /**
-* Testing the Sensei Content Drip ( scd ) Email functionality class
-* @class Scd_Ext_lesson_admin
-* @file ../includes/class-scd-ext-drip-email.php
-*/
-class LessonAdminTest extends WP_UnitTestCase {
+ * Testing the Sensei Content Drip ( scd ) Email functionality class
+ *
+ * @class Scd_Ext_Lesson_Admin
+ * @file ../../includes/class-scd-ext-drip-email.php
+ */
+
+class Scd_Ext_Lesson_Admin_Tests extends WP_UnitTestCase {
 	function testClass() {
 		$this->assertTrue( class_exists( 'Scd_Ext_Lesson_Admin' ), 'The plugin class file was not loaded' );
 		$this->assertTrue( isset( Sensei_Content_Drip()->lesson_admin ), 'The plugin class was not intstantiated' );

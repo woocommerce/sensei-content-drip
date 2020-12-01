@@ -38,6 +38,7 @@ class Sensei_Content_Drip_Unit_Tests_Bootstrap {
 		$this->plugin_dir                  = dirname( $this->tests_dir );
 		$this->wp_tests_dir                = getenv( 'WP_TESTS_DIR' ) ? getenv( 'WP_TESTS_DIR' ) : '/tmp/wordpress-tests-lib';
 		$this->sensei_plugin_dir           = getenv( 'SENSEI_PLUGIN_DIR' ) ? getenv( 'SENSEI_PLUGIN_DIR' ) : '/tmp/sensei-master';
+		$this->sensei_tests_framework_dir  = $this->sensei_plugin_dir . '/tests/framework';
 
 		if (
 			! file_exists( $this->wp_tests_dir . '/includes/functions.php' )
@@ -59,6 +60,15 @@ class Sensei_Content_Drip_Unit_Tests_Bootstrap {
 
 		// Load the WP testing environment.
 		require_once $this->wp_tests_dir . '/includes/bootstrap.php';
+
+		// Load the Sensei testing framework.
+		require_once $this->sensei_tests_framework_dir . '/factories/class-sensei-factory.php';
+		require_once $this->sensei_tests_framework_dir . '/factories/class-wp-unittest-factory-for-post-sensei.php';
+		require_once $this->sensei_tests_framework_dir . '/trait-sensei-test-login-helpers.php';
+
+		// Load this plugin's test framework.
+		require_once $this->tests_dir . '/framework/drip-test-helpers.php';
+		require_once $this->tests_dir . '/framework/class-time-machine.php';
 	}
 
 	/**
