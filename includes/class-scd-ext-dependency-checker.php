@@ -21,14 +21,14 @@ class Scd_Ext_Dependency_Checker {
 	public static function are_system_dependencies_met() {
 		$are_met = true;
 
-		if ( ! self::check_php() ) {
-			add_action( 'admin_notices', array( __CLASS__, 'add_php_notice' ) );
+		if ( ! self::check_php_version() ) {
+			add_action( 'admin_notices', array( __CLASS__, 'add_php_version_notice' ) );
 			$are_met = false;
 		}
 
 		// WordPress check is soft requirement for now.
-		if ( ! self::check_wp() ) {
-			add_action( 'admin_notices', array( __CLASS__, 'add_wp_notice' ) );
+		if ( ! self::check_wp_version() ) {
+			add_action( 'admin_notices', array( __CLASS__, 'add_wp_version_notice' ) );
 		}
 
 		if ( ! $are_met ) {
@@ -57,7 +57,7 @@ class Scd_Ext_Dependency_Checker {
 	 *
 	 * @return bool
 	 */
-	private static function check_php() {
+	private static function check_php_version() {
 		return version_compare( phpversion(), self::MINIMUM_PHP_VERSION, '>=' );
 	}
 
@@ -66,7 +66,7 @@ class Scd_Ext_Dependency_Checker {
 	 *
 	 * @return bool
 	 */
-	private static function check_wp() {
+	private static function check_wp_version() {
 		global $wp_version;
 
 		return version_compare( $wp_version, self::MINIMUM_WP_VERSION, '>=' );
@@ -99,7 +99,7 @@ class Scd_Ext_Dependency_Checker {
 	 *
 	 * @access private
 	 */
-	public static function add_php_notice() {
+	public static function add_php_version_notice() {
 		$screen        = get_current_screen();
 		$valid_screens = array( 'dashboard', 'plugins' );
 
@@ -130,7 +130,7 @@ class Scd_Ext_Dependency_Checker {
 	 *
 	 * @access private
 	 */
-	public static function add_wp_notice() {
+	public static function add_wp_version_notice() {
 		global $wp_version;
 
 		$screen        = get_current_screen();
