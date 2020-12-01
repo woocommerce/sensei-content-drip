@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.1.0
  */
 class Scd_Ext_Dependency_Checker {
-	const MINIMUM_PHP_VERSION    = '5.6';
+	const MINIMUM_PHP_VERSION    = '7.0';
 	const MINIMUM_SENSEI_VERSION = '1.11.0';
 	const MINIMUM_WP_VERSION     = '5.3';
 
