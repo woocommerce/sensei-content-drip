@@ -1,6 +1,6 @@
 *** Sensei Content Drip Changelog ***
 
-2020.12.02 - version 2.1.0
+2020.12.03 - version 2.1.0
 * New: Adds partial French translations - #213
 * Tweak: Use WordPress' timezone when dripping lessons - #214
 * Fix: Minor display issue in WordPress admin on the lesson editor - #201
