@@ -184,7 +184,7 @@ class Sensei_Content_Drip {
 		}
 
 		// Load the learner management functionality script
-		if ( 'sensei_page_sensei_learners' === $hook &&  isset( $_GET['course_id'] ) && isset( $_GET['view'] ) && 'learners' === $_GET['view'] ) {
+		if ( 'sensei-lms_page_sensei_learners' === $hook &&  isset( $_GET['course_id'] ) && isset( $_GET['view'] ) && 'learners' === $_GET['view'] ) {
 			wp_register_script( $this->_token . '-admin-manual-drip-script', esc_url( $this->assets_url ) . 'js/admin-manual-drip.js', array( 'underscore','jquery', 'backbone' ), $this->_version, true );
 			wp_enqueue_script( $this->_token . '-admin-manual-drip-script' );
 		}
