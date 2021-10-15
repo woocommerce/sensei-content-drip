@@ -271,26 +271,7 @@ class Scd_Ext_Lesson_Admin {
 	 * @return array WP_Post
 	 */
 	public function get_course_lessons( $course_id = 0, $exclude = array() ) {
-		$args = array(
-			'post_type'          => 'lesson',
-			'numberposts'        => -1,
-			'meta_key'           => '_order_' . absint( $course_id ),
-			'orderby'            => 'meta_value_num date',
-			'order'              => 'ASC',
-			'exclude'            => (array) $exclude,
-			'meta_query'         => array(
-				array(
-					'key'   => '_lesson_course',
-					'value' => absint( $course_id ),
-				),
-			),
-			'post_status'        => 'public',
-			'suppress_filters'   => 0
-		);
-
-		$lessons = get_posts( $args );
-
-		return $lessons;
+		return Sensei()->course->course_lessons( $course_id, 'public', 'all', [ 'exclude' => $exclude ] );
 	}
 
 	/**
