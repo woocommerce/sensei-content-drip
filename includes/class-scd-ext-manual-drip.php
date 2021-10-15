@@ -96,7 +96,7 @@ class Scd_Ext_Manual_Drip {
 		$course_lessons = Sensei_Content_Drip()->lesson_admin->get_course_lessons( $course_id );
 		?>
 		<div class="postbox scd-learner-managment manual-content-drip">
-				<h3><span><?php esc_html_e( 'Manual Content Drip', 'sensei-content-drip' ); ?></span></h3>
+				<h2 class="postbox-title"><span><?php esc_html_e( 'Manual Content Drip', 'sensei-content-drip' ); ?></span></h2>
 				<div class="inside">
 					<form name="scd_manual_drip_learners_lesson" action="" method="post">
 						<p>
