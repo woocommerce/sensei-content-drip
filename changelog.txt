@@ -1,5 +1,9 @@
 *** Sensei Content Drip Changelog ***
 
+2021.10.19 - version 2.1.1
+Fix: Can't remove the lesson access from user if already has one - #227
+Fix: Lessons that are in a module are not available in Manual Content Drip meta box - #217
+
 2020.12.03 - version 2.1.0
 * New: Adds partial French translations - #213
 * Tweak: Use WordPress' timezone when dripping lessons - #214

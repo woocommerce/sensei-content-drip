@@ -1,13 +1,13 @@
 <?php
 /*
  * Plugin Name: Sensei Content Drip
- * Version: 2.1.0
+ * Version: 2.1.1
  * Plugin URI: https://woocommerce.com/products/sensei-content-drip/
  * Description:  Control access to Sensei lessons by scheduling them to become available after a determined time.
  * Author: Automattic
  * Author URI: https://automattic.com/
- * Requires at least: 5.3
- * Tested up to: 5.6
+ * Requires at least: 5.6
+ * Tested up to: 5.8
  * Requires PHP: 7.0
  * Domain path: /lang/
  * Woo: 543363:8ee2cdf89f55727f57733133ccbbfbb0
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SENSEI_CONTENT_DRIP_VERSION', '2.1.0' );
+define( 'SENSEI_CONTENT_DRIP_VERSION', '2.1.1' );
 define( 'SENSEI_CONTENT_DRIP_PLUGIN_FILE', __FILE__ );
 define( 'SENSEI_CONTENT_DRIP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
