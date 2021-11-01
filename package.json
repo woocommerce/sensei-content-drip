@@ -20,7 +20,7 @@
     "npm": ">=1.1.0"
   },
   "devDependencies": {
-    "@wordpress/scripts": "16.1.2",
+    "@wordpress/scripts": "16.1.5",
     "file-loader": "6.2.0"
   },
   "scripts": {
