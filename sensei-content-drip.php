@@ -20,29 +20,23 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+require_once dirname( __FILE__ ) . '/includes/class-scd-ext-dependency-checker.php';
 
-function sensei_content_drip_requirements_met() {
-	if ( defined( 'SENSEI_CONTENT_DRIP_PLUGIN_FILE' ) ) {
-		return false;
-	}
-	return true;
+if ( Scd_Ext_Dependency_Checker::is_sensei_pro_active() ) {
+	return;
 }
 
-if ( sensei_content_drip_requirements_met() ) {
-	define( 'SENSEI_CONTENT_DRIP_VERSION', '2.1.1' );
-	define( 'SENSEI_CONTENT_DRIP_PLUGIN_FILE', __FILE__ );
-	define( 'SENSEI_CONTENT_DRIP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+define( 'SENSEI_CONTENT_DRIP_VERSION', '2.1.1' );
+define( 'SENSEI_CONTENT_DRIP_PLUGIN_FILE', __FILE__ );
+define( 'SENSEI_CONTENT_DRIP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
-	require_once dirname( __FILE__ ) . '/includes/class-scd-ext-dependency-checker.php';
-
-	if ( ! Scd_Ext_Dependency_Checker::are_system_dependencies_met() ) {
-		return;
-	}
-
-	require_once dirname( __FILE__ ) . '/includes/class-sensei-content-drip.php';
-
-	// Load the plugin after all the other plugins have loaded.
-	add_action( 'plugins_loaded', array( 'Sensei_Content_Drip', 'init' ), 5 ) ;
-
-	Sensei_Content_Drip::instance();
+if ( ! Scd_Ext_Dependency_Checker::are_system_dependencies_met() ) {
+	return;
 }
+
+require_once dirname( __FILE__ ) . '/includes/class-sensei-content-drip.php';
+
+// Load the plugin after all the other plugins have loaded.
+add_action( 'plugins_loaded', array( 'Sensei_Content_Drip', 'init' ), 5 ) ;
+
+Sensei_Content_Drip::instance();

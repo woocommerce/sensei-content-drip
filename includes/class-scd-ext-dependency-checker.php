@@ -39,6 +39,18 @@ class Scd_Ext_Dependency_Checker {
 	}
 
 	/**
+	 * Checks if plugin already active through Sensei Pro.
+	 *
+	 * @return bool
+	 */
+	public static function is_sensei_pro_active() {
+		if  ( defined( 'SENSEI_CONTENT_DRIP_PLUGIN_FILE' ) ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Checks if all plugin dependencies are met.
 	 *
 	 * @return bool
