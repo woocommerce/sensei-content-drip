@@ -58,10 +58,10 @@ class Sensei_Content_Drip_Unit_Tests_Bootstrap {
 		// Install Sensei LMS.
 		tests_add_filter( 'setup_theme', [ $this, 'install_sensei' ] );
 
-		require dirname( dirname( __FILE__ ) ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
 
 		// Load the WP testing environment.
 		require_once $this->wp_tests_dir . '/includes/bootstrap.php';
+		require dirname( dirname( __FILE__ ) ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
 
 		// Load the Sensei testing framework.
 		require_once $this->sensei_tests_framework_dir . '/factories/class-sensei-factory.php';
