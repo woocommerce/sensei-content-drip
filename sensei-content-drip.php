@@ -20,12 +20,15 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+require_once dirname( __FILE__ ) . '/includes/class-scd-ext-dependency-checker.php';
+
+if ( Scd_Ext_Dependency_Checker::is_sensei_pro_active() ) {
+	return;
+}
 
 define( 'SENSEI_CONTENT_DRIP_VERSION', '2.1.1' );
 define( 'SENSEI_CONTENT_DRIP_PLUGIN_FILE', __FILE__ );
 define( 'SENSEI_CONTENT_DRIP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-
-require_once dirname( __FILE__ ) . '/includes/class-scd-ext-dependency-checker.php';
 
 if ( ! Scd_Ext_Dependency_Checker::are_system_dependencies_met() ) {
 	return;
