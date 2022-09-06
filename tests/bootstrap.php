@@ -61,8 +61,7 @@ class Sensei_Content_Drip_Unit_Tests_Bootstrap {
 
 		// Load the WP testing environment.
 		require_once $this->wp_tests_dir . '/includes/bootstrap.php';
-		require dirname( dirname( __FILE__ ) ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
-
+		require_once dirname( dirname( __FILE__ ) ) . '/vendor/autoload.php';
 		// Load the Sensei testing framework.
 		require_once $this->sensei_tests_framework_dir . '/factories/class-sensei-factory.php';
 		require_once $this->sensei_tests_framework_dir . '/factories/class-wp-unittest-factory-for-post-sensei.php';
