@@ -58,6 +58,8 @@ class Sensei_Content_Drip_Unit_Tests_Bootstrap {
 		// Install Sensei LMS.
 		tests_add_filter( 'setup_theme', [ $this, 'install_sensei' ] );
 
+		require dirname( dirname( __FILE__ ) ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
+
 		// Load the WP testing environment.
 		require_once $this->wp_tests_dir . '/includes/bootstrap.php';
 
@@ -69,7 +71,6 @@ class Sensei_Content_Drip_Unit_Tests_Bootstrap {
 		// Load this plugin's test framework.
 		require_once $this->tests_dir . '/framework/drip-test-helpers.php';
 		require_once $this->tests_dir . '/framework/class-time-machine.php';
-		require dirname( dirname( __FILE__ ) ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
 	}
 
 	/**
