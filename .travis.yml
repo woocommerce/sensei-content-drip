@@ -23,6 +23,7 @@ before_script:
     if [[ ! -z "$WP_VERSION" ]] ; then
       bash tests/bin/prepare-env.sh
       composer global require "phpunit/phpunit=4.8.*|5.7.*"
+      composer update
     fi
 jobs:
   include:
