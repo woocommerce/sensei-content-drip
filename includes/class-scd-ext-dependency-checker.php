@@ -44,7 +44,7 @@ class Scd_Ext_Dependency_Checker {
 	 * @return bool
 	 */
 	public static function is_sensei_pro_active() {
-		if  ( defined( 'SENSEI_CONTENT_DRIP_PLUGIN_FILE' ) ) {
+		if  ( defined( 'SENSEI_PRO_VERSION' ) ) {
 			return true;
 		}
 		return false;
