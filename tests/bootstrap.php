@@ -69,6 +69,7 @@ class Sensei_Content_Drip_Unit_Tests_Bootstrap {
 		// Load this plugin's test framework.
 		require_once $this->tests_dir . '/framework/drip-test-helpers.php';
 		require_once $this->tests_dir . '/framework/class-time-machine.php';
+		require dirname( dirname( __FILE__ ) ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
 	}
 
 	/**
